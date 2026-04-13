@@ -176,6 +176,15 @@ body{font-family:'Segoe UI','Noto Sans TC',system-ui,sans-serif;background:var(-
 <script>
 const COLORS={a1:'#4ecdc4',a2:'#45b7d1',b1:'#f9ca24',b2:'#f0932b',c1:'#eb4d4b',c2:'#6c5ce7'};
 let data=null,currentAudio=null,assessments={},lang='en',fontSize=16,currentTopic=null;
+const sessionId=localStorage.getItem('esl-sid')||(()=>{const s=Math.random().toString(36).slice(2);localStorage.setItem('esl-sid',s);return s;})();
+function track(eventType,extra={}){
+  const t=currentTopic;
+  fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    session_id:sessionId,event_type:eventType,level_id:t?t.id.substring(0,2):extra.level_id||null,
+    topic_id:t?t.id:extra.topic_id||null,audio_lang:extra.audio_lang||null,audio_voice:extra.audio_voice||null,
+    audio_completed:extra.audio_completed||false,self_assess:extra.self_assess||null,extra:extra.extra||null
+  })}).catch(()=>{});
+}
 
 async function init(){
   const r=await fetch('/api/content');
@@ -250,6 +259,7 @@ function openSlug(topicId){
   document.getElementById('homePage').classList.add('hidden');
   document.getElementById('slugPage').classList.add('active');
   window.scrollTo(0,0);
+  track('view');
 }
 
 function goHome(){
@@ -324,6 +334,7 @@ function playAudio(audioLang,voice,btn){
   timeCur.textContent='0:00';
   timeTotal.textContent='0:00';
 
+  track('audio_play',{audio_lang:audioLang,audio_voice:voice});
   currentAudio.onloadedmetadata=()=>{
     timeTotal.textContent=fmtTime(currentAudio.duration);
   };
@@ -335,12 +346,14 @@ function playAudio(audioLang,voice,btn){
       }
     }
   };
+  const _audioLang=audioLang,_voice=voice;
   currentAudio.onended=()=>{
     btn.classList.remove('playing');
     activeBtn=null;
     currentAudio=null;
     currentSrc=null;
     player.classList.remove('active');
+    track('audio_complete',{audio_lang:_audioLang,audio_voice:_voice,audio_completed:true});
   };
   currentAudio.onerror=()=>{
     btn.classList.remove('playing');
@@ -369,6 +382,7 @@ function assess(btn){
   document.querySelectorAll('.assess-btn').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
   localStorage.setItem('esl-assess',JSON.stringify(assessments));
+  track('assess',{self_assess:btn.dataset.val});
 }
 
 function updateResult(){

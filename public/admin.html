@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LevelUp ESL — Admin</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f0f1a;color:#e0e0e0;padding:2rem}
+h1{font-size:1.5rem;margin-bottom:1rem;color:#4ecdc4}
+.login{max-width:300px;margin:4rem auto;text-align:center}
+.login input{padding:.6rem;border:1px solid #333;border-radius:6px;background:#1a1a2e;color:#fff;width:100%;margin-bottom:.5rem}
+.login button{padding:.6rem 1.5rem;background:#4ecdc4;color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}
+.stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-align:center}
+.stat .num{font-size:2rem;font-weight:700;color:#4ecdc4}
+.stat .label{font-size:.8rem;color:#888;margin-top:.3rem}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}
+th,td{padding:.6rem .8rem;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+th{color:#888;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
+h2{font-size:1.1rem;color:#fff;margin:2rem 0 .5rem}
+.bar{display:inline-block;height:16px;background:#4ecdc4;border-radius:3px;min-width:2px}
+.bar-label{font-size:.75rem;color:#aaa;margin-left:.5rem}
+select{padding:.4rem;background:#1a1a2e;color:#fff;border:1px solid #333;border-radius:4px}
+</style>
+</head>
+<body>
+
+<div class="login" id="loginForm">
+<h1>Admin Login</h1>
+<input type="password" id="passInput" placeholder="Password">
+<br><button onclick="login()">Enter</button>
+</div>
+
+<div id="dashboard" style="display:none">
+<h1>LevelUp ESL — Analytics</h1>
+<div>
+<label>Period: </label>
+<select id="days" onchange="loadData()">
+<option value="1">Today</option>
+<option value="7" selected>7 days</option>
+<option value="30">30 days</option>
+<option value="90">90 days</option>
+</select>
+<button onclick="loadData()" style="margin-left:.5rem;padding:.3rem .8rem;background:#333;border:1px solid #555;color:#fff;border-radius:4px;cursor:pointer">Refresh</button>
+</div>
+
+<div class="stats" id="statsCards"></div>
+
+<h2>Level Engagement</h2>
+<div id="levelChart"></div>
+
+<h2>Self-Assessment Distribution</h2>
+<div id="assessChart"></div>
+
+<h2>Audio Completion Rate</h2>
+<div id="audioChart"></div>
+
+<h2>Recent Visitors</h2>
+<table id="visitorTable"><thead><tr><th>IP</th><th>Device</th><th>Events</th><th>Levels</th><th>First Seen</th></tr></thead><tbody></tbody></table>
+
+<h2>Recent Events</h2>
+<table id="eventTable"><thead><tr><th>Time</th><th>Type</th><th>Level</th><th>Topic</th><th>Audio</th><th>Assess</th></tr></thead><tbody></tbody></table>
+</div>
+
+<script>
+let adminPass='';
+function login(){
+  adminPass=document.getElementById('passInput').value;
+  loadData();
+}
+
+async function loadData(){
+  const days=document.getElementById('days')?.value||7;
+  try{
+    const r=await fetch(`/api/admin?pass=${encodeURIComponent(adminPass)}&days=${days}`);
+    if(!r.ok){alert('Unauthorized or error');return;}
+    const d=await r.json();
+    document.getElementById('loginForm').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    render(d);
+  }catch(e){alert('Error: '+e.message);}
+}
+
+function render(d){
+  const LEVELS=['a1','a2','b1','b2','c1','c2'];
+  const COLORS={a1:'#4ecdc4',a2:'#45b7d1',b1:'#f9ca24',b2:'#f0932b',c1:'#eb4d4b',c2:'#6c5ce7'};
+
+  // Stats cards
+  document.getElementById('statsCards').innerHTML=`
+    <div class="stat"><div class="num">${d.total_events}</div><div class="label">Total Events</div></div>
+    <div class="stat"><div class="num">${d.unique_visitors}</div><div class="label">Unique Visitors</div></div>
+    <div class="stat"><div class="num">${Object.values(d.audio_plays||{}).reduce((a,b)=>a+b,0)}</div><div class="label">Audio Plays</div></div>
+    <div class="stat"><div class="num">${Object.values(d.audio_completes||{}).reduce((a,b)=>a+b,0)}</div><div class="label">Audio Completed</div></div>
+  `;
+
+  // Level chart
+  const maxViews=Math.max(...LEVELS.map(l=>d.level_views?.[l]||0),1);
+  document.getElementById('levelChart').innerHTML=LEVELS.map(l=>{
+    const v=d.level_views?.[l]||0;
+    const w=Math.max((v/maxViews)*300,2);
+    return `<div style="margin:.4rem 0"><strong style="color:${COLORS[l]}">${l.toUpperCase()}</strong> <span class="bar" style="width:${w}px;background:${COLORS[l]}"></span><span class="bar-label">${v} views</span></div>`;
+  }).join('');
+
+  // Assessment chart
+  document.getElementById('assessChart').innerHTML=LEVELS.map(l=>{
+    const a=d.assessments?.[l];
+    if(!a)return '';
+    const total=(a.easy||0)+(a.ok||0)+(a.hard||0);
+    if(!total)return '';
+    return `<div style="margin:.5rem 0"><strong style="color:${COLORS[l]}">${l.toUpperCase()}</strong>
+      <span style="color:#4ecdc4"> Easy:${a.easy||0}</span>
+      <span style="color:#f9ca24"> OK:${a.ok||0}</span>
+      <span style="color:#eb4d4b"> Hard:${a.hard||0}</span></div>`;
+  }).join('')||'<div style="color:#666">No assessments yet</div>';
+
+  // Audio chart
+  document.getElementById('audioChart').innerHTML=LEVELS.map(l=>{
+    const plays=d.audio_plays?.[l]||0;
+    const completes=d.audio_completes?.[l]||0;
+    if(!plays)return '';
+    const pct=Math.round((completes/plays)*100);
+    return `<div style="margin:.4rem 0"><strong style="color:${COLORS[l]}">${l.toUpperCase()}</strong> ${completes}/${plays} completed (${pct}%)</div>`;
+  }).join('')||'<div style="color:#666">No audio plays yet</div>';
+
+  // Visitors
+  const vb=document.querySelector('#visitorTable tbody');
+  vb.innerHTML=(d.visitors||[]).map(v=>`<tr>
+    <td>${v.ip}</td><td>${v.device}</td><td>${v.events}</td>
+    <td>${(v.levels||[]).map(l=>`<span style="color:${COLORS[l]||'#fff'}">${l.toUpperCase()}</span>`).join(' ')}</td>
+    <td>${new Date(v.first_seen).toLocaleString()}</td>
+  </tr>`).join('');
+
+  // Events
+  const eb=document.querySelector('#eventTable tbody');
+  eb.innerHTML=(d.raw_recent||[]).map(e=>`<tr>
+    <td>${new Date(e.created_at).toLocaleTimeString()}</td>
+    <td>${e.event_type}</td><td>${(e.level_id||'').toUpperCase()}</td>
+    <td>${e.topic_id||''}</td>
+    <td>${e.audio_lang?e.audio_lang+'/'+e.audio_voice:''}${e.audio_completed?' ✓':''}</td>
+    <td>${e.self_assess||''}</td>
+  </tr>`).join('');
+}
+</script>
+</body>
+</html>
