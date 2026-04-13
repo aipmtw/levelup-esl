@@ -1,0 +1,184 @@
+{
+  "levels": [
+    {
+      "id": "a1",
+      "cefr": "A1",
+      "label": "Beginner",
+      "labelZh": "初學者",
+      "grade": "K-1",
+      "lexile": "100-300L",
+      "description": "Simple words, short sentences. Present tense only.",
+      "descriptionZh": "簡單詞彙、短句。僅使用現在式。",
+      "topics": [
+        {
+          "id": "a1-1",
+          "title": "My Family",
+          "titleZh": "我的家人",
+          "text": "I have a family. My father is tall. My mother is kind. I have one brother. His name is Tom. He is six years old. We have a cat. The cat is black and white. I love my family. We eat dinner together every day. My mother cooks rice and fish. It is very good. After dinner, we watch TV. I like cartoons. Tom likes cartoons too. Then we go to bed. Good night!"
+        },
+        {
+          "id": "a1-2",
+          "title": "At the Store",
+          "titleZh": "在商店",
+          "text": "I go to the store with my mom. The store is big. I see apples. They are red. I see bananas. They are yellow. My mom buys milk and bread. I want ice cream. My mom says okay. I am happy. The ice cream is chocolate. It is cold and sweet. We pay the money. We go home. I eat my ice cream in the car. It is a good day."
+        },
+        {
+          "id": "a1-3",
+          "title": "My School Day",
+          "titleZh": "我的學校日",
+          "text": "I wake up at seven. I eat breakfast. I drink milk. I go to school by bus. My school is not far. My teacher is nice. Her name is Miss Lee. We read books in the morning. We write letters. A, B, C. At lunch, I eat a sandwich. I play with my friends after lunch. We run and laugh. School is fun. I go home at three. I am tired but happy."
+        }
+      ]
+    },
+    {
+      "id": "a2",
+      "cefr": "A2",
+      "label": "Elementary",
+      "labelZh": "基礎級",
+      "grade": "2-3",
+      "lexile": "300-520L",
+      "description": "Common vocabulary, compound sentences. Past tense introduced.",
+      "descriptionZh": "常見詞彙、複合句。引入過去式。",
+      "topics": [
+        {
+          "id": "a2-1",
+          "title": "A Weekend Trip",
+          "titleZh": "週末旅行",
+          "text": "Last Saturday, my family went to the beach. We woke up early and drove for one hour. The weather was sunny and warm. I wore my favorite blue swimsuit. When we arrived, I ran to the water. The waves were small, so I could swim safely. My dad built a big sandcastle with me. We used a bucket and a shovel. My mom sat under an umbrella and read her book. For lunch, we ate sandwiches and drank lemonade. In the afternoon, I found some pretty shells on the sand. I put them in my pocket. We went home before dark. I was tired but very happy. I want to go again next weekend."
+        },
+        {
+          "id": "a2-2",
+          "title": "My Best Friend",
+          "titleZh": "我最好的朋友",
+          "text": "My best friend is Amy. We met two years ago in our class. She sits next to me. Amy has long brown hair and she always smiles. We like the same things. We both love drawing and riding bikes. Every day after school, we walk home together. Sometimes we stop at the park to play on the swings. On weekends, Amy comes to my house. We draw pictures of animals and make up stories about them. Last month, Amy was sick for a week. I was sad because I missed her. I made her a card that said Get Well Soon. When she came back to school, she gave me a big hug. I am lucky to have a friend like Amy."
+        },
+        {
+          "id": "a2-3",
+          "title": "Cooking with Grandma",
+          "titleZh": "和奶奶一起做菜",
+          "text": "Every Sunday, I visit my grandma. She lives near our house. Grandma is a great cook. She teaches me how to make cookies. First, we mix flour, sugar, and butter in a big bowl. Then we add eggs and vanilla. I stir the mixture with a wooden spoon. It smells wonderful. We make the dough into round shapes and put them on a tray. Grandma puts the tray in the oven. We wait for fifteen minutes. The kitchen smells amazing. When the cookies are ready, they are golden brown. We wait a little because they are very hot. Then I eat one. It is crispy and sweet. I always take some cookies home for my family. Grandma says cooking is about sharing love."
+        }
+      ]
+    },
+    {
+      "id": "b1",
+      "cefr": "B1",
+      "label": "Intermediate",
+      "labelZh": "中級",
+      "grade": "4-6",
+      "lexile": "520-820L",
+      "description": "Connected paragraphs, varied tenses, opinions expressed.",
+      "descriptionZh": "連貫段落、多種時態、表達觀點。",
+      "topics": [
+        {
+          "id": "b1-1",
+          "title": "The Power of Habits",
+          "titleZh": "習慣的力量",
+          "text": "Have you ever wondered why some people seem to achieve their goals easily while others struggle? The answer often comes down to habits. A habit is something you do regularly, often without thinking about it. For example, brushing your teeth every morning is a habit. Scientists say it takes about sixty-six days to form a new habit. That might sound like a long time, but the key is to start small. If you want to read more, begin with just five pages a day. If you want to exercise, start with a ten-minute walk. Over time, these small actions become automatic. The important thing is consistency. Even on days when you feel lazy, try to do at least a little bit. Many successful people credit their achievements to daily routines. They wake up at the same time, plan their day, and stick to their schedule. Of course, it is also okay to have bad days. Nobody is perfect. What matters is getting back on track the next day. Building good habits is like building a house, one brick at a time."
+        },
+        {
+          "id": "b1-2",
+          "title": "Living in a Big City",
+          "titleZh": "住在大城市",
+          "text": "Living in a big city has both advantages and disadvantages. On the positive side, cities offer many job opportunities. There are offices, shops, restaurants, and hospitals where people can find work. Cities also have excellent public transportation, including buses, trains, and subways. This makes it easy to get around without a car. Another advantage is entertainment. You can visit museums, attend concerts, watch movies, or try food from different countries all in one place. However, city life has its challenges too. The cost of living is usually much higher than in small towns. Rent, food, and transportation can be expensive. Cities are also noisy and crowded. During rush hour, the streets are full of cars and the sidewalks are packed with people. Air pollution is another common problem in large cities. Some people feel lonely in big cities because, even though there are millions of people around, it can be hard to make real connections. Despite these challenges, millions of people choose to live in cities because they believe the opportunities are worth it."
+        },
+        {
+          "id": "b1-3",
+          "title": "How the Internet Changed Communication",
+          "titleZh": "網路如何改變了溝通",
+          "text": "Thirty years ago, if you wanted to talk to someone far away, you had to write a letter or make an expensive phone call. Today, thanks to the internet, communication is instant and usually free. Email replaced traditional letters in the late 1990s. People could send messages to anyone in the world within seconds. Then social media platforms like Facebook and Instagram changed how we share our lives. We can post photos, write updates, and comment on what our friends are doing. Video calling apps like Zoom and FaceTime made it possible to see someone's face while talking to them, no matter how far apart you are. This was especially important during the pandemic when people could not meet in person. However, some people worry that technology has made communication less personal. We send quick text messages instead of having long conversations. We use emojis instead of expressing our real feelings. Some studies show that spending too much time on social media can make people feel anxious or sad. The challenge for our generation is to use technology wisely and remember that real human connection still matters."
+        }
+      ]
+    },
+    {
+      "id": "b2",
+      "cefr": "B2",
+      "label": "Upper Intermediate",
+      "labelZh": "中高級",
+      "grade": "7-9",
+      "lexile": "820-1010L",
+      "description": "Complex sentences, abstract topics, nuanced arguments.",
+      "descriptionZh": "複雜句型、抽象話題、細緻論述。",
+      "topics": [
+        {
+          "id": "b2-1",
+          "title": "The Psychology of Decision Making",
+          "titleZh": "決策心理學",
+          "text": "Every day, we make thousands of decisions, from trivial choices like what to eat for breakfast to significant ones like which career path to follow. Psychologists have discovered that our decision-making process is far less rational than we might assume. Daniel Kahneman, a Nobel Prize-winning psychologist, proposed that we have two systems of thinking. System one is fast, automatic, and intuitive. It helps us make quick judgments, like catching a ball or sensing danger. System two is slow, deliberate, and analytical. It handles complex calculations and careful reasoning. The problem is that we often rely on system one when we should be using system two. This leads to cognitive biases, which are systematic errors in thinking. For instance, the anchoring effect causes us to rely too heavily on the first piece of information we encounter. If a jacket is originally priced at two hundred dollars but is on sale for one hundred, we feel like we are getting a great deal, even if the jacket is only worth eighty dollars. Another common bias is the confirmation bias, where we tend to seek out information that supports what we already believe while ignoring evidence that contradicts it. Understanding these biases does not eliminate them entirely, but awareness is the first step toward making better decisions."
+        },
+        {
+          "id": "b2-2",
+          "title": "Sustainable Fashion",
+          "titleZh": "永續時尚",
+          "text": "The fashion industry is one of the largest polluters in the world, responsible for approximately ten percent of global carbon emissions. Fast fashion brands produce cheap, trendy clothing designed to be worn only a few times before being discarded. According to recent studies, the average consumer buys sixty percent more clothing than they did fifteen years ago but keeps each item for only half as long. This disposable culture has severe environmental consequences. Textile production requires enormous amounts of water. It takes roughly two thousand seven hundred liters of water to produce a single cotton t-shirt, which is equivalent to what one person drinks in two and a half years. Additionally, synthetic fabrics like polyester release microplastics when washed, which end up in our oceans and food chain. In response to these concerns, the sustainable fashion movement has gained momentum. Some brands now use recycled materials, organic cotton, and ethical manufacturing processes. Consumers are also changing their behavior by shopping secondhand, organizing clothing swaps, and investing in higher-quality pieces that last longer. While individual choices matter, systemic change requires regulations that hold corporations accountable for their environmental impact. The fashion industry must fundamentally rethink its business model if we are to achieve meaningful sustainability."
+        },
+        {
+          "id": "b2-3",
+          "title": "The Future of Remote Work",
+          "titleZh": "遠距工作的未來",
+          "text": "The global pandemic of 2020 transformed the way millions of people work. Almost overnight, offices emptied as employees set up workstations in their bedrooms and living rooms. What was initially seen as a temporary arrangement has evolved into a permanent shift for many organizations. Studies conducted since then reveal a complex picture. On one hand, remote workers often report higher job satisfaction, primarily because they save time and money on commuting. They also appreciate the flexibility to manage their schedules around personal responsibilities, such as childcare or medical appointments. Productivity data has been surprisingly positive, with many companies reporting equal or improved output from remote teams. On the other hand, critics point to significant drawbacks. Collaboration and spontaneous creativity can suffer when team members are not physically together. Junior employees may miss out on mentorship opportunities that naturally occur in office environments. There are also concerns about mental health, as the boundary between work and personal life becomes increasingly blurred when your office is also your home. Many organizations have settled on a hybrid model, requiring employees to come into the office two or three days a week while allowing remote work for the remainder. This compromise attempts to capture the benefits of both arrangements, though it introduces its own logistical challenges around scheduling and space management."
+        }
+      ]
+    },
+    {
+      "id": "c1",
+      "cefr": "C1",
+      "label": "Advanced",
+      "labelZh": "高級",
+      "grade": "10-12",
+      "lexile": "1010-1185L",
+      "description": "Sophisticated vocabulary, implicit meaning, academic register.",
+      "descriptionZh": "高階詞彙、隱含意義、學術語體。",
+      "topics": [
+        {
+          "id": "c1-1",
+          "title": "The Paradox of Choice",
+          "titleZh": "選擇的悖論",
+          "text": "In affluent societies, freedom of choice is considered a fundamental virtue, an essential component of individual autonomy and self-determination. Conventional wisdom suggests that the more options available to us, the better our decisions will be and the more satisfied we will feel. However, psychologist Barry Schwartz challenges this assumption in his influential work, arguing that an overabundance of choices can paradoxically lead to decreased satisfaction and increased anxiety. When confronted with an overwhelming array of options, whether selecting a health insurance plan, a streaming service, or a career trajectory, individuals frequently experience what researchers term decision paralysis. The cognitive burden of evaluating numerous alternatives depletes mental resources, leading many to either defer the decision entirely or default to the path of least resistance. Furthermore, even after making a selection, the awareness that rejected alternatives might have been superior generates persistent regret. This phenomenon is amplified by what economists call opportunity cost, the implicit value of the options we forgo. Schwartz distinguishes between maximizers, individuals who exhaustively search for the optimal choice, and satisficers, those who settle for an option that meets a predetermined threshold of acceptability. Counterintuitively, satisficers tend to report greater contentment with their decisions despite investing less effort in making them. The implication is not that choice itself is detrimental, but rather that beyond a certain threshold, additional options yield diminishing psychological returns."
+        },
+        {
+          "id": "c1-2",
+          "title": "Artificial Intelligence and Creative Expression",
+          "titleZh": "人工智慧與創意表達",
+          "text": "The emergence of sophisticated generative AI systems has precipitated a fundamental reassessment of what it means to create. When algorithms can produce paintings that are indistinguishable from those crafted by human hands, compose music that moves listeners to tears, and write prose that captivates readers, we are compelled to reexamine our most basic assumptions about creativity, authorship, and artistic value. Proponents of AI-generated art argue that these tools democratize creative expression, enabling individuals without traditional artistic training to materialize their visions. A small business owner can now generate professional marketing materials, and an aspiring musician can compose a full orchestral arrangement using nothing more than text prompts. This perspective frames AI as an instrument, fundamentally no different from a camera or a synthesizer, that extends human capability rather than replacing it. Critics, however, contend that genuine creativity requires intentionality, emotional depth, and lived experience, qualities that machines inherently lack. They argue that what AI produces is sophisticated pattern matching, recombining elements from its training data in statistically plausible ways rather than expressing authentic meaning. This distinction matters not merely philosophically but economically, as creative professionals face displacement by tools that can replicate their output at a fraction of the cost and time. The resolution likely lies not in choosing between human and machine creativity but in developing frameworks that acknowledge the collaborative nature of AI-assisted creation while preserving the cultural and economic value of human artistic labor."
+        },
+        {
+          "id": "c1-3",
+          "title": "The Ethics of Genetic Engineering",
+          "titleZh": "基因工程的倫理",
+          "text": "The development of CRISPR-Cas9 gene-editing technology has transformed genetic engineering from a theoretical possibility into a practical reality, raising profound ethical questions that society has only begun to address. This molecular tool allows scientists to modify DNA sequences with unprecedented precision, offering the potential to eliminate hereditary diseases, enhance agricultural resilience, and even alter the trajectory of human evolution. In the medical domain, gene therapy has already demonstrated remarkable results. Patients with sickle cell disease, a condition caused by a single genetic mutation, have experienced life-changing improvements following experimental treatments that correct the defective gene. Clinical trials targeting various forms of cancer, inherited blindness, and cardiovascular conditions are advancing rapidly. The therapeutic promise is immense, yet each breakthrough amplifies the urgency of establishing clear ethical boundaries. The most contentious debate surrounds germline editing, modifications to reproductive cells that would be inherited by future generations. While somatic gene therapy affects only the individual patient, germline alterations permanently change the human gene pool. This raises the specter of designer babies, where wealthy parents might select for intelligence, physical appearance, or athletic ability, potentially creating a genetic underclass. Moreover, our understanding of gene interactions remains incomplete. Editing one gene to prevent a disease might inadvertently introduce unforeseen complications that only manifest generations later. The scientific community is largely united in calling for a moratorium on heritable genetic modifications until governance frameworks can adequately address questions of consent, equity, and unintended consequences."
+        }
+      ]
+    },
+    {
+      "id": "c2",
+      "cefr": "C2",
+      "label": "Proficient",
+      "labelZh": "精通級",
+      "grade": "College+",
+      "lexile": "1185L+",
+      "description": "Near-native fluency, nuanced rhetoric, specialized discourse.",
+      "descriptionZh": "近母語流利度、精密修辭、專業論述。",
+      "topics": [
+        {
+          "id": "c2-1",
+          "title": "The Epistemology of Misinformation",
+          "titleZh": "假訊息的認識論",
+          "text": "The proliferation of misinformation in the digital age represents not merely a technological challenge but a fundamentally epistemological one, striking at the very foundations of how individuals and societies construct, validate, and propagate knowledge claims. Traditional epistemological frameworks, rooted in the Enlightenment assumption that rational agents would gravitate toward truth when presented with sufficient evidence, have proven woefully inadequate in accounting for the persistent appeal of demonstrably false narratives. The architecture of contemporary information ecosystems actively subverts classical epistemic virtues. Algorithmic curation, designed to maximize engagement rather than veracity, creates what philosopher C. Thi Nguyen terms epistemic bubbles and echo chambers, structures that respectively limit exposure to counterevidence and actively discredit it. The distinction is crucial: while an epistemic bubble merely fails to include dissenting voices, an echo chamber incorporates a systematic distrust of external sources, rendering its inhabitants effectively immune to correction. This dynamic is compounded by what cognitive scientists identify as motivated reasoning, the tendency to evaluate evidence not on its merits but according to its compatibility with pre-existing beliefs, identity commitments, and social affiliations. Research consistently demonstrates that ideologically motivated individuals apply greater scrutiny to evidence that challenges their worldview while uncritically accepting confirming information, irrespective of its provenance or quality. Addressing this crisis demands interventions that operate at multiple levels simultaneously: algorithmic transparency and accountability, media literacy education that cultivates epistemic humility rather than mere fact-checking proficiency, and institutional reforms that rebuild trust in knowledge-producing bodies. The stakes extend far beyond academic discourse, as democratic governance itself presupposes a shared epistemic commons upon which citizens can deliberate and adjudicate competing claims."
+        },
+        {
+          "id": "c2-2",
+          "title": "Complexity Theory and Organizational Design",
+          "titleZh": "複雜性理論與組織設計",
+          "text": "The application of complexity theory to organizational design represents a paradigmatic departure from the mechanistic management frameworks that dominated twentieth-century business thinking. Where classical organizational theory, exemplified by the work of Frederick Taylor and Max Weber, conceptualized firms as rational, hierarchical systems amenable to optimization through standardization and control, complexity science reveals organizations as adaptive systems exhibiting emergent properties that cannot be predicted from, or reduced to, the behavior of individual components. At the heart of this reconceptualization lies the recognition that organizations operate in what the Cynefin framework categorizes as complex rather than complicated domains. Complicated systems, such as an aircraft engine, contain many interacting parts but behave predictably once their mechanisms are understood. Complex systems, by contrast, are characterized by nonlinear causality, sensitivity to initial conditions, and the emergence of novel patterns through the interaction of autonomous agents. The practical implications for organizational design are profound. Traditional approaches to strategic planning, which assume that outcomes can be predicted and controlled through sufficiently detailed analysis, are fundamentally misaligned with the nature of complex environments. Instead, complexity-informed organizations cultivate what researchers term requisite variety, maintaining a diverse repertoire of capabilities and perspectives that enables adaptive response to unforeseen circumstances. This manifests structurally through decentralized decision-making architectures, cross-functional collaboration networks, and experimental cultures that treat failure as informational rather than punitive. The leader's role shifts from commander and controller to what complexity theorists describe as creating the conditions for emergence, establishing boundary conditions and feedback mechanisms within which productive self-organization can occur. Empirical evidence increasingly supports this approach, with studies demonstrating that organizations exhibiting higher levels of adaptive capacity consistently outperform their more rigidly structured counterparts in volatile and uncertain markets."
+        },
+        {
+          "id": "c2-3",
+          "title": "The Neuroscience of Consciousness",
+          "titleZh": "意識的神經科學",
+          "text": "Consciousness remains what philosopher David Chalmers famously characterized as the hard problem, a phenomenon so resistant to reductive explanation that its very existence poses a fundamental challenge to the materialist ontology underpinning contemporary neuroscience. While we have made extraordinary progress in mapping neural correlates of consciousness, identifying the brain regions and processes that reliably accompany subjective experience, the explanatory gap between objective neural activity and the qualitative character of phenomenal experience persists as stubbornly as ever. The dominant theoretical frameworks attempting to bridge this gap each illuminate important aspects while leaving critical questions unanswered. Global Workspace Theory, developed by Bernard Baars and elaborated by Stanislas Dehaene, proposes that consciousness arises when information is broadcast widely across cortical networks, making it available to multiple cognitive processes including attention, memory, and verbal report. Integrated Information Theory, advanced by Giulio Tononi, takes a more radical approach, positing that consciousness is identical to integrated information, quantified by the mathematical measure phi, and that any system possessing sufficiently integrated information processing is conscious to a corresponding degree, including potentially artificial systems. Higher-order theories maintain that consciousness requires not merely the representation of external stimuli but meta-representations, thoughts about thoughts, that confer awareness upon otherwise unconscious mental states. Recent empirical advances have heightened both the urgency and complexity of these debates. Studies of patients in vegetative states using functional neuroimaging have revealed covert consciousness in individuals previously assumed to lack any subjective experience, with profound implications for clinical decision-making and end-of-life ethics. Simultaneously, the development of increasingly sophisticated artificial neural networks has resurrected questions about machine consciousness with a practical immediacy that was previously confined to philosophical thought experiments. Whether consciousness is substrate-independent, capable of emerging in any sufficiently complex information-processing system, or whether it requires the specific biological architecture of carbon-based neural tissue, remains among the most consequential unanswered questions in science."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LevelUp ESL — Find Your English Level</title>
+<style>
+:root{--bg:#0f0f1a;--bg2:rgba(255,255,255,.04);--bg3:rgba(255,255,255,.06);--text:#e0e0e0;--text2:#aaa;--text3:#888;--hdr:#fff;--accent:#4ecdc4;--accent2:#ff6b6b;--border:rgba(255,255,255,.08);--card-hover:rgba(255,255,255,.08);--modal-bg:rgba(0,0,0,.7);--modal-card:#1a1a2e;--level-a1:#4ecdc4;--level-a2:#45b7d1;--level-b1:#f9ca24;--level-b2:#f0932b;--level-c1:#eb4d4b;--level-c2:#6c5ce7}
+[data-theme="light"]{--bg:#f5f5f5;--bg2:#fff;--bg3:#eee;--text:#222;--text2:#555;--text3:#888;--hdr:#222;--accent:#0a8a82;--accent2:#d63031;--border:rgba(0,0,0,.1);--card-hover:#f0f0f0;--modal-bg:rgba(0,0,0,.4);--modal-card:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','Noto Sans TC',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;transition:background .3s,color .3s}
+.header{text-align:center;padding:3rem 1.5rem 2rem;position:relative}
+.header h1{font-size:clamp(1.8rem,5vw,3rem);color:var(--hdr);margin-bottom:.5rem;font-weight:700}
+.header h1 span{color:var(--accent)}
+.header p{color:var(--text2);font-size:1.05rem;max-width:600px;margin:0 auto}
+.theme-btn{position:absolute;top:1rem;right:1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.4rem .8rem;color:var(--text);cursor:pointer;font-size:.85rem}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.lang-btn{position:absolute;top:1rem;left:1.5rem;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:.4rem .8rem;color:var(--text);cursor:pointer;font-size:.85rem}
+.lang-btn:hover{border-color:var(--accent);color:var(--accent)}
+.levels{max-width:1000px;margin:0 auto;padding:0 1.5rem 3rem}
+.level{margin-bottom:2.5rem}
+.level-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.level-badge{font-size:1.4rem;font-weight:800;padding:.3rem .8rem;border-radius:8px;color:#fff;min-width:3rem;text-align:center}
+.level-info h2{font-size:1.2rem;color:var(--hdr)}
+.level-info p{font-size:.85rem;color:var(--text3)}
+.level-grade{font-size:.75rem;color:var(--text3);background:var(--bg3);padding:.2rem .6rem;border-radius:4px}
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.topic-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.2rem;cursor:pointer;transition:all .2s}
+.topic-card:hover{border-color:var(--accent);background:var(--card-hover);transform:translateY(-2px)}
+.topic-card h3{font-size:1rem;color:var(--hdr);margin-bottom:.3rem}
+.topic-card .zh{font-size:.85rem;color:var(--text3);margin-bottom:.5rem}
+.topic-card .preview{font-size:.85rem;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.modal-overlay{display:none;position:fixed;inset:0;background:var(--modal-bg);z-index:100;justify-content:center;align-items:flex-start;padding:2rem 1rem;overflow-y:auto}
+.modal-overlay.open{display:flex}
+.modal{background:var(--modal-card);border:1px solid var(--border);border-radius:16px;max-width:750px;width:100%;padding:2rem;position:relative;margin:auto}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text3);font-size:1.5rem;cursor:pointer;width:2.2rem;height:2.2rem;display:flex;align-items:center;justify-content:center;border-radius:50%}
+.modal-close:hover{background:var(--bg3);color:var(--text)}
+.modal-level{display:inline-block;font-size:.75rem;font-weight:700;padding:.2rem .6rem;border-radius:4px;color:#fff;margin-bottom:.8rem}
+.modal h2{font-size:1.4rem;color:var(--hdr);margin-bottom:.3rem}
+.modal .modal-zh{color:var(--text3);font-size:.9rem;margin-bottom:1rem}
+.modal .reading-text{font-size:1rem;line-height:1.9;color:var(--text);background:var(--bg3);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;white-space:pre-wrap}
+.audio-controls{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.audio-btn{display:flex;align-items:center;gap:.5rem;padding:.6rem 1.2rem;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text);cursor:pointer;font-size:.9rem;transition:all .2s}
+.audio-btn:hover{border-color:var(--accent);color:var(--accent)}
+.audio-btn.playing{border-color:var(--accent);color:var(--accent);background:rgba(78,205,196,.1)}
+.audio-btn .icon{font-size:1.2rem}
+.self-assess{margin-top:1.5rem;padding:1rem;background:var(--bg2);border-radius:10px;border:1px solid var(--border)}
+.self-assess p{font-size:.9rem;color:var(--text2);margin-bottom:.8rem}
+.assess-btns{display:flex;gap:.5rem;flex-wrap:wrap}
+.assess-btn{padding:.5rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text);cursor:pointer;font-size:.85rem;transition:all .2s}
+.assess-btn:hover{border-color:var(--accent)}
+.assess-btn.selected{background:var(--accent);color:#fff;border-color:var(--accent)}
+.result-banner{display:none;max-width:1000px;margin:0 auto 2rem;padding:1.5rem;background:linear-gradient(135deg,rgba(78,205,196,.1),rgba(108,92,231,.1));border:1px solid var(--border);border-radius:12px;text-align:center}
+.result-banner h3{font-size:1.3rem;color:var(--hdr);margin-bottom:.5rem}
+.result-banner p{color:var(--text2);font-size:.95rem}
+.footer{text-align:center;padding:2rem;color:var(--text3);font-size:.8rem;border-top:1px solid var(--border)}
+@media(max-width:600px){.topics{grid-template-columns:1fr}.modal{padding:1.2rem}.header{padding:2rem 1rem 1.5rem}.lang-btn,.theme-btn{top:.5rem;font-size:.75rem;padding:.3rem .5rem}}
+</style>
+</head>
+<body>
+<div class="header">
+<button class="lang-btn" id="langBtn" onclick="toggleLang()">中文</button>
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()">&#9790; Light</button>
+<h1>Level<span>Up</span> ESL</h1>
+<p id="subtitle">Read and listen at each level to find where you're most comfortable. That's your starting point.</p>
+</div>
+
+<div class="result-banner" id="resultBanner">
+<h3 id="resultTitle"></h3>
+<p id="resultText"></p>
+</div>
+
+<div class="levels" id="levels"></div>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+<div class="modal">
+<button class="modal-close" onclick="closeModal()">&times;</button>
+<div class="modal-level" id="modalLevel"></div>
+<h2 id="modalTitle"></h2>
+<div class="modal-zh" id="modalZh"></div>
+<div class="reading-text" id="modalText"></div>
+<div class="audio-controls" id="audioControls"></div>
+<div class="self-assess">
+<p id="assessLabel">How well can you understand this passage?</p>
+<div class="assess-btns" id="assessBtns">
+<button class="assess-btn" data-val="easy" onclick="assess(this)">Easy</button>
+<button class="assess-btn" data-val="ok" onclick="assess(this)">Just Right</button>
+<button class="assess-btn" data-val="hard" onclick="assess(this)">Too Hard</button>
+</div>
+</div>
+</div>
+</div>
+
+<div class="footer">LevelUp ESL &middot; CEFR-aligned reading &amp; listening assessment</div>
+
+<script>
+const COLORS={a1:'#4ecdc4',a2:'#45b7d1',b1:'#f9ca24',b2:'#f0932b',c1:'#eb4d4b',c2:'#6c5ce7'};
+let data=null, currentAudio=null, assessments={}, lang='en';
+
+async function init(){
+  const r=await fetch('/api/content');
+  data=await r.json();
+  renderLevels();
+}
+
+function renderLevels(){
+  const el=document.getElementById('levels');
+  el.innerHTML=data.levels.map(lv=>`
+    <div class="level">
+      <div class="level-header">
+        <div class="level-badge" style="background:${COLORS[lv.id]}">${lv.cefr}</div>
+        <div class="level-info">
+          <h2>${lang==='zh'?lv.labelZh:lv.label} ${lang==='zh'?'':'— US Grade '+lv.grade}</h2>
+          <p>${lang==='zh'?lv.descriptionZh:lv.description}</p>
+        </div>
+        <span class="level-grade">Lexile: ${lv.lexile}</span>
+      </div>
+      <div class="topics">
+        ${lv.topics.map(t=>`
+          <div class="topic-card" onclick="openTopic('${lv.id}','${t.id}')">
+            <h3>${t.title}</h3>
+            <div class="zh">${t.titleZh}</div>
+            <div class="preview">${t.text.substring(0,120)}...</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openTopic(levelId,topicId){
+  const lv=data.levels.find(l=>l.id===levelId);
+  const t=lv.topics.find(tp=>tp.id===topicId);
+  document.getElementById('modalLevel').textContent=lv.cefr+' — '+(lang==='zh'?lv.labelZh:lv.label);
+  document.getElementById('modalLevel').style.background=COLORS[levelId];
+  document.getElementById('modalTitle').textContent=t.title;
+  document.getElementById('modalZh').textContent=t.titleZh;
+  document.getElementById('modalText').textContent=t.text;
+
+  const ctrl=document.getElementById('audioControls');
+  ctrl.innerHTML=`
+    <button class="audio-btn" onclick="playAudio('${t.id}','female',this)"><span class="icon">&#9654;</span> Female Voice</button>
+    <button class="audio-btn" onclick="playAudio('${t.id}','male',this)"><span class="icon">&#9654;</span> Male Voice</button>
+  `;
+
+  // Reset assess buttons
+  document.querySelectorAll('.assess-btn').forEach(b=>{
+    b.classList.remove('selected');
+    if(assessments[t.id]===b.dataset.val)b.classList.add('selected');
+  });
+
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  document.querySelectorAll('.audio-btn').forEach(b=>b.classList.remove('playing'));
+}
+
+function playAudio(topicId,voice,btn){
+  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  document.querySelectorAll('.audio-btn').forEach(b=>b.classList.remove('playing'));
+
+  const src=`/audio/${topicId}-${voice}.mp3`;
+  currentAudio=new Audio(src);
+  btn.classList.add('playing');
+  btn.querySelector('.icon').textContent='⏸';
+
+  currentAudio.onended=()=>{
+    btn.classList.remove('playing');
+    btn.querySelector('.icon').textContent='▶';
+    currentAudio=null;
+  };
+  currentAudio.onerror=()=>{
+    btn.classList.remove('playing');
+    btn.querySelector('.icon').textContent='▶';
+    alert(lang==='zh'?'音訊尚未產生。請先執行 npm run generate-audio':'Audio not yet generated. Run: npm run generate-audio');
+    currentAudio=null;
+  };
+  currentAudio.play();
+}
+
+function assess(btn){
+  const topicId=document.getElementById('modalTitle').textContent;
+  // Find topic by title
+  for(const lv of data.levels){
+    for(const t of lv.topics){
+      if(t.title===topicId){
+        assessments[t.id]=btn.dataset.val;
+        break;
+      }
+    }
+  }
+  document.querySelectorAll('.assess-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updateResult();
+}
+
+function updateResult(){
+  const counts={};
+  for(const[tid,val]of Object.entries(assessments)){
+    const levelId=tid.split('-').slice(0,1).join('');
+    // Map: a1,a2,b1,b2,c1,c2
+    const lv=tid.substring(0,2);
+    if(!counts[lv])counts[lv]={easy:0,ok:0,hard:0};
+    counts[lv][val]++;
+  }
+
+  // Find the highest level where user said "easy" or "ok"
+  const order=['a1','a2','b1','b2','c1','c2'];
+  let recommended=null;
+  for(const lv of order){
+    if(counts[lv]&&(counts[lv].easy>0||counts[lv].ok>0)){
+      recommended=lv;
+    }
+  }
+
+  if(Object.keys(assessments).length>=3&&recommended){
+    const lv=data.levels.find(l=>l.id===recommended);
+    const banner=document.getElementById('resultBanner');
+    banner.style.display='block';
+    document.getElementById('resultTitle').textContent=lang==='zh'
+      ?`建議程度：${lv.cefr} — ${lv.labelZh}`
+      :`Suggested Level: ${lv.cefr} — ${lv.label}`;
+    document.getElementById('resultText').textContent=lang==='zh'
+      ?`根據您的自我評估，建議從 ${lv.cefr} (US Grade ${lv.grade}) 開始學習。`
+      :`Based on your self-assessment, we recommend starting at ${lv.cefr} (US Grade ${lv.grade}).`;
+  }
+}
+
+function toggleTheme(){
+  const html=document.documentElement;
+  const btn=document.getElementById('themeBtn');
+  if(html.getAttribute('data-theme')==='light'){
+    html.removeAttribute('data-theme');
+    btn.innerHTML='&#9790; Light';
+    localStorage.setItem('esl-theme','dark');
+  }else{
+    html.setAttribute('data-theme','light');
+    btn.innerHTML='&#9728; Dark';
+    localStorage.setItem('esl-theme','light');
+  }
+}
+
+function toggleLang(){
+  lang=lang==='en'?'zh':'en';
+  document.getElementById('langBtn').textContent=lang==='en'?'中文':'English';
+  document.getElementById('subtitle').textContent=lang==='zh'
+    ?'閱讀並聆聽每個程度的文章，找到您最舒適的起點。'
+    :'Read and listen at each level to find where you\'re most comfortable. That\'s your starting point.';
+  document.getElementById('assessLabel').textContent=lang==='zh'?'您對這篇文章的理解程度如何？':'How well can you understand this passage?';
+  const btns=document.querySelectorAll('.assess-btn');
+  const labels=lang==='zh'?['簡單','剛剛好','太難']:['Easy','Just Right','Too Hard'];
+  btns.forEach((b,i)=>b.textContent=labels[i]);
+  renderLevels();
+  updateResult();
+  localStorage.setItem('esl-lang',lang);
+}
+
+(function(){
+  if(localStorage.getItem('esl-theme')==='light'){
+    document.documentElement.setAttribute('data-theme','light');
+    document.getElementById('themeBtn').innerHTML='&#9728; Dark';
+  }
+  if(localStorage.getItem('esl-lang')==='zh'){
+    lang='zh';
+    document.getElementById('langBtn').textContent='English';
+    document.getElementById('subtitle').textContent='閱讀並聆聽每個程度的文章，找到您最舒適的起點。';
+  }
+})();
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+init();
+</script>
+</body>
+</html>

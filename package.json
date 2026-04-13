@@ -1,0 +1,13 @@
+{
+  "name": "levelup-esl",
+  "version": "1.0.0",
+  "description": "ESL self-assessment platform with CEFR-leveled reading and audio",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "generate-audio": "node scripts/generate-audio.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}
