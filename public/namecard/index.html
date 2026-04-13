@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='4' fill='white'/><text x='32' y='44' font-family='serif' font-size='32' font-weight='bold' fill='black' text-anchor='middle'>陳</text></svg>" />
+  <title>Mark 陳炳陵 — 馬克路思科技有限公司</title>
+  <meta name="description" content="Mark 陳炳陵 · 馬克路思科技有限公司 · 統編 60670979" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      min-height: 100vh;
+      font-family: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
+      background: #e5e5e5;
+      color: #111;
+    }
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    /* ========== Card ========== */
+    .card {
+      position: relative;
+      width: min(92vw, 540px);
+      aspect-ratio: 1.636 / 1;  /* 90mm x 55mm — Taiwan standard */
+      background: #fff;
+      border: 1px solid #d4d4d4;
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.04),
+        0 8px 16px -6px rgba(0,0,0,0.12),
+        0 20px 40px -12px rgba(0,0,0,0.15);
+      padding: 22px 28px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 26px;
+      align-items: stretch;
+      overflow: hidden;
+    }
+
+    /* Left: QR + url — vertically centered within the full card height */
+    .qr-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding-right: 10px;
+      border-right: 1px solid #000;
+      height: 100%;
+    }
+    .qr-box {
+      width: 96px;
+      height: 96px;
+      padding: 5px;
+      border: 1px solid #000;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qr-box img, .qr-box canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .qr-url {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      color: #000;
+      text-decoration: none;
+    }
+    .qr-url:hover { text-decoration: underline; }
+
+    /* Right: content */
+    .content {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding-right: 4px;
+    }
+
+    /* Company header — pushed down + enlarged */
+    .company {
+      padding-top: 14px;
+    }
+    .company-zh {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #000;
+      letter-spacing: 0.08em;
+    }
+    .company-en {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.66rem;
+      color: #444;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* Name block — pushed below vertical center */
+    .name-block {
+      margin-top: auto;
+      padding-top: 14px;
+    }
+    .name-zh {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #000;
+      letter-spacing: 0.22em;
+      line-height: 1;
+      text-indent: 0.22em;  /* visually center with the trailing tracking */
+    }
+    .name-en-line {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .name-en-line::before {
+      content: "";
+      flex: 0 0 22px;
+      height: 1px;
+      background: #000;
+    }
+    .name-en {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: #000;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .title-line {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 0.7rem;
+      color: #333;
+      letter-spacing: 0.12em;
+      margin-top: 4px;
+      margin-left: 32px;
+    }
+
+    /* Details block at bottom */
+    .details {
+      margin-top: 10px;
+      padding-top: 10px;
+    }
+    .detail-row {
+      display: flex;
+      gap: 10px;
+      font-size: 0.66rem;
+      color: #111;
+      line-height: 1.5;
+      align-items: flex-start;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .detail-row + .detail-row { margin-top: 2px; }
+    .detail-row .k {
+      flex-shrink: 0;
+      width: 42px;
+      color: #000;
+      font-weight: 600;
+      font-family: 'Noto Serif TC', serif;
+      letter-spacing: 0.25em;
+    }
+    .detail-row .v { min-width: 0; word-break: break-word; }
+    .detail-row a { color: #000; text-decoration: none; }
+    .detail-row a:hover { text-decoration: underline; }
+
+    .tax {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid #000;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 0.62rem;
+      color: #000;
+    }
+    .tax .tax-label {
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+    }
+    .tax .tax-no {
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.15em;
+    }
+
+    @media (max-width: 500px) {
+      .card { padding: 18px 20px; gap: 18px; }
+      .qr-box { width: 80px; height: 80px; padding: 4px; }
+      .qr-url { font-size: 0.55rem; }
+      .company-zh { font-size: 0.78rem; }
+      .name-zh { font-size: 1.5rem; letter-spacing: 0.15em; }
+      .name-en { font-size: 0.65rem; }
+      .title-line { font-size: 0.62rem; margin-left: 28px; }
+      .detail-row { font-size: 0.6rem; }
+      .detail-row .k { width: 38px; }
+    }
+
+    /* ======= Actions ======= */
+    .actions {
+      margin-top: 28px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn {
+      appearance: none;
+      border: 1px solid #000;
+      background: #fff;
+      color: #000;
+      padding: 9px 18px;
+      font-size: 0.76rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: #000; color: #fff; }
+    .btn-primary { background: #000; color: #fff; }
+    .btn-primary:hover { background: #fff; color: #000; }
+
+    footer {
+      padding-top: 40px;
+      color: #888;
+      font-size: 0.68rem;
+      text-align: center;
+    }
+    footer a { color: #555; text-decoration: none; }
+    footer a:hover { color: #000; }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="card">
+      <!-- LEFT: QR code -->
+      <div class="qr-col">
+        <div class="qr-box">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&margin=0&data=https%3A%2F%2Fmarkluce.ai" alt="markluce.ai QR" />
+        </div>
+        <a class="qr-url" href="https://markluce.ai" target="_blank">markluce.ai</a>
+      </div>
+
+      <!-- RIGHT: content -->
+      <div class="content">
+        <div class="company">
+          <div class="company-zh">馬克路思科技有限公司</div>
+          <div class="company-en">Markluce Tech Co., Ltd.</div>
+        </div>
+
+        <div class="name-block">
+          <div class="name-zh">陳炳陵</div>
+          <div class="name-en-line">
+            <span class="name-en">Mark Chen</span>
+          </div>
+          <div class="title-line">創辦人 · Founder</div>
+        </div>
+
+        <div class="details">
+          <div class="detail-row">
+            <div class="k">地址</div>
+            <div class="v">台中市中區大誠里台灣大道一段501號10樓之1</div>
+          </div>
+          <div class="detail-row">
+            <div class="k">電郵</div>
+            <div class="v"><a href="mailto:mark@aipm.com.tw">mark@aipm.com.tw</a></div>
+          </div>
+          <div class="tax">
+            <span class="tax-label">統一編號</span>
+            <span class="tax-no">60670979</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a class="btn btn-primary" id="vcard-btn" download="mark-chen.vcf">下載 vCard</a>
+      <button class="btn" id="share-btn">分享</button>
+    </div>
+
+    <footer>
+      <a href="/">← markluce.ai</a>
+    </footer>
+  </div>
+
+<script>
+  // vCard
+  var vcard = [
+    'BEGIN:VCARD',
+    'VERSION:3.0',
+    'FN:Mark Chen 陳炳陵',
+    'N:Chen;Mark;;;',
+    'ORG:Markluce Tech Co., Ltd.;馬克路思科技有限公司',
+    'TITLE:Founder 創辦人',
+    'EMAIL;TYPE=INTERNET:mark@aipm.com.tw',
+    'URL:https://markluce.ai',
+    'ADR;TYPE=WORK:;;台灣大道一段501號10樓之1;台中市中區;;;台灣',
+    'NOTE:統一編號 60670979',
+    'END:VCARD',
+  ].join('\r\n');
+  var blob = new Blob([vcard], { type: 'text/vcard' });
+  document.getElementById('vcard-btn').href = URL.createObjectURL(blob);
+
+  document.getElementById('share-btn').addEventListener('click', async function() {
+    var data = {
+      title: '陳炳陵 Mark Chen — 馬克路思科技有限公司',
+      text: '馬克路思科技有限公司 · 統編 60670979',
+      url: 'https://markluce.ai/namecard/',
+    };
+    if (navigator.share) {
+      try { await navigator.share(data); } catch (e) {}
+    } else {
+      try {
+        await navigator.clipboard.writeText(data.url);
+        var btn = document.getElementById('share-btn');
+        var orig = btn.textContent;
+        btn.textContent = '✓ 已複製連結';
+        setTimeout(function() { btn.textContent = orig; }, 1500);
+      } catch (e) {}
+    }
+  });
+</script>
+</body>
+</html>

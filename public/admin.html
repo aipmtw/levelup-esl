@@ -1,146 +1,809 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LevelUp ESL — Admin</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f0f1a;color:#e0e0e0;padding:2rem}
-h1{font-size:1.5rem;margin-bottom:1rem;color:#4ecdc4}
-.login{max-width:300px;margin:4rem auto;text-align:center}
-.login input{padding:.6rem;border:1px solid #333;border-radius:6px;background:#1a1a2e;color:#fff;width:100%;margin-bottom:.5rem}
-.login button{padding:.6rem 1.5rem;background:#4ecdc4;color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:600}
-.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin:1.5rem 0}
-.stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-align:center}
-.stat .num{font-size:2rem;font-weight:700;color:#4ecdc4}
-.stat .label{font-size:.8rem;color:#888;margin-top:.3rem}
-table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}
-th,td{padding:.6rem .8rem;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
-th{color:#888;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
-h2{font-size:1.1rem;color:#fff;margin:2rem 0 .5rem}
-.bar{display:inline-block;height:16px;background:#4ecdc4;border-radius:3px;min-width:2px}
-.bar-label{font-size:.75rem;color:#aaa;margin-left:.5rem}
-select{padding:.4rem;background:#1a1a2e;color:#fff;border:1px solid #333;border-radius:4px}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — markluce.ai</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Noto Sans TC"', 'Inter', 'system-ui', 'sans-serif'] } } } }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    .gradient-text { background: linear-gradient(135deg, #38bdf8, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .card-hover { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card-hover:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -8px rgba(14, 165, 233, 0.15); }
+    .fade-in { animation: fadeIn 0.6s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
 </head>
-<body>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 text-white font-sans">
 
-<div class="login" id="loginForm">
-<h1>Admin Login</h1>
-<input type="password" id="passInput" placeholder="Password">
-<br><button onclick="login()">Enter</button>
-</div>
+  <div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div class="absolute -top-40 -right-40 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
+  </div>
 
-<div id="dashboard" style="display:none">
-<h1>LevelUp ESL — Analytics</h1>
-<div>
-<label>Period: </label>
-<select id="days" onchange="loadData()">
-<option value="1">Today</option>
-<option value="7" selected>7 days</option>
-<option value="30">30 days</option>
-<option value="90">90 days</option>
-</select>
-<button onclick="loadData()" style="margin-left:.5rem;padding:.3rem .8rem;background:#333;border:1px solid #555;color:#fff;border-radius:4px;cursor:pointer">Refresh</button>
-</div>
+  <nav class="relative z-10 max-w-4xl mx-auto px-6 py-6 flex items-center justify-between">
+    <a href="/" class="text-xl font-bold"><span class="text-sky-400">mark</span>luce <span class="text-red-400 text-sm">admin</span></a>
+    <div class="flex items-center gap-4">
+      <a href="/more.html" class="text-slate-400 hover:text-white transition text-sm">更多</a>
+    </div>
+  </nav>
 
-<div class="stats" id="statsCards"></div>
+  <!-- Access Denied -->
+  <div id="access-denied" class="hidden relative z-10 max-w-md mx-auto px-6 pt-20 text-center fade-in">
+    <div class="bg-white/5 border border-white/10 rounded-2xl p-10 backdrop-blur-sm">
+      <div class="text-6xl mb-6">🔒</div>
+      <h2 class="text-xl font-bold text-white mb-3">需要管理員權限</h2>
+      <p class="text-slate-400 text-sm mb-6 leading-relaxed">此頁面僅限管理員存取。<br/>如果你是管理員，請先用 LINE 登入。</p>
+      <button id="login-btn" onclick="handleLogin()" class="hidden bg-[#06C755] hover:bg-[#05b64d] text-white px-6 py-2.5 rounded-lg text-sm font-semibold transition inline-flex items-center gap-2">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        LINE 登入
+      </button>
+      <p id="denied-msg" class="hidden text-red-400 text-sm">你的帳號沒有管理員權限。</p>
+      <a href="/" class="inline-block mt-4 text-slate-500 hover:text-white transition text-sm">&larr; 回首頁</a>
+    </div>
+  </div>
 
-<h2>Level Engagement</h2>
-<div id="levelChart"></div>
+  <!-- Loading -->
+  <div id="loading" class="relative z-10 text-center pt-32 text-slate-500">
+    <div class="inline-block w-6 h-6 border-2 border-slate-600 border-t-sky-400 rounded-full animate-spin mb-3"></div>
+    <p class="text-sm">驗證身份中...</p>
+  </div>
 
-<h2>Self-Assessment Distribution</h2>
-<div id="assessChart"></div>
+  <!-- Admin Content (hidden by default) -->
+  <main id="admin-content" class="hidden relative z-10 max-w-4xl mx-auto px-6 pb-16 fade-in">
+    <h1 class="text-3xl font-extrabold mb-2"><span class="gradient-text">Admin Dashboard</span></h1>
+    <p class="text-slate-500 text-sm mb-10">markluce.ai 服務快捷連結（皆需登入各自帳號）</p>
 
-<h2>Audio Completion Rate</h2>
-<div id="audioChart"></div>
+    <!-- Bot Config -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">🧠 Bot 設定（系統提示詞 + 建議題目方法）</h2>
+    <div class="space-y-4 mb-10" id="bot-config-container">
+      <!-- Populated by JS -->
+    </div>
 
-<h2>Recent Visitors</h2>
-<table id="visitorTable"><thead><tr><th>IP</th><th>Device</th><th>Events</th><th>Levels</th><th>First Seen</th></tr></thead><tbody></tbody></table>
+    <!-- Database & Backend -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">資料庫 & 後端</h2>
+    <div class="grid md:grid-cols-2 gap-4 mb-10">
+      <a href="https://supabase.com/dashboard/project/dcjlekszmobaenhrdbfl/sql/new" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm font-bold">S</div>
+          <div class="font-bold text-sm">Supabase SQL Editor</div>
+        </div>
+        <p class="text-slate-500 text-xs">執行 SQL、建立表格、修改資料</p>
+      </a>
+      <a href="https://supabase.com/dashboard/project/dcjlekszmobaenhrdbfl/editor" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm font-bold">T</div>
+          <div class="font-bold text-sm">Supabase Table Editor</div>
+        </div>
+        <p class="text-slate-500 text-xs">瀏覽 classmates、blog_posts、visits 等表格</p>
+      </a>
+      <a href="https://supabase.com/dashboard/project/dcjlekszmobaenhrdbfl/storage" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm font-bold">F</div>
+          <div class="font-bold text-sm">Supabase Storage</div>
+        </div>
+        <p class="text-slate-500 text-xs">檔案儲存（圖片等）</p>
+      </a>
+      <a href="https://supabase.com/dashboard/project/dcjlekszmobaenhrdbfl/settings/api" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400 text-sm font-bold">K</div>
+          <div class="font-bold text-sm">Supabase API Keys</div>
+        </div>
+        <p class="text-slate-500 text-xs">查看 publishable / secret key</p>
+      </a>
+    </div>
 
-<h2>Recent Events</h2>
-<table id="eventTable"><thead><tr><th>Time</th><th>Type</th><th>Level</th><th>Topic</th><th>Audio</th><th>Assess</th></tr></thead><tbody></tbody></table>
-</div>
+    <!-- LINE -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">LINE</h2>
+    <div class="grid md:grid-cols-2 gap-4 mb-10">
+      <a href="https://developers.line.biz/console/" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 text-sm font-bold">D</div>
+          <div class="font-bold text-sm">LINE Developers Console</div>
+        </div>
+        <p class="text-slate-500 text-xs">LIFF 設定、Callback URL、Channel 管理</p>
+      </a>
+      <a href="https://manager.line.biz/" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 text-sm font-bold">M</div>
+          <div class="font-bold text-sm">LINE Official Account Manager</div>
+        </div>
+        <p class="text-slate-500 text-xs">@markluce 官方帳號、群發訊息、好友管理</p>
+      </a>
+      <a href="https://account.line.biz/" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center text-green-400 text-sm font-bold">B</div>
+          <div class="font-bold text-sm">LINE Business Manager</div>
+        </div>
+        <p class="text-slate-500 text-xs">組織管理、帳號連結</p>
+      </a>
+    </div>
 
-<script>
-let adminPass='';
-function login(){
-  adminPass=document.getElementById('passInput').value;
-  loadData();
-}
+    <!-- GitHub -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">GitHub</h2>
+    <div class="grid md:grid-cols-2 gap-4 mb-10">
+      <a href="https://github.com/markluce/markluce.github.io" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-slate-500/20 flex items-center justify-center text-slate-400 text-sm font-bold">P</div>
+          <div class="font-bold text-sm">markluce.github.io</div>
+        </div>
+        <p class="text-slate-500 text-xs">公開網站 repo（GitHub Pages 部署）</p>
+      </a>
+      <a href="https://github.com/aipmtw/markluce" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-slate-500/20 flex items-center justify-center text-slate-400 text-sm font-bold">🔒</div>
+          <div class="font-bold text-sm">aipmtw/markluce</div>
+        </div>
+        <p class="text-slate-500 text-xs">私有 PM repo（backlog、credentials、decisions）</p>
+      </a>
+      <a href="https://github.com/aipmtw/markluce/issues" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-slate-500/20 flex items-center justify-center text-slate-400 text-sm font-bold">I</div>
+          <div class="font-bold text-sm">Issues / Backlog</div>
+        </div>
+        <p class="text-slate-500 text-xs">任務追蹤、功能需求、Bug 回報</p>
+      </a>
+      <a href="https://github.com/markluce" target="_blank" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-8 h-8 rounded-lg bg-slate-500/20 flex items-center justify-center text-slate-400 text-sm font-bold">G</div>
+          <div class="font-bold text-sm">GitHub Profile</div>
+        </div>
+        <p class="text-slate-500 text-xs">markluce GitHub 帳號總覽</p>
+      </a>
+    </div>
 
-async function loadData(){
-  const days=document.getElementById('days')?.value||7;
-  try{
-    const r=await fetch(`/api/admin?pass=${encodeURIComponent(adminPass)}&days=${days}`);
-    if(!r.ok){alert('Unauthorized or error');return;}
-    const d=await r.json();
-    document.getElementById('loginForm').style.display='none';
-    document.getElementById('dashboard').style.display='block';
-    render(d);
-  }catch(e){alert('Error: '+e.message);}
-}
+    <!-- Site Pages -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">網站頁面</h2>
+    <div class="grid md:grid-cols-3 gap-4 mb-10">
+      <a href="/" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="font-bold text-sm mb-1">首頁</div>
+        <p class="text-slate-500 text-xs">markluce.ai</p>
+      </a>
+      <a href="/ai-innovator.html" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="font-bold text-sm mb-1">AI Innovator</div>
+        <p class="text-slate-500 text-xs">Toastmasters 會員牆</p>
+      </a>
+      <a href="/blog.html" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="font-bold text-sm mb-1">Blog</div>
+        <p class="text-slate-500 text-xs">34 篇文章</p>
+      </a>
+      <a href="/about.html" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="font-bold text-sm mb-1">關於</div>
+        <p class="text-slate-500 text-xs">公司 + Mark 簡介</p>
+      </a>
+      <a href="/admin.html" class="card-hover bg-white/5 border border-white/10 rounded-xl p-5 block">
+        <div class="font-bold text-sm mb-1 text-red-400">Admin</div>
+        <p class="text-slate-500 text-xs">本頁</p>
+      </a>
+    </div>
 
-function render(d){
-  const LEVELS=['a1','a2','b1','b2','c1','c2'];
-  const COLORS={a1:'#4ecdc4',a2:'#45b7d1',b1:'#f9ca24',b2:'#f0932b',c1:'#eb4d4b',c2:'#6c5ce7'};
+    <!-- Chat Log -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">🤖 AIATCL 考前助手對話記錄</h2>
+    <div class="mb-4 flex flex-wrap items-center gap-3">
+      <input id="chat-filter-user" oninput="loadChatLogs()" placeholder="搜尋使用者名稱..." class="bg-slate-800 border border-white/20 rounded-lg px-3 py-1.5 text-white text-xs placeholder-slate-600 focus:outline-none focus:border-sky-500" />
+      <span id="chat-total" class="text-slate-500 text-xs ml-auto"></span>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-10">
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="border-b border-white/10 text-slate-400">
+              <th class="text-left px-4 py-3 font-medium whitespace-nowrap">時間</th>
+              <th class="text-left px-4 py-3 font-medium whitespace-nowrap">使用者</th>
+              <th class="text-left px-4 py-3 font-medium">問題</th>
+              <th class="text-left px-4 py-3 font-medium">回答</th>
+            </tr>
+          </thead>
+          <tbody id="chat-tbody" class="text-slate-300"></tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3 border-t border-white/10">
+        <button id="chat-prev" onclick="chatPage(-1)" class="px-3 py-1 bg-white/5 border border-white/10 rounded text-slate-400 text-xs hover:bg-white/10 transition disabled:opacity-30" disabled>上一頁</button>
+        <span id="chat-page-info" class="text-slate-500 text-xs"></span>
+        <button id="chat-next" onclick="chatPage(1)" class="px-3 py-1 bg-white/5 border border-white/10 rounded text-slate-400 text-xs hover:bg-white/10 transition disabled:opacity-30">下一頁</button>
+      </div>
+    </div>
 
-  // Stats cards
-  document.getElementById('statsCards').innerHTML=`
-    <div class="stat"><div class="num">${d.total_events}</div><div class="label">Total Events</div></div>
-    <div class="stat"><div class="num">${d.unique_visitors}</div><div class="label">Unique Visitors</div></div>
-    <div class="stat"><div class="num">${Object.values(d.audio_plays||{}).reduce((a,b)=>a+b,0)}</div><div class="label">Audio Plays</div></div>
-    <div class="stat"><div class="num">${Object.values(d.audio_completes||{}).reduce((a,b)=>a+b,0)}</div><div class="label">Audio Completed</div></div>
-  `;
+    <!-- Classmates Chat Log -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">🤝 同學助手對話記錄</h2>
+    <div class="mb-4 flex flex-wrap items-center gap-3">
+      <input id="cmlog-filter-user" oninput="loadCmLogs()" placeholder="搜尋使用者名稱..." class="bg-slate-800 border border-white/20 rounded-lg px-3 py-1.5 text-white text-xs placeholder-slate-600 focus:outline-none focus:border-emerald-500" />
+      <span id="cmlog-total" class="text-slate-500 text-xs ml-auto"></span>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-10">
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="border-b border-white/10 text-slate-400">
+              <th class="text-left px-4 py-3 font-medium whitespace-nowrap">時間</th>
+              <th class="text-left px-4 py-3 font-medium whitespace-nowrap">使用者</th>
+              <th class="text-left px-4 py-3 font-medium">問題</th>
+              <th class="text-left px-4 py-3 font-medium">回答</th>
+            </tr>
+          </thead>
+          <tbody id="cmlog-tbody" class="text-slate-300"></tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3 border-t border-white/10">
+        <button id="cmlog-prev" onclick="cmLogPage(-1)" class="px-3 py-1 bg-white/5 border border-white/10 rounded text-slate-400 text-xs hover:bg-white/10 transition disabled:opacity-30" disabled>上一頁</button>
+        <span id="cmlog-page-info" class="text-slate-500 text-xs"></span>
+        <button id="cmlog-next" onclick="cmLogPage(1)" class="px-3 py-1 bg-white/5 border border-white/10 rounded text-slate-400 text-xs hover:bg-white/10 transition disabled:opacity-30">下一頁</button>
+      </div>
+    </div>
 
-  // Level chart
-  const maxViews=Math.max(...LEVELS.map(l=>d.level_views?.[l]||0),1);
-  document.getElementById('levelChart').innerHTML=LEVELS.map(l=>{
-    const v=d.level_views?.[l]||0;
-    const w=Math.max((v/maxViews)*300,2);
-    return `<div style="margin:.4rem 0"><strong style="color:${COLORS[l]}">${l.toUpperCase()}</strong> <span class="bar" style="width:${w}px;background:${COLORS[l]}"></span><span class="bar-label">${v} views</span></div>`;
-  }).join('');
+    <!-- Arita Chat Log -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">🎓 Arita 雙語 & TOEIC 對話記錄</h2>
+    <div class="mb-4 flex flex-wrap items-center gap-3">
+      <input id="arita-filter-user" oninput="loadAritaLogs()" placeholder="搜尋使用者名稱..." class="bg-slate-800 border border-white/20 rounded-lg px-3 py-1.5 text-white text-xs placeholder-slate-600 focus:outline-none focus:border-purple-500" />
+      <span id="arita-total" class="text-slate-500 text-xs ml-auto"></span>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-10">
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="border-b border-white/10 text-slate-400">
+              <th class="text-left px-4 py-3 font-medium whitespace-nowrap">時間</th>
+              <th class="text-left px-4 py-3 font-medium whitespace-nowrap">使用者</th>
+              <th class="text-left px-4 py-3 font-medium">問題</th>
+              <th class="text-left px-4 py-3 font-medium">回答</th>
+            </tr>
+          </thead>
+          <tbody id="arita-tbody" class="text-slate-300"></tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3 border-t border-white/10">
+        <button id="arita-prev" onclick="aritaPage(-1)" class="px-3 py-1 bg-white/5 border border-white/10 rounded text-slate-400 text-xs hover:bg-white/10 transition disabled:opacity-30" disabled>上一頁</button>
+        <span id="arita-page-info" class="text-slate-500 text-xs"></span>
+        <button id="arita-next" onclick="aritaPage(1)" class="px-3 py-1 bg-white/5 border border-white/10 rounded text-slate-400 text-xs hover:bg-white/10 transition disabled:opacity-30">下一頁</button>
+      </div>
+    </div>
 
-  // Assessment chart
-  document.getElementById('assessChart').innerHTML=LEVELS.map(l=>{
-    const a=d.assessments?.[l];
-    if(!a)return '';
-    const total=(a.easy||0)+(a.ok||0)+(a.hard||0);
-    if(!total)return '';
-    return `<div style="margin:.5rem 0"><strong style="color:${COLORS[l]}">${l.toUpperCase()}</strong>
-      <span style="color:#4ecdc4"> Easy:${a.easy||0}</span>
-      <span style="color:#f9ca24"> OK:${a.ok||0}</span>
-      <span style="color:#eb4d4b"> Hard:${a.hard||0}</span></div>`;
-  }).join('')||'<div style="color:#666">No assessments yet</div>';
+    <!-- Audrey Script Log -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">📖 Audrey 兒童英文小腳本 生成記錄</h2>
+    <div class="mb-4 flex flex-wrap items-center gap-3">
+      <input id="audrey-filter-user" oninput="loadAudreyLogs()" placeholder="搜尋使用者名稱..." class="bg-slate-800 border border-white/20 rounded-lg px-3 py-1.5 text-white text-xs placeholder-slate-600 focus:outline-none focus:border-amber-500" />
+      <input id="audrey-filter-interest" oninput="loadAudreyLogs()" placeholder="搜尋興趣關鍵字..." class="bg-slate-800 border border-white/20 rounded-lg px-3 py-1.5 text-white text-xs placeholder-slate-600 focus:outline-none focus:border-amber-500" />
+      <span id="audrey-total" class="text-slate-500 text-xs ml-auto"></span>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-10">
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="border-b border-white/10 text-slate-400">
+              <th class="text-left px-4 py-3 font-medium whitespace-nowrap">時間</th>
+              <th class="text-left px-4 py-3 font-medium whitespace-nowrap">使用者</th>
+              <th class="text-left px-4 py-3 font-medium whitespace-nowrap">年齡</th>
+              <th class="text-left px-4 py-3 font-medium whitespace-nowrap">程度</th>
+              <th class="text-left px-4 py-3 font-medium">興趣關鍵字</th>
+              <th class="text-left px-4 py-3 font-medium">生成標題</th>
+              <th class="text-left px-4 py-3 font-medium">腳本</th>
+            </tr>
+          </thead>
+          <tbody id="audrey-tbody" class="text-slate-300"></tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3 border-t border-white/10">
+        <button id="audrey-prev" onclick="audreyPage(-1)" class="px-3 py-1 bg-white/5 border border-white/10 rounded text-slate-400 text-xs hover:bg-white/10 transition disabled:opacity-30" disabled>上一頁</button>
+        <span id="audrey-page-info" class="text-slate-500 text-xs"></span>
+        <button id="audrey-next" onclick="audreyPage(1)" class="px-3 py-1 bg-white/5 border border-white/10 rounded text-slate-400 text-xs hover:bg-white/10 transition disabled:opacity-30">下一頁</button>
+      </div>
+    </div>
 
-  // Audio chart
-  document.getElementById('audioChart').innerHTML=LEVELS.map(l=>{
-    const plays=d.audio_plays?.[l]||0;
-    const completes=d.audio_completes?.[l]||0;
-    if(!plays)return '';
-    const pct=Math.round((completes/plays)*100);
-    return `<div style="margin:.4rem 0"><strong style="color:${COLORS[l]}">${l.toUpperCase()}</strong> ${completes}/${plays} completed (${pct}%)</div>`;
-  }).join('')||'<div style="color:#666">No audio plays yet</div>';
+    <!-- Visit Log -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">訪客記錄</h2>
+    <div class="mb-4 flex flex-wrap items-center gap-3">
+      <select id="visit-filter-page" onchange="loadVisits()" class="bg-slate-800 border border-white/20 rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-sky-500">
+        <option value="">所有頁面</option>
+      </select>
+      <select id="visit-filter-device" onchange="loadVisits()" class="bg-slate-800 border border-white/20 rounded-lg px-3 py-1.5 text-white text-xs focus:outline-none focus:border-sky-500">
+        <option value="">所有裝置</option>
+        <option value="phone">手機</option>
+        <option value="pc">電腦</option>
+      </select>
+      <span id="visit-total" class="text-slate-500 text-xs ml-auto"></span>
+    </div>
+    <div class="bg-white/5 border border-white/10 rounded-xl overflow-hidden mb-10">
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs">
+          <thead>
+            <tr class="border-b border-white/10 text-slate-400">
+              <th class="text-left px-4 py-3 font-medium">時間</th>
+              <th class="text-left px-4 py-3 font-medium">頁面</th>
+              <th class="text-left px-4 py-3 font-medium">IP</th>
+              <th class="text-left px-4 py-3 font-medium">裝置</th>
+              <th class="text-left px-4 py-3 font-medium">螢幕</th>
+              <th class="text-left px-4 py-3 font-medium">來源</th>
+            </tr>
+          </thead>
+          <tbody id="visit-tbody" class="text-slate-300"></tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3 border-t border-white/10">
+        <button id="visit-prev" onclick="visitPage(-1)" class="px-3 py-1 bg-white/5 border border-white/10 rounded text-slate-400 text-xs hover:bg-white/10 transition disabled:opacity-30" disabled>上一頁</button>
+        <span id="visit-page-info" class="text-slate-500 text-xs"></span>
+        <button id="visit-next" onclick="visitPage(1)" class="px-3 py-1 bg-white/5 border border-white/10 rounded text-slate-400 text-xs hover:bg-white/10 transition disabled:opacity-30">下一頁</button>
+      </div>
+    </div>
 
-  // Visitors
-  const vb=document.querySelector('#visitorTable tbody');
-  vb.innerHTML=(d.visitors||[]).map(v=>`<tr>
-    <td>${v.ip}</td><td>${v.device}</td><td>${v.events}</td>
-    <td>${(v.levels||[]).map(l=>`<span style="color:${COLORS[l]||'#fff'}">${l.toUpperCase()}</span>`).join(' ')}</td>
-    <td>${new Date(v.first_seen).toLocaleString()}</td>
-  </tr>`).join('');
+    <!-- Quick Reference -->
+    <h2 class="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4 border-b border-white/10 pb-2">快速參考</h2>
+    <div class="bg-white/5 border border-white/10 rounded-xl p-5 text-sm">
+      <table class="w-full">
+        <tbody class="text-slate-400">
+          <tr class="border-b border-white/5"><td class="py-2 text-slate-500">Supabase Project</td><td class="py-2 font-mono text-xs">dcjlekszmobaenhrdbfl</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 text-slate-500">LIFF ID</td><td class="py-2 font-mono text-xs">2009738746-2qigSpHh</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 text-slate-500">LINE Channel ID</td><td class="py-2 font-mono text-xs">2009738746</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 text-slate-500">LINE Official Account</td><td class="py-2">@markluce</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 text-slate-500">Domain</td><td class="py-2">markluce.ai</td></tr>
+          <tr><td class="py-2 text-slate-500">統一編號</td><td class="py-2">60670979</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
 
-  // Events
-  const eb=document.querySelector('#eventTable tbody');
-  eb.innerHTML=(d.raw_recent||[]).map(e=>`<tr>
-    <td>${new Date(e.created_at).toLocaleTimeString()}</td>
-    <td>${e.event_type}</td><td>${(e.level_id||'').toUpperCase()}</td>
-    <td>${e.topic_id||''}</td>
-    <td>${e.audio_lang?e.audio_lang+'/'+e.audio_voice:''}${e.audio_completed?' ✓':''}</td>
-    <td>${e.self_assess||''}</td>
-  </tr>`).join('');
-}
-</script>
+  <script>
+    var SUPABASE_URL = 'https://dcjlekszmobaenhrdbfl.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_LoGKEHFftjjIf0G1Xv3ozA_A5nZeudW';
+    var sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    var LIFF_ID = '2009738746-2qigSpHh';
+    var ADMIN_LINE_ID = 'U7d41d4b9a49052370bd3a7265c1e391b';
+
+    function handleLogin() {
+      if (!LIFF_ID || typeof liff === 'undefined') return;
+      liff.login({ redirectUri: window.location.origin + '/admin.html?v=' + Date.now() });
+    }
+
+    async function init() {
+      if (!LIFF_ID || typeof liff === 'undefined') {
+        showDenied(true);
+        return;
+      }
+      try {
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) {
+          showDenied(true);
+          return;
+        }
+        var profile = await liff.getProfile();
+        if (profile.userId === ADMIN_LINE_ID) {
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('admin-content').classList.remove('hidden');
+          loadVisitPages();
+          loadVisits();
+          loadChatLogs();
+          loadCmLogs();
+          loadAritaLogs();
+          loadAudreyLogs();
+          renderBotConfigs();
+        } else {
+          showDenied(false);
+        }
+      } catch (e) {
+        console.error('LIFF init error:', e);
+        showDenied(true);
+      }
+    }
+
+    function showDenied(showLoginBtn) {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('access-denied').classList.remove('hidden');
+      if (showLoginBtn) {
+        document.getElementById('login-btn').classList.remove('hidden');
+      } else {
+        document.getElementById('denied-msg').classList.remove('hidden');
+      }
+    }
+
+    // Visit log
+    var visitOffset = 0;
+    var visitLimit = 50;
+
+    function parseDevice(ua) {
+      if (!ua) return '—';
+      ua = ua.toLowerCase();
+      if (/iphone|android.*mobile|mobile.*android/.test(ua)) return '📱 手機';
+      if (/ipad|android(?!.*mobile)|tablet/.test(ua)) return '📱 平板';
+      if (/macintosh|mac os/.test(ua)) return '💻 Mac';
+      if (/windows/.test(ua)) return '💻 Windows';
+      if (/linux/.test(ua)) return '💻 Linux';
+      return '💻 其他';
+    }
+
+    function isPhone(ua) {
+      if (!ua) return false;
+      return /iphone|android.*mobile|mobile.*android|ipad|tablet/i.test(ua);
+    }
+
+    async function loadVisitPages() {
+      var result = await sb.from('visits').select('page');
+      if (!result.data) return;
+      var pages = {};
+      result.data.forEach(function(r) { if (r.page) pages[r.page] = true; });
+      var select = document.getElementById('visit-filter-page');
+      Object.keys(pages).sort().forEach(function(p) {
+        var opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = p;
+        select.appendChild(opt);
+      });
+    }
+
+    async function loadVisits() {
+      var pageFilter = document.getElementById('visit-filter-page').value;
+      var deviceFilter = document.getElementById('visit-filter-device').value;
+
+      var query = sb.from('visits').select('*', { count: 'exact' })
+        .order('visited_at', { ascending: false })
+        .range(visitOffset, visitOffset + visitLimit - 1);
+
+      if (pageFilter) query = query.eq('page', pageFilter);
+
+      var result = await query;
+      if (!result.data) return;
+
+      var rows = result.data;
+      if (deviceFilter === 'phone') {
+        rows = rows.filter(function(r) { return isPhone(r.user_agent); });
+      } else if (deviceFilter === 'pc') {
+        rows = rows.filter(function(r) { return !isPhone(r.user_agent); });
+      }
+
+      var total = result.count || 0;
+      document.getElementById('visit-total').textContent = '共 ' + total + ' 筆';
+
+      var tbody = document.getElementById('visit-tbody');
+      tbody.innerHTML = rows.map(function(v) {
+        var time = new Date(v.visited_at).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+        var ref = v.referrer ? '<span title="' + escHtml(v.referrer) + '">' + escHtml(v.referrer.replace(/https?:\/\//, '').substring(0, 25)) + '</span>' : '<span class="text-slate-600">直接</span>';
+        return '<tr class="border-b border-white/5 hover:bg-white/5">' +
+          '<td class="px-4 py-2.5 text-slate-400 whitespace-nowrap">' + time + '</td>' +
+          '<td class="px-4 py-2.5 whitespace-nowrap">' + escHtml(v.page || '/') + '</td>' +
+          '<td class="px-4 py-2.5 font-mono text-slate-400">' + escHtml(v.ip || '—') + '</td>' +
+          '<td class="px-4 py-2.5 whitespace-nowrap">' + parseDevice(v.user_agent) + '</td>' +
+          '<td class="px-4 py-2.5 text-slate-400">' + (v.screen_width && v.screen_height ? v.screen_width + '×' + v.screen_height : '—') + '</td>' +
+          '<td class="px-4 py-2.5 text-slate-400">' + ref + '</td>' +
+        '</tr>';
+      }).join('');
+
+      var page = Math.floor(visitOffset / visitLimit) + 1;
+      var totalPages = Math.ceil(total / visitLimit);
+      document.getElementById('visit-page-info').textContent = '第 ' + page + ' / ' + totalPages + ' 頁';
+      document.getElementById('visit-prev').disabled = visitOffset === 0;
+      document.getElementById('visit-next').disabled = visitOffset + visitLimit >= total;
+    }
+
+    function visitPage(dir) {
+      visitOffset += dir * visitLimit;
+      if (visitOffset < 0) visitOffset = 0;
+      loadVisits();
+    }
+
+    function escHtml(str) {
+      var d = document.createElement('div');
+      d.textContent = str || '';
+      return d.innerHTML;
+    }
+
+    // Chat log
+    var chatOffset = 0;
+    var chatLimit = 30;
+
+    async function loadChatLogs() {
+      var userFilter = document.getElementById('chat-filter-user').value.trim();
+      var query = sb.from('chat_logs').select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(chatOffset, chatOffset + chatLimit - 1);
+
+      if (userFilter) query = query.ilike('display_name', '%' + userFilter + '%');
+
+      var result = await query;
+      if (result.error) { console.error(result.error); return; }
+
+      var total = result.count || 0;
+      document.getElementById('chat-total').textContent = '共 ' + total + ' 筆';
+
+      var tbody = document.getElementById('chat-tbody');
+      var rows = result.data || [];
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-6 text-center text-slate-500">尚無對話記錄</td></tr>';
+      } else {
+        tbody.innerHTML = rows.map(function(c) {
+          var time = new Date(c.created_at).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+          var truncReply = c.reply ? (c.reply.length > 150 ? c.reply.substring(0, 150) + '...' : c.reply) : '—';
+          return '<tr class="border-b border-white/5 hover:bg-white/5 align-top">' +
+            '<td class="px-4 py-2.5 text-slate-400 whitespace-nowrap">' + time + '</td>' +
+            '<td class="px-4 py-2.5 whitespace-nowrap">' + escHtml(c.display_name || '匿名') + '</td>' +
+            '<td class="px-4 py-2.5 max-w-xs">' + escHtml(c.message || '') + '</td>' +
+            '<td class="px-4 py-2.5 text-slate-400 max-w-md">' + escHtml(truncReply) + '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      var page = Math.floor(chatOffset / chatLimit) + 1;
+      var totalPages = Math.max(1, Math.ceil(total / chatLimit));
+      document.getElementById('chat-page-info').textContent = '第 ' + page + ' / ' + totalPages + ' 頁';
+      document.getElementById('chat-prev').disabled = chatOffset === 0;
+      document.getElementById('chat-next').disabled = chatOffset + chatLimit >= total;
+    }
+
+    function chatPage(dir) {
+      chatOffset += dir * chatLimit;
+      if (chatOffset < 0) chatOffset = 0;
+      loadChatLogs();
+    }
+
+    // Arita chat log
+    var aritaOffset = 0;
+    var aritaLimit = 30;
+
+    async function loadAritaLogs() {
+      var userFilter = document.getElementById('arita-filter-user').value.trim();
+      var query = sb.from('arita_chat_logs').select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(aritaOffset, aritaOffset + aritaLimit - 1);
+
+      if (userFilter) query = query.ilike('display_name', '%' + userFilter + '%');
+
+      var result = await query;
+      if (result.error) { console.error(result.error); return; }
+
+      var total = result.count || 0;
+      document.getElementById('arita-total').textContent = '共 ' + total + ' 筆';
+
+      var tbody = document.getElementById('arita-tbody');
+      var rows = result.data || [];
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-6 text-center text-slate-500">尚無對話記錄</td></tr>';
+      } else {
+        tbody.innerHTML = rows.map(function(c) {
+          var time = new Date(c.created_at).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+          var truncReply = c.reply ? (c.reply.length > 150 ? c.reply.substring(0, 150) + '...' : c.reply) : '—';
+          return '<tr class="border-b border-white/5 hover:bg-white/5 align-top">' +
+            '<td class="px-4 py-2.5 text-slate-400 whitespace-nowrap">' + time + '</td>' +
+            '<td class="px-4 py-2.5 whitespace-nowrap">' + escHtml(c.display_name || '匿名') + '</td>' +
+            '<td class="px-4 py-2.5 max-w-xs">' + escHtml(c.message || '') + '</td>' +
+            '<td class="px-4 py-2.5 text-slate-400 max-w-md">' + escHtml(truncReply) + '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      var page = Math.floor(aritaOffset / aritaLimit) + 1;
+      var totalPages = Math.max(1, Math.ceil(total / aritaLimit));
+      document.getElementById('arita-page-info').textContent = '第 ' + page + ' / ' + totalPages + ' 頁';
+      document.getElementById('arita-prev').disabled = aritaOffset === 0;
+      document.getElementById('arita-next').disabled = aritaOffset + aritaLimit >= total;
+    }
+
+    function aritaPage(dir) {
+      aritaOffset += dir * aritaLimit;
+      if (aritaOffset < 0) aritaOffset = 0;
+      loadAritaLogs();
+    }
+
+    // Audrey script log
+    var audreyOffset = 0;
+    var audreyLimit = 30;
+
+    async function loadAudreyLogs() {
+      var userFilter = document.getElementById('audrey-filter-user').value.trim();
+      var interestFilter = document.getElementById('audrey-filter-interest').value.trim();
+      var query = sb.from('audrey_chat_logs').select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(audreyOffset, audreyOffset + audreyLimit - 1);
+
+      if (userFilter) query = query.ilike('display_name', '%' + userFilter + '%');
+      if (interestFilter) query = query.ilike('interest', '%' + interestFilter + '%');
+
+      var result = await query;
+      if (result.error) {
+        console.error(result.error);
+        document.getElementById('audrey-tbody').innerHTML =
+          '<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">讀取失敗：' + escHtml(result.error.message || '') + '</td></tr>';
+        return;
+      }
+
+      var total = result.count || 0;
+      document.getElementById('audrey-total').textContent = '共 ' + total + ' 筆';
+
+      var tbody = document.getElementById('audrey-tbody');
+      var rows = result.data || [];
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-6 text-center text-slate-500">尚無生成記錄</td></tr>';
+      } else {
+        tbody.innerHTML = rows.map(function(c) {
+          var time = new Date(c.created_at).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+          // Extract a short preview of the script: first 2 English lines
+          var preview = '—';
+          try {
+            if (c.script) {
+              var parsed = JSON.parse(c.script);
+              if (parsed && Array.isArray(parsed.lines)) {
+                preview = parsed.lines.slice(0, 2).map(function(l) { return l.en || ''; }).join(' / ');
+                if (parsed.lines.length > 2) preview += ' …';
+              }
+            }
+          } catch (e) {
+            preview = (c.script || '').substring(0, 120);
+          }
+          if (preview.length > 160) preview = preview.substring(0, 160) + '…';
+          return '<tr class="border-b border-white/5 hover:bg-white/5 align-top">' +
+            '<td class="px-4 py-2.5 text-slate-400 whitespace-nowrap">' + time + '</td>' +
+            '<td class="px-4 py-2.5 whitespace-nowrap">' + escHtml(c.display_name || '匿名') + '</td>' +
+            '<td class="px-4 py-2.5 text-slate-400 whitespace-nowrap">' + (c.age != null ? c.age : '—') + '</td>' +
+            '<td class="px-4 py-2.5 text-slate-400 whitespace-nowrap">' + escHtml(c.level || '—') + '</td>' +
+            '<td class="px-4 py-2.5 text-amber-300 max-w-xs">' + escHtml(c.interest || '') + '</td>' +
+            '<td class="px-4 py-2.5 max-w-xs">' + escHtml(c.title || '—') + '</td>' +
+            '<td class="px-4 py-2.5 text-slate-400 max-w-md">' + escHtml(preview) + '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      var page = Math.floor(audreyOffset / audreyLimit) + 1;
+      var totalPages = Math.max(1, Math.ceil(total / audreyLimit));
+      document.getElementById('audrey-page-info').textContent = '第 ' + page + ' / ' + totalPages + ' 頁';
+      document.getElementById('audrey-prev').disabled = audreyOffset === 0;
+      document.getElementById('audrey-next').disabled = audreyOffset + audreyLimit >= total;
+    }
+
+    function audreyPage(dir) {
+      audreyOffset += dir * audreyLimit;
+      if (audreyOffset < 0) audreyOffset = 0;
+      loadAudreyLogs();
+    }
+
+    // Classmates chat log
+    var cmLogOffset = 0;
+    var cmLogLimit = 30;
+
+    async function loadCmLogs() {
+      var userFilter = document.getElementById('cmlog-filter-user').value.trim();
+      var query = sb.from('classmates_chat_logs').select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(cmLogOffset, cmLogOffset + cmLogLimit - 1);
+
+      if (userFilter) query = query.ilike('display_name', '%' + userFilter + '%');
+
+      var result = await query;
+      if (result.error) { console.error(result.error); return; }
+
+      var total = result.count || 0;
+      document.getElementById('cmlog-total').textContent = '共 ' + total + ' 筆';
+
+      var tbody = document.getElementById('cmlog-tbody');
+      var rows = result.data || [];
+      if (rows.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-6 text-center text-slate-500">尚無對話記錄</td></tr>';
+      } else {
+        tbody.innerHTML = rows.map(function(c) {
+          var time = new Date(c.created_at).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+          var truncReply = c.reply ? (c.reply.length > 150 ? c.reply.substring(0, 150) + '...' : c.reply) : '—';
+          return '<tr class="border-b border-white/5 hover:bg-white/5 align-top">' +
+            '<td class="px-4 py-2.5 text-slate-400 whitespace-nowrap">' + time + '</td>' +
+            '<td class="px-4 py-2.5 whitespace-nowrap">' + escHtml(c.display_name || '匿名') + '</td>' +
+            '<td class="px-4 py-2.5 max-w-xs">' + escHtml(c.message || '') + '</td>' +
+            '<td class="px-4 py-2.5 text-slate-400 max-w-md">' + escHtml(truncReply) + '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      var page = Math.floor(cmLogOffset / cmLogLimit) + 1;
+      var totalPages = Math.max(1, Math.ceil(total / cmLogLimit));
+      document.getElementById('cmlog-page-info').textContent = '第 ' + page + ' / ' + totalPages + ' 頁';
+      document.getElementById('cmlog-prev').disabled = cmLogOffset === 0;
+      document.getElementById('cmlog-next').disabled = cmLogOffset + cmLogLimit >= total;
+    }
+
+    function cmLogPage(dir) {
+      cmLogOffset += dir * cmLogLimit;
+      if (cmLogOffset < 0) cmLogOffset = 0;
+      loadCmLogs();
+    }
+
+    // ====== Bot Config Admin ======
+    var BOT_LIST = [
+      { key: 'aiatcl', name: '🤖 AIATCL 考前助手', color: 'sky', methods: ['manual', 'ai_generated', 'popular'] },
+      { key: 'classmates', name: '🤝 同學助手', color: 'emerald', methods: ['manual', 'db_dynamic', 'ai_generated', 'popular'], note: 'classmates 模板可使用 {DATA_BLOCK} 佔位符，會在執行時注入即時同學資料' },
+      { key: 'arita', name: '🎓 Arita 雙語 & TOEIC', color: 'purple', methods: ['manual', 'ai_generated', 'popular'] }
+    ];
+    var METHOD_LABELS = {
+      'manual': '📝 手動編輯清單',
+      'db_dynamic': '🔄 資料庫動態產生（只適用同學助手）',
+      'ai_generated': '🤖 AI 自動產生（呼叫 GPT）',
+      'popular': '🔥 熱門問題（來自 chat_logs）'
+    };
+
+    async function renderBotConfigs() {
+      var container = document.getElementById('bot-config-container');
+      container.innerHTML = '<div class="text-slate-500 text-sm">載入設定中...</div>';
+
+      var { data: configs } = await sb.from('bot_configs').select('*');
+      var configMap = {};
+      (configs || []).forEach(function(c) { configMap[c.bot_name] = c; });
+
+      container.innerHTML = BOT_LIST.map(function(bot) {
+        var cfg = configMap[bot.key] || {};
+        var hasCustom = !!(cfg.system_prompt && cfg.system_prompt.trim());
+        var method = cfg.suggestion_method || 'manual';
+        var topicsText = (cfg.manual_topics && cfg.manual_topics.length) ? cfg.manual_topics.join('\n') : '';
+
+        var methodsHtml = bot.methods.map(function(m) {
+          return '<label class="inline-flex items-center gap-1 mr-3 text-xs"><input type="radio" name="method-' + bot.key + '" value="' + m + '"' + (method === m ? ' checked' : '') + ' class="accent-sky-500"> ' + METHOD_LABELS[m] + '</label>';
+        }).join('');
+
+        return '<div class="bg-white/5 border border-white/10 rounded-xl p-5">' +
+          '<div class="flex items-center justify-between mb-3">' +
+            '<div class="font-bold text-sm">' + bot.name + '</div>' +
+            '<span class="text-xs ' + (hasCustom ? 'text-amber-400' : 'text-slate-500') + '">' + (hasCustom ? '✏️ 自訂中' : '✓ 使用預設') + '</span>' +
+          '</div>' +
+          (bot.note ? '<p class="text-slate-500 text-xs mb-2">💡 ' + bot.note + '</p>' : '') +
+          '<label class="text-slate-400 text-xs block mb-1">系統提示詞 (留空使用預設)</label>' +
+          '<textarea id="prompt-' + bot.key + '" rows="8" class="w-full bg-slate-800 border border-white/10 rounded px-3 py-2 text-white text-xs font-mono focus:outline-none focus:border-sky-500 mb-3" placeholder="留空則使用 Edge Function 內建的預設提示詞">' + escHtml(cfg.system_prompt || '') + '</textarea>' +
+          '<label class="text-slate-400 text-xs block mb-1">建議題目產生方法</label>' +
+          '<div class="mb-3">' + methodsHtml + '</div>' +
+          '<label class="text-slate-400 text-xs block mb-1">手動題目清單（每行一題，只在「手動編輯」模式使用）</label>' +
+          '<textarea id="topics-' + bot.key + '" rows="5" class="w-full bg-slate-800 border border-white/10 rounded px-3 py-2 text-white text-xs focus:outline-none focus:border-sky-500 mb-3" placeholder="例：&#10;第 1 組有哪些同學？&#10;誰提到過 AI？">' + escHtml(topicsText) + '</textarea>' +
+          '<div class="flex gap-2">' +
+            '<button onclick="saveBotConfig(\'' + bot.key + '\')" class="px-4 py-1.5 bg-sky-500 hover:bg-sky-600 rounded text-white text-xs font-medium">💾 儲存</button>' +
+            '<button onclick="resetBotConfig(\'' + bot.key + '\')" class="px-4 py-1.5 bg-red-500/10 border border-red-500/30 rounded text-red-400 text-xs hover:bg-red-500/20">♻️ 重置為預設</button>' +
+            '<span id="msg-' + bot.key + '" class="ml-auto text-xs self-center"></span>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+
+    async function saveBotConfig(botKey) {
+      var prompt = document.getElementById('prompt-' + botKey).value;
+      var topicsText = document.getElementById('topics-' + botKey).value;
+      var method = document.querySelector('input[name="method-' + botKey + '"]:checked').value;
+      var topics = topicsText.split('\n').map(function(s) { return s.trim(); }).filter(Boolean);
+
+      var msgEl = document.getElementById('msg-' + botKey);
+      msgEl.textContent = '儲存中...';
+      msgEl.className = 'ml-auto text-xs self-center text-slate-400';
+
+      var result = await sb.from('bot_configs').upsert({
+        bot_name: botKey,
+        system_prompt: prompt || null,
+        suggestion_method: method,
+        manual_topics: topics,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'bot_name' });
+
+      if (result.error) {
+        msgEl.textContent = '❌ 失敗: ' + result.error.message;
+        msgEl.className = 'ml-auto text-xs self-center text-red-400';
+      } else {
+        msgEl.textContent = '✅ 已儲存（edge function 快取 60 秒後生效）';
+        msgEl.className = 'ml-auto text-xs self-center text-emerald-400';
+        setTimeout(function() { msgEl.textContent = ''; }, 4000);
+        renderBotConfigs();
+      }
+    }
+
+    async function resetBotConfig(botKey) {
+      if (!confirm('確定要重置 ' + botKey + ' 為預設值？將刪除所有自訂設定。')) return;
+      var msgEl = document.getElementById('msg-' + botKey);
+      var result = await sb.from('bot_configs').delete().eq('bot_name', botKey);
+      if (result.error) {
+        msgEl.textContent = '❌ 失敗: ' + result.error.message;
+        msgEl.className = 'ml-auto text-xs self-center text-red-400';
+      } else {
+        msgEl.textContent = '✅ 已重置';
+        msgEl.className = 'ml-auto text-xs self-center text-emerald-400';
+        setTimeout(function() { msgEl.textContent = ''; }, 3000);
+        renderBotConfigs();
+      }
+    }
+
+    init();
+  </script>
+
 </body>
 </html>

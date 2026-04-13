@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230EA5E9'/><text x='32' y='28' font-family='Arial,sans-serif' font-size='16' font-weight='bold' fill='white' text-anchor='middle'>MARK</text><text x='32' y='48' font-family='Arial,sans-serif' font-size='14' font-weight='bold' fill='%2322D3EE' text-anchor='middle'>LUCE</text></svg>" />
+  <title>AM151 課程表 — 經理人 AI PM 班</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Noto Sans TC"', 'Inter', 'system-ui', 'sans-serif'] } } } }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    /* Theme tokens — defaults to light */
+    :root {
+      --bg: #f5f5f0;
+      --fg: #1a1a1a;
+      --meta: #555;
+      --filter-label: #6c6c65;
+      --card-bg: #ffffff;
+      --card-border: #d4d4d4;
+      --table-bg: #ffffff;
+      --table-border: #c0c0c0;
+      --thead-bg: #e8eef2;
+      --thead-fg: #1a1a1a;
+      --row-even: #f7f7f4;
+      --row-hover: #fff8e1;
+      --row-dim-bg: #fafaf6;
+      --row-dim-fg: #6c6c65;
+      --input-bg: #ffffff;
+      --input-border: #c0c0c0;
+      --input-fg: #1a1a1a;
+      --focus: #4a90e2;
+      --nav-bg: #1a1a1a;
+      --nav-fg: #f5f5f0;
+      --nav-link: #d4d4d4;
+      --nav-link-active: #fff8e1;
+      --nav-accent: #0c5a80;
+      --title-accent: #0c5a80;
+      --link: #0066cc;
+      --btn-reset-bg: #4a4a4a;
+      --btn-reset-hover: #2a2a2a;
+      --divider: #d4d4d4;
+      --tag-morning-bg: #fff3cd; --tag-morning-fg: #856404; --tag-morning-bd: #ffe08a;
+      --tag-afternoon-bg: #cfe8f7; --tag-afternoon-fg: #0c5a80; --tag-afternoon-bd: #8ac6e0;
+      --tag-group-bg: #d4edda; --tag-group-fg: #155724; --tag-group-bd: #a3d9b1;
+      --tag-ops-bg: #e2e3e5; --tag-ops-fg: #383d41; --tag-ops-bd: #c6c8ca;
+      --tag-break-bg: #f0f0ec; --tag-break-fg: #6c6c65; --tag-break-bd: #d4d4cc;
+      --tag-video-bg: #e8dff5; --tag-video-fg: #4b2e7a; --tag-video-bd: #c7b8e6;
+      --cell-w: #0c5a80;
+      --cell-date: #333;
+      --cell-time: #555;
+      --cell-title: #1a1a1a;
+      --cell-teacher: #0c5a80;
+      --cell-org: #555;
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f1419;
+      --fg: #e5e7eb;
+      --meta: #94a3b8;
+      --filter-label: #64748b;
+      --card-bg: #1a2028;
+      --card-border: #2d3748;
+      --table-bg: #1a2028;
+      --table-border: #2d3748;
+      --thead-bg: #233045;
+      --thead-fg: #bae6fd;
+      --row-even: #1f2730;
+      --row-hover: #2a3441;
+      --row-dim-bg: #151c24;
+      --row-dim-fg: #64748b;
+      --input-bg: #0f1419;
+      --input-border: #2d3748;
+      --input-fg: #e5e7eb;
+      --focus: #38bdf8;
+      --nav-bg: #0a0e13;
+      --nav-fg: #e5e7eb;
+      --nav-link: #94a3b8;
+      --nav-link-active: #7dd3fc;
+      --nav-accent: #38bdf8;
+      --title-accent: #7dd3fc;
+      --link: #7dd3fc;
+      --btn-reset-bg: #334155;
+      --btn-reset-hover: #475569;
+      --divider: #2d3748;
+      --tag-morning-bg: rgba(251,191,36,0.15); --tag-morning-fg: #fbbf24; --tag-morning-bd: rgba(251,191,36,0.35);
+      --tag-afternoon-bg: rgba(56,189,248,0.15); --tag-afternoon-fg: #7dd3fc; --tag-afternoon-bd: rgba(56,189,248,0.35);
+      --tag-group-bg: rgba(52,211,153,0.15); --tag-group-fg: #6ee7b7; --tag-group-bd: rgba(52,211,153,0.35);
+      --tag-ops-bg: rgba(148,163,184,0.15); --tag-ops-fg: #cbd5e1; --tag-ops-bd: rgba(148,163,184,0.35);
+      --tag-break-bg: rgba(100,116,139,0.15); --tag-break-fg: #94a3b8; --tag-break-bd: rgba(100,116,139,0.35);
+      --tag-video-bg: rgba(167,139,250,0.15); --tag-video-fg: #c4b5fd; --tag-video-bd: rgba(167,139,250,0.35);
+      --cell-w: #7dd3fc;
+      --cell-date: #cbd5e1;
+      --cell-time: #94a3b8;
+      --cell-title: #e5e7eb;
+      --cell-teacher: #6ee7b7;
+      --cell-org: #94a3b8;
+    }
+
+    body { background: var(--bg); color: var(--fg); transition: background 0.2s, color 0.2s; }
+    .line-btn { background: #06C755; }
+    .line-btn:hover { background: #05b64d; }
+    .glow-ring { box-shadow: 0 0 0 3px rgba(6, 199, 85, 0.25); }
+    .fade-in { animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .card { background: var(--card-bg); border: 1px solid var(--card-border); }
+
+    table.sched { border-collapse: collapse; width: 100%; font-size: 0.85rem; background: var(--table-bg); }
+    table.sched th, table.sched td { border: 1px solid var(--table-border); padding: 8px 10px; text-align: left; vertical-align: top; }
+    table.sched thead th { background: var(--thead-bg); color: var(--thead-fg); font-weight: 700; }
+    table.sched tbody tr { transition: background 0.15s; }
+    table.sched tbody tr:nth-child(even) { background: var(--row-even); }
+    table.sched tbody tr:hover { background: var(--row-hover); }
+
+    .period-tag { display: inline-block; padding: 1px 7px; border-radius: 3px; font-size: 0.72rem; font-weight: 600; white-space: nowrap; }
+    .period-morning { background: var(--tag-morning-bg); color: var(--tag-morning-fg); border: 1px solid var(--tag-morning-bd); }
+    .period-afternoon { background: var(--tag-afternoon-bg); color: var(--tag-afternoon-fg); border: 1px solid var(--tag-afternoon-bd); }
+    .period-group { background: var(--tag-group-bg); color: var(--tag-group-fg); border: 1px solid var(--tag-group-bd); }
+    .period-ops { background: var(--tag-ops-bg); color: var(--tag-ops-fg); border: 1px solid var(--tag-ops-bd); }
+    .period-break { background: var(--tag-break-bg); color: var(--tag-break-fg); border: 1px solid var(--tag-break-bd); }
+    .period-video { background: var(--tag-video-bg); color: var(--tag-video-fg); border: 1px solid var(--tag-video-bd); }
+    tr.row-dim { color: var(--row-dim-fg); background: var(--row-dim-bg) !important; }
+    tr.row-dim td { font-style: italic; }
+
+    input[type="text"], select {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--input-fg);
+    }
+    input[type="text"]:focus, select:focus { border-color: var(--focus); outline: 1px solid var(--focus); }
+
+    .filter-label { color: var(--filter-label); font-size: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .btn-reset { background: var(--btn-reset-bg); color: white; }
+    .btn-reset:hover { background: var(--btn-reset-hover); }
+
+    .title-text { color: var(--fg); font-weight: 800; }
+    .title-accent { color: var(--title-accent); }
+    .meta-text { color: var(--meta); }
+    a.theme-link { color: var(--link); }
+    a.theme-link:hover { text-decoration: underline; }
+
+    nav.topnav { background: var(--nav-bg); color: var(--nav-fg); border-bottom: 3px solid var(--nav-accent); }
+    nav.topnav a { color: var(--nav-link); }
+    nav.topnav a:hover, nav.topnav a.active { color: #ffffff; }
+    nav.topnav a.active { color: var(--nav-link-active); }
+
+    /* Theme toggle button */
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--nav-link);
+      color: var(--nav-link);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .theme-toggle:hover { background: var(--nav-link); color: var(--nav-bg); }
+
+    .divider { border-color: var(--divider); }
+  </style>
+</head>
+<body class="min-h-screen font-sans">
+
+  <!-- Nav -->
+  <nav class="topnav relative z-10">
+    <div class="max-w-6xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
+      <a href="/" class="text-lg md:text-xl font-bold tracking-tight text-white">
+        markluce
+      </a>
+      <div class="flex items-center gap-3 md:gap-5 text-xs md:text-sm">
+        <a href="/schedule.html" class="active font-medium">課表(篩選)</a>
+        <a href="/schedule-original.html" class="hover:text-white transition">📄 原始格式</a>
+        <a href="/schedule.json" target="_blank" class="hover:text-white transition">JSON</a>
+        <a href="/more.html" class="hover:text-white transition">更多</a>
+        <button id="theme-toggle" class="theme-toggle" title="切換明暗主題" onclick="toggleTheme()">🌙 夜間</button>
+        <div id="user-info" class="hidden flex items-center gap-2">
+          <img id="user-avatar" class="w-7 h-7 md:w-8 md:h-8 rounded-full glow-ring" src="" alt="" />
+          <span id="user-name" class="text-xs md:text-sm text-emerald-300 font-medium max-w-[80px] md:max-w-none truncate"></span>
+          <button onclick="handleLogout()" class="text-slate-400 hover:text-white transition text-sm px-1" title="登出">登出</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Loading -->
+  <div id="loading" class="text-center pt-32" style="color: #6c6c65;">
+    <div class="inline-block w-6 h-6 border-2 border-gray-300 border-t-gray-700 rounded-full animate-spin mb-3"></div>
+    <p class="text-sm">驗證身份中...</p>
+  </div>
+
+  <!-- Login required -->
+  <div id="login-required" class="hidden max-w-md mx-auto px-6 pt-20 text-center fade-in">
+    <div class="card rounded-lg p-10">
+      <div class="text-6xl mb-6">🔒</div>
+      <h2 class="text-xl font-bold mb-3">需要登入</h2>
+      <p class="meta-text text-sm mb-6 leading-relaxed">課程表僅提供給登入的同學查看。<br/>請先用 LINE 登入。</p>
+      <button onclick="handleLogin()" class="line-btn text-white px-6 py-2.5 rounded text-sm font-semibold transition inline-flex items-center gap-2">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        LINE 登入
+      </button>
+      <a href="/" class="block mt-4 meta-text hover:underline text-sm">&larr; 回首頁</a>
+    </div>
+  </div>
+
+  <!-- Schedule Content -->
+  <main id="schedule-content" class="hidden max-w-7xl mx-auto px-4 md:px-6 pb-16 fade-in">
+    <header class="text-center pt-6 pb-6">
+      <div class="inline-block mb-3 px-3 py-1 bg-yellow-100 border border-yellow-300 rounded text-yellow-900 text-xs font-semibold tracking-wide">
+        台灣人工智慧學校 · 經理人 AI PM 班 第一期 (AM151)
+      </div>
+      <h1 class="title-text text-2xl md:text-3xl leading-tight mb-2">
+        <span class="title-accent">8 週完整課程表</span>
+      </h1>
+      <p class="meta-text text-xs">2026/04/11 ~ 2026/05/30 · 每週六 09:00-17:30 · 📍 新光板橋傑仕堡 A棟 2樓 · 國際會議廳</p>
+    </header>
+
+    <!-- Filters -->
+    <div class="card rounded p-4 mb-4">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div>
+          <label class="filter-label block mb-1">搜尋</label>
+          <input id="f-search" type="text" oninput="render()" placeholder="關鍵字、講師、主題..." class="w-full rounded px-2 py-1.5 text-xs" />
+        </div>
+        <div>
+          <label class="filter-label block mb-1">週次</label>
+          <select id="f-week" onchange="render()" class="w-full rounded px-2 py-1.5 text-xs">
+            <option value="">全部 (1-8)</option>
+            <option value="1">W1 · 04/11</option>
+            <option value="2">W2 · 04/18</option>
+            <option value="3">W3 · 04/25</option>
+            <option value="4">W4 · 05/02</option>
+            <option value="5">W5 · 05/09</option>
+            <option value="6">W6 · 05/16</option>
+            <option value="7">W7 · 05/23</option>
+            <option value="8">W8 · 05/30</option>
+          </select>
+        </div>
+        <div>
+          <label class="filter-label block mb-1">時段</label>
+          <select id="f-period" onchange="render()" class="w-full rounded px-2 py-1.5 text-xs">
+            <option value="">全部時段</option>
+            <option value="上午">上午</option>
+            <option value="下午">下午</option>
+            <option value="小組">小組</option>
+            <option value="課務">課務</option>
+            <option value="休息">休息 / 午餐</option>
+            <option value="影片">課程影片</option>
+          </select>
+        </div>
+        <div>
+          <label class="filter-label block mb-1">講師</label>
+          <select id="f-teacher" onchange="render()" class="w-full rounded px-2 py-1.5 text-xs">
+            <option value="">全部講師</option>
+          </select>
+        </div>
+        <div>
+          <label class="filter-label block mb-1">&nbsp;</label>
+          <button onclick="resetFilters()" class="btn-reset w-full rounded px-2 py-1.5 text-xs font-medium transition">重置篩選</button>
+        </div>
+      </div>
+      <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-300 flex-wrap gap-2">
+        <div class="flex items-center gap-3">
+          <span id="count" class="meta-text text-xs font-medium"></span>
+          <label class="inline-flex items-center gap-1.5 meta-text text-xs cursor-pointer">
+            <input type="checkbox" id="f-breaks" onchange="render()" checked />
+            顯示休息 / 午餐 / 影片
+          </label>
+        </div>
+        <div class="flex gap-2 text-[10px] flex-wrap items-center">
+          <span class="meta-text text-[10px]">點擊篩選:</span>
+          <button type="button" class="period-tag period-morning cursor-pointer hover:opacity-80" onclick="setPeriod('上午')">上午</button>
+          <button type="button" class="period-tag period-afternoon cursor-pointer hover:opacity-80" onclick="setPeriod('下午')">下午</button>
+          <button type="button" class="period-tag period-group cursor-pointer hover:opacity-80" onclick="setPeriod('小組')">小組</button>
+          <button type="button" class="period-tag period-ops cursor-pointer hover:opacity-80" onclick="setPeriod('課務')">課務</button>
+          <button type="button" class="period-tag period-break cursor-pointer hover:opacity-80" onclick="setPeriod('休息')">休息</button>
+          <button type="button" class="period-tag period-video cursor-pointer hover:opacity-80" onclick="setPeriod('影片')">影片</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card rounded overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="sched">
+          <thead>
+            <tr>
+              <th class="whitespace-nowrap">週</th>
+              <th class="whitespace-nowrap">日期</th>
+              <th class="whitespace-nowrap">時段</th>
+              <th class="whitespace-nowrap">時間</th>
+              <th>課程主題</th>
+              <th class="whitespace-nowrap">講師</th>
+              <th class="whitespace-nowrap">單位</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <p class="text-center meta-text text-[10px] mt-4">
+      📄 資料來源：<a href="http://mgr.aiacademy.tw/" target="_blank" class="text-blue-700 hover:underline">AIA 學員專區</a>
+    </p>
+  </main>
+
+  <footer class="max-w-6xl mx-auto px-6 py-8 text-center border-t border-gray-300 mt-8">
+    <p class="meta-text text-xs">
+      <a href="/schedule.html" class="text-blue-700 hover:underline">8 週課表</a> &middot;
+      <a href="/more.html" class="text-blue-700 hover:underline">更多</a>
+    </p>
+  </footer>
+
+  <script>
+    var LIFF_ID = '2009738746-2qigSpHh';
+    var currentUser = null;
+
+    // Theme management — persists in localStorage
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      var btn = document.getElementById('theme-toggle');
+      if (btn) btn.innerHTML = t === 'dark' ? '☀️ 日間' : '🌙 夜間';
+      try { localStorage.setItem('schedule_theme', t); } catch(e) {}
+    }
+    function toggleTheme() {
+      var cur = document.documentElement.getAttribute('data-theme') || 'light';
+      applyTheme(cur === 'dark' ? 'light' : 'dark');
+    }
+    // Load saved theme immediately (before LIFF check)
+    (function() {
+      try {
+        var saved = localStorage.getItem('schedule_theme');
+        if (saved === 'dark') applyTheme('dark');
+        else applyTheme('light');
+      } catch(e) { applyTheme('light'); }
+    })();
+
+    // === Complete day agenda (Toastmaster-style) ===
+    var DATES = { 1:'04/11 (六)', 2:'04/18 (六)', 3:'04/25 (六)', 4:'05/02 (六)', 5:'05/09 (六)', 6:'05/16 (六)', 7:'05/23 (六)', 8:'05/30 (六)' };
+
+    // Content slots per week
+    var CONTENT = {
+      1: [
+        { period:'上午', time:'09:00-10:20', title:'始業式・校務長演講 + AI PM 課程導覽', teacher:'蔡明順校務長 & GIGA', org:'台灣人工智慧學校' },
+        { period:'上午', time:'10:35-12:00', title:'專題演講：從 AI Agent 到虛擬員工 — AI 在產品的開發、管理', teacher:'李國財 (BEJO)', org:'FIKAYARD' },
+        { period:'下午', time:'13:30-15:30', title:'主題演講', teacher:'吳振和', org:'Cacafly 技術副總' },
+        { period:'小組', time:'16:00-17:00', title:'小組專題時間：學員分組相見歡', teacher:'全體學員', org:'—' },
+        { period:'課務', time:'17:00-17:30', title:'課務須知、競賽說明、課程問卷、AIATCL 考前閱讀', teacher:'校務團隊', org:'AIA' }
+      ],
+      2: [
+        { period:'上午', time:'09:00-10:20', title:'提示工程與 Gemini 多模態實戰：AI 溝通術', teacher:'蔡政霖', org:'AIA' },
+        { period:'上午', time:'10:35-12:00', title:'提示工程與 Gemini 多模態實戰（續）', teacher:'蔡政霖', org:'AIA' },
+        { period:'下午', time:'13:30-15:30', title:'PM 實務：產品開發企劃', teacher:'GIGA', org:'Nautilus AI 執行長' },
+        { period:'小組', time:'16:00-17:00', title:'小組專題時間：專題討論 + 班代選舉投票', teacher:'全體學員', org:'—' }
+      ],
+      3: [
+        { period:'上午', time:'09:00-10:20', title:'檢索增強生成 (RAG) 與 NotebookLM 應用', teacher:'蔡政霖', org:'AIA' },
+        { period:'上午', time:'10:35-12:00', title:'RAG / NotebookLM 實戰（續）', teacher:'蔡政霖', org:'AIA' },
+        { period:'下午', time:'13:30-15:30', title:'PM 實務：範疇 / 時間 / 人力 / 品質控管', teacher:'GIGA', org:'Nautilus AI 執行長' },
+        { period:'小組', time:'16:00-17:00', title:'專題演講：你是否在公司救了一個專案？— 深談 AI PM 與工具實踐', teacher:'王淳恆', org:'圖策科技 AI 研發處長' }
+      ],
+      4: [
+        { period:'上午', time:'09:00-10:20', title:'Google Workspace 工具 AI 實戰應用：簡報效率倍增', teacher:'李福裕', org:'AIA' },
+        { period:'上午', time:'10:35-12:00', title:'Google Workspace AI 實戰（續）', teacher:'李福裕', org:'AIA' },
+        { period:'下午', time:'13:30-15:30', title:'PM 實務：成本管理 / 採購管理', teacher:'GIGA', org:'Nautilus AI 執行長' },
+        { period:'小組', time:'16:00-17:00', title:'小組專題時間：專題討論', teacher:'全體學員', org:'—' },
+        { period:'課務', time:'17:00-17:30', title:'AI 素養級認證 (AIATCL™) 測驗說明', teacher:'校務團隊', org:'AIA' }
+      ],
+      5: [
+        { period:'上午', time:'09:00-10:20', title:'業務流程自動化：產品介紹影片分鏡 (Storyboard)', teacher:'李福裕', org:'AIA' },
+        { period:'上午', time:'10:35-12:00', title:'業務流程自動化：市場趨勢週報', teacher:'李福裕', org:'AIA' },
+        { period:'下午', time:'13:30-15:30', title:'PM 實務：溝通管理 / 風險管理', teacher:'GIGA', org:'Nautilus AI 執行長' },
+        { period:'小組', time:'16:00-17:00', title:'小組專題時間：專題討論', teacher:'全體學員', org:'—' }
+      ],
+      6: [
+        { period:'上午', time:'09:00-10:20', title:'Vibe Coding：用說的做原型開發 — AI 會議摘要器', teacher:'劉又綺', org:'AIA' },
+        { period:'上午', time:'10:35-12:00', title:'Vibe Coding：用 BOM 表產生報價系統', teacher:'劉又綺', org:'AIA' },
+        { period:'下午', time:'13:30-15:30', title:'PM 實務：產品架構、高效打造 DEMO', teacher:'GIGA', org:'Nautilus AI 執行長' },
+        { period:'小組', time:'16:00-17:00', title:'專題演講：AI 時代，專案經理不再管理專案？', teacher:'孫弘岳', org:'國立臺灣師範大學教授' }
+      ],
+      7: [
+        { period:'上午', time:'09:00-10:20', title:'Vibe Coding：實戰部署 — 訂單追蹤儀表板', teacher:'劉又綺', org:'AIA' },
+        { period:'上午', time:'10:35-12:00', title:'Vibe Coding：專案看板 Kanban / 驗收 / 驗證', teacher:'劉又綺', org:'AIA' },
+        { period:'下午', time:'13:30-15:30', title:'PM 實務：產品介面與整合、快速打造 MVP', teacher:'GIGA', org:'Nautilus AI 執行長' },
+        { period:'小組', time:'16:00-17:00', title:'小組專題時間：專題討論', teacher:'全體學員', org:'—' }
+      ],
+      8: [
+        { period:'上午', time:'09:00-10:20', title:'主題演講', teacher:'陳伶志', org:'台灣人工智慧學校執行長' },
+        { period:'上午', time:'10:35-12:00', title:'AI 素養級認證考試 AIATCL™ (50 分鐘)', teacher:'全體學員', org:'—' },
+        { period:'下午', time:'13:30-15:30', title:'小組成果發表 Demo Day（簡報模板下載）', teacher:'全體學員', org:'—' },
+        { period:'小組', time:'16:00-17:00', title:'結業式', teacher:'全體學員', org:'台灣人工智慧學校' }
+      ]
+    };
+
+    // Build ROWS with break slots interleaved
+    var ROWS = [];
+    for (var w = 1; w <= 8; w++) {
+      var d = DATES[w];
+      var c = CONTENT[w];
+      var idx = 0;
+      // Morning 1
+      if (c[idx]) ROWS.push(Object.assign({ w:w, date:d }, c[idx++]));
+      // 10:20-10:35 break
+      ROWS.push({ w:w, date:d, period:'休息', time:'10:20-10:35', title:'☕ 休息', teacher:'—', org:'—' });
+      // Morning 2
+      if (c[idx]) ROWS.push(Object.assign({ w:w, date:d }, c[idx++]));
+      // 12:00-13:30 lunch
+      ROWS.push({ w:w, date:d, period:'休息', time:'12:00-13:30', title:'🍱 午餐', teacher:'—', org:'—' });
+      // Afternoon
+      if (c[idx]) ROWS.push(Object.assign({ w:w, date:d }, c[idx++]));
+      // 15:30-16:00 break
+      ROWS.push({ w:w, date:d, period:'休息', time:'15:30-16:00', title:'☕ 休息', teacher:'—', org:'—' });
+      // Group
+      if (c[idx]) ROWS.push(Object.assign({ w:w, date:d }, c[idx++]));
+      // Ops (W1, W4 only)
+      if (c[idx]) ROWS.push(Object.assign({ w:w, date:d }, c[idx++]));
+      // 17:30- video
+      ROWS.push({ w:w, date:d, period:'影片', time:'17:30-', title:'📹 課程影片', teacher:'—', org:'新光板橋傑仕堡 A棟 2樓' });
+    }
+
+    async function initLiff() {
+      if (!LIFF_ID || typeof liff === 'undefined') {
+        showLoginRequired();
+        return;
+      }
+      try {
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) {
+          showLoginRequired();
+          return;
+        }
+        var profile = await liff.getProfile();
+        currentUser = { userId: profile.userId, displayName: profile.displayName, pictureUrl: profile.pictureUrl || '' };
+        showSchedule();
+      } catch (e) {
+        console.error('LIFF init error:', e);
+        showLoginRequired();
+      }
+    }
+
+    function handleLogin() {
+      var base = window.location.origin + window.location.pathname;
+      liff.login({ redirectUri: base + '?v=' + Date.now() });
+    }
+
+    function handleLogout() {
+      if (typeof liff !== 'undefined' && liff.isLoggedIn()) liff.logout();
+      window.location.reload();
+    }
+
+    function showLoginRequired() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('login-required').classList.remove('hidden');
+    }
+
+    function showSchedule() {
+      document.getElementById('loading').classList.add('hidden');
+      document.getElementById('user-info').classList.remove('hidden');
+      document.getElementById('user-avatar').src = currentUser.pictureUrl;
+      document.getElementById('user-name').textContent = currentUser.displayName;
+      document.getElementById('schedule-content').classList.remove('hidden');
+      populateTeacherFilter();
+      render();
+    }
+
+    function esc(s) {
+      var d = document.createElement('div');
+      d.textContent = s || '';
+      return d.innerHTML;
+    }
+
+    function populateTeacherFilter() {
+      var teachers = {};
+      ROWS.forEach(function(r) {
+        if (r.teacher === '—') return;
+        r.teacher.split(/[、&]/).map(function(t) { return t.trim(); }).forEach(function(t) {
+          if (t && t !== '全體學員' && t !== '校務團隊') teachers[t] = true;
+        });
+      });
+      var sel = document.getElementById('f-teacher');
+      Object.keys(teachers).sort().forEach(function(t) {
+        var opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        sel.appendChild(opt);
+      });
+    }
+
+    function periodClass(p) {
+      if (p === '上午') return 'period-morning';
+      if (p === '下午') return 'period-afternoon';
+      if (p === '小組') return 'period-group';
+      if (p === '課務') return 'period-ops';
+      if (p === '休息') return 'period-break';
+      if (p === '影片') return 'period-video';
+      return '';
+    }
+
+    function render() {
+      var search = document.getElementById('f-search').value.trim().toLowerCase();
+      var week = document.getElementById('f-week').value;
+      var period = document.getElementById('f-period').value;
+      var teacher = document.getElementById('f-teacher').value;
+      var showBreaks = document.getElementById('f-breaks').checked;
+
+      var filtered = ROWS.filter(function(r) {
+        if (week && String(r.w) !== week) return false;
+        if (period && r.period !== period) return false;
+        if (!showBreaks && (r.period === '休息' || r.period === '影片')) return false;
+        if (teacher && r.teacher.indexOf(teacher) === -1) return false;
+        if (search) {
+          var hay = (r.title + ' ' + r.teacher + ' ' + r.org + ' ' + r.date + ' W' + r.w).toLowerCase();
+          if (hay.indexOf(search) === -1) return false;
+        }
+        return true;
+      });
+
+      var tbody = document.getElementById('tbody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-slate-500 py-8">沒有符合條件的課程</td></tr>';
+      } else {
+        tbody.innerHTML = filtered.map(function(r) {
+          var dim = (r.period === '休息' || r.period === '影片') ? ' row-dim' : '';
+          return '<tr class="' + dim + '">' +
+            '<td class="whitespace-nowrap font-mono font-bold" style="color:var(--cell-w)">W' + r.w + '</td>' +
+            '<td class="whitespace-nowrap" style="color:var(--cell-date)">' + esc(r.date) + '</td>' +
+            '<td class="whitespace-nowrap"><span class="period-tag ' + periodClass(r.period) + '">' + r.period + '</span></td>' +
+            '<td class="whitespace-nowrap font-mono text-[11px]" style="color:var(--cell-time)">' + esc(r.time) + '</td>' +
+            '<td style="color:var(--cell-title)">' + esc(r.title) + '</td>' +
+            '<td class="whitespace-nowrap font-medium" style="color:var(--cell-teacher)">' + esc(r.teacher) + '</td>' +
+            '<td class="whitespace-nowrap text-[11px]" style="color:var(--cell-org)">' + esc(r.org) + '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      document.getElementById('count').textContent = '共 ' + filtered.length + ' / ' + ROWS.length + ' 筆';
+    }
+
+    function setPeriod(p) {
+      document.getElementById('f-period').value = p;
+      if (p === '休息' || p === '影片') {
+        document.getElementById('f-breaks').checked = true;
+      }
+      render();
+    }
+
+    function resetFilters() {
+      document.getElementById('f-search').value = '';
+      document.getElementById('f-week').value = '';
+      document.getElementById('f-period').value = '';
+      document.getElementById('f-teacher').value = '';
+      document.getElementById('f-breaks').checked = true;
+      render();
+    }
+
+    initLiff();
+  </script>
+</body>
+</html>
