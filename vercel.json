@@ -2,6 +2,8 @@
   "rewrites": [
     { "source": "/api/content", "destination": "/api/content.js" },
     { "source": "/api/track", "destination": "/api/track.js" },
-    { "source": "/api/admin", "destination": "/api/admin.js" }
+    { "source": "/api/admin", "destination": "/api/admin.js" },
+    { "source": "/api/brief", "destination": "/api/brief.js" },
+    { "source": "/api/briefs", "destination": "/api/briefs.js" }
   ]
 }

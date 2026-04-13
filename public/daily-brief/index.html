@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 每日速報 | MarkLuce.ai</title>
+<style>
+:root{--bg:#0a0a14;--bg2:rgba(255,255,255,.04);--bg3:rgba(255,255,255,.06);--text:#e0e0e0;--text2:#aaa;--text3:#666;--accent:#4ecdc4;--accent2:#6c5ce7;--border:rgba(255,255,255,.08);--card-hover:rgba(255,255,255,.06)}
+[data-theme="light"]{--bg:#f7f7f7;--bg2:#fff;--bg3:#eee;--text:#222;--text2:#555;--text3:#999;--accent:#0a8a82;--accent2:#5b4cdb;--border:rgba(0,0,0,.08);--card-hover:#f0f0f0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','Noto Sans TC',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1.5rem;max-width:800px;margin:0 auto}
+.top-bar a{color:var(--text3);text-decoration:none;font-size:.85rem}
+.top-bar a:hover{color:var(--accent)}
+.theme-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:.2rem .5rem;color:var(--text3);cursor:pointer;font-size:.8rem}
+.header{max-width:800px;margin:0 auto;padding:2rem 1.5rem 1rem}
+.header h1{font-size:1.8rem;font-weight:700;margin-bottom:.2rem}
+.header h1 span{color:var(--accent)}
+.date-label{font-size:.95rem;color:var(--accent);font-weight:600;margin-bottom:.5rem}
+.date-nav{display:flex;gap:.5rem;align-items:center;margin-bottom:1rem}
+.date-nav button{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:.3rem .7rem;color:var(--text);cursor:pointer;font-size:.85rem}
+.date-nav button:hover{border-color:var(--accent);color:var(--accent)}
+.date-nav .current{font-size:.9rem;color:var(--text2)}
+.headlines{max-width:800px;margin:0 auto;padding:0 1.5rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1rem;transition:all .2s}
+.card:hover{border-color:var(--accent);background:var(--card-hover)}
+.card-num{display:inline-block;width:1.6rem;height:1.6rem;line-height:1.6rem;text-align:center;border-radius:50%;background:var(--accent);color:#000;font-size:.75rem;font-weight:700;margin-right:.5rem;vertical-align:middle}
+.card h2{font-size:1.05rem;display:inline;vertical-align:middle}
+.card p{margin-top:.6rem;font-size:.92rem;color:var(--text2);line-height:1.7}
+.card .source{margin-top:.6rem;display:inline-block;font-size:.8rem;color:var(--accent);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.2rem .6rem}
+.card .source:hover{border-color:var(--accent);background:rgba(78,205,196,.1)}
+.archive{max-width:800px;margin:2rem auto;padding:0 1.5rem 3rem}
+.archive h3{font-size:1rem;color:var(--text);margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.archive-item{display:block;padding:.6rem 0;border-bottom:1px solid var(--border);text-decoration:none;color:var(--text);font-size:.9rem;transition:color .2s}
+.archive-item:hover{color:var(--accent)}
+.archive-item .a-date{color:var(--accent);font-weight:600;margin-right:.5rem;font-family:monospace}
+.archive-item .a-summary{color:var(--text2);font-size:.82rem}
+.loading{text-align:center;padding:3rem;color:var(--text3)}
+.footer{text-align:center;padding:1.5rem;color:var(--text3);font-size:.8rem;border-top:1px solid var(--border)}
+.footer a{color:var(--accent);text-decoration:none}
+@media(max-width:600px){.header{padding:1.5rem 1rem .5rem}.headlines{padding:0 1rem}.archive{padding:0 1rem 2rem}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+<a href="/">← MarkLuce.ai</a>
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()">&#9790;</button>
+</div>
+
+<div class="header">
+<h1><span>AI</span> 每日速報</h1>
+<div class="date-nav">
+<button onclick="navDay(-1)">← 前一天</button>
+<span class="current" id="dateLabel"></span>
+<button onclick="navDay(1)">後一天 →</button>
+</div>
+</div>
+
+<div class="headlines" id="headlines">
+<div class="loading">載入中...</div>
+</div>
+
+<div class="archive" id="archive">
+<h3>日報列表</h3>
+<div id="archiveList"></div>
+</div>
+
+<div class="footer">
+由 <a href="https://markluce.ai/">MarkLuce.ai</a> 出品 | 與 Claude Opus 4.6 共同創作
+</div>
+
+<script>
+let currentDate=null;
+let archiveData=[];
+
+async function loadBrief(date){
+  const url=date?`/api/brief?date=${date}`:'/api/brief';
+  const r=await fetch(url);
+  const d=await r.json();
+  if(!d){
+    document.getElementById('headlines').innerHTML='<div class="loading">今日尚無速報</div>';
+    return;
+  }
+  currentDate=d.date;
+  document.getElementById('dateLabel').textContent=formatDate(d.date);
+  document.title=`AI 每日速報 ${formatDate(d.date)} | MarkLuce.ai`;
+
+  document.getElementById('headlines').innerHTML=d.headlines.map((h,i)=>`
+    <div class="card">
+      <span class="card-num">${i+1}</span>
+      <h2>${h.title}</h2>
+      <p>${h.summary}</p>
+      ${h.source_url?`<a class="source" href="${h.source_url}" target="_blank" rel="noopener">${h.source_name||'來源'} ↗</a>`:''}
+    </div>
+  `).join('');
+}
+
+async function loadArchive(){
+  const r=await fetch('/api/briefs?limit=60');
+  archiveData=await r.json();
+  const el=document.getElementById('archiveList');
+
+  let currentMonth='';
+  el.innerHTML=archiveData.map(b=>{
+    const month=b.date.substring(0,7);
+    const titles=b.headlines.map(h=>h.title).join('、');
+    const summary=titles.length>80?titles.substring(0,80)+'…':titles;
+    let monthHeader='';
+    if(month!==currentMonth){
+      currentMonth=month;
+      const[y,m]=month.split('-');
+      monthHeader=`<div style="margin-top:1rem;font-size:.85rem;color:var(--accent);font-weight:600">${y} 年 ${parseInt(m)} 月</div>`;
+    }
+    return monthHeader+`<a class="archive-item" href="#" onclick="event.preventDefault();loadBrief('${b.date}');window.scrollTo(0,0)">
+      <span class="a-date">${b.date}</span>
+      <span class="a-summary">${summary}</span>
+    </a>`;
+  }).join('');
+}
+
+function navDay(delta){
+  if(!currentDate)return;
+  const d=new Date(currentDate+'T00:00:00');
+  d.setDate(d.getDate()+delta);
+  const next=d.toISOString().split('T')[0];
+  loadBrief(next);
+}
+
+function formatDate(dateStr){
+  const[y,m,d]=dateStr.split('-');
+  const days=['日','一','二','三','四','五','六'];
+  const dt=new Date(dateStr+'T00:00:00');
+  return `${y}/${m}/${d}（${days[dt.getDay()]}）`;
+}
+
+function toggleTheme(){
+  const html=document.documentElement;
+  if(html.getAttribute('data-theme')==='light'){
+    html.removeAttribute('data-theme');
+    localStorage.setItem('brief-theme','dark');
+  }else{
+    html.setAttribute('data-theme','light');
+    localStorage.setItem('brief-theme','light');
+  }
+}
+
+(function(){
+  if(localStorage.getItem('brief-theme')==='light'){
+    document.documentElement.setAttribute('data-theme','light');
+  }
+  const params=new URLSearchParams(location.search);
+  const date=params.get('date');
+  loadBrief(date||null);
+  loadArchive();
+})();
+</script>
+</body>
+</html>
