@@ -57,6 +57,14 @@ body{font-family:'Segoe UI','Noto Sans TC',system-ui,sans-serif;background:var(-
 .audio-btn{display:flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border:1px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text);cursor:pointer;font-size:.85rem;transition:all .2s}
 .audio-btn:hover{border-color:var(--accent);color:var(--accent)}
 .audio-btn.playing{border-color:var(--accent);color:var(--accent);background:rgba(78,205,196,.1)}
+.audio-player{display:none;margin-top:.8rem;padding:.8rem 1rem;background:var(--bg2);border:1px solid var(--border);border-radius:10px}
+.audio-player.active{display:block}
+.audio-player-label{font-size:.8rem;color:var(--accent);font-weight:600;margin-bottom:.4rem}
+.audio-slider-row{display:flex;align-items:center;gap:.6rem}
+.audio-time{font-size:.75rem;color:var(--text3);font-family:monospace;min-width:3.5rem;text-align:center}
+.audio-slider{flex:1;-webkit-appearance:none;appearance:none;height:4px;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+.audio-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer}
+.audio-slider::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;border:none}
 .reading-block{background:var(--reading-bg);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;line-height:2;transition:font-size .2s}
 .reading-block h4{font-size:.8rem;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem}
 .reading-block p{white-space:pre-wrap}
@@ -127,6 +135,15 @@ body{font-family:'Segoe UI','Noto Sans TC',system-ui,sans-serif;background:var(-
 <div class="label" id="audioLabelZh">中文朗讀</div>
 <button class="audio-btn" id="btnZhF" onclick="playAudio('zh','female',this)">&#9654; 女聲</button>
 <button class="audio-btn" id="btnZhM" onclick="playAudio('zh','male',this)">&#9654; 男聲</button>
+</div>
+
+<div class="audio-player" id="audioPlayer">
+<div class="audio-player-label" id="audioPlayerLabel"></div>
+<div class="audio-slider-row">
+<span class="audio-time" id="audioTimeCur">0:00</span>
+<input type="range" class="audio-slider" id="audioSlider" min="0" max="100" value="0">
+<span class="audio-time" id="audioTimeTotal">0:00</span>
+</div>
 </div>
 
 <div class="reading-block" id="enBlock">
@@ -213,9 +230,10 @@ function openSlug(topicId){
   document.getElementById('slugTextEn').textContent=t.text;
   document.getElementById('slugTextZh').textContent=t.textZh||'（中文翻譯準備中）';
 
-  // Reset audio buttons
-  document.querySelectorAll('.audio-btn').forEach(b=>{b.classList.remove('playing');b.innerHTML=b.innerHTML.replace('⏸','▶');});
-  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  // Reset audio
+  document.querySelectorAll('.audio-btn').forEach(b=>{b.classList.remove('playing');});
+  if(currentAudio){currentAudio.pause();currentAudio=null;activeBtn=null;}
+  document.getElementById('audioPlayer').classList.remove('active');
 
   // Reset assess
   document.querySelectorAll('.assess-btn').forEach(b=>{
@@ -232,24 +250,77 @@ function openSlug(topicId){
 }
 
 function goHome(){
-  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  if(currentAudio){currentAudio.pause();currentAudio=null;activeBtn=null;}
+  document.getElementById('audioPlayer').classList.remove('active');
   document.getElementById('slugPage').classList.remove('active');
   document.getElementById('homePage').classList.remove('hidden');
   location.hash='';
   updateResult();
 }
 
+let seeking=false,activeBtn=null;
+const slider=document.getElementById('audioSlider');
+const timeCur=document.getElementById('audioTimeCur');
+const timeTotal=document.getElementById('audioTimeTotal');
+const player=document.getElementById('audioPlayer');
+const playerLabel=document.getElementById('audioPlayerLabel');
+
+function fmtTime(s){
+  if(!s||isNaN(s))return '0:00';
+  const m=Math.floor(s/60);
+  const sec=Math.floor(s%60);
+  return m+':'+(sec<10?'0':'')+sec;
+}
+
+slider.addEventListener('input',()=>{seeking=true;});
+slider.addEventListener('change',()=>{
+  if(currentAudio){
+    currentAudio.currentTime=(slider.value/100)*currentAudio.duration;
+  }
+  seeking=false;
+});
+
 function playAudio(audioLang,voice,btn){
   if(currentAudio){currentAudio.pause();currentAudio=null;}
   document.querySelectorAll('.audio-btn').forEach(b=>{b.classList.remove('playing');});
+  if(activeBtn)activeBtn=null;
 
   const suffix=audioLang==='zh'?`-zh-${voice}`:(`-${voice}`);
   const src=`/audio/${currentTopic.id}${suffix}.mp3`;
-  currentAudio=new Audio(src);
-  btn.classList.add('playing');
+  const voiceLabel=audioLang==='zh'?(voice==='female'?'中文 女聲':'中文 男聲'):(voice==='female'?'English Female':'English Male');
 
-  currentAudio.onended=()=>{btn.classList.remove('playing');currentAudio=null;};
-  currentAudio.onerror=()=>{btn.classList.remove('playing');currentAudio=null;};
+  currentAudio=new Audio(src);
+  activeBtn=btn;
+  btn.classList.add('playing');
+  playerLabel.textContent=voiceLabel;
+  player.classList.add('active');
+  slider.value=0;
+  timeCur.textContent='0:00';
+  timeTotal.textContent='0:00';
+
+  currentAudio.onloadedmetadata=()=>{
+    timeTotal.textContent=fmtTime(currentAudio.duration);
+  };
+  currentAudio.ontimeupdate=()=>{
+    if(!seeking&&currentAudio){
+      timeCur.textContent=fmtTime(currentAudio.currentTime);
+      if(currentAudio.duration){
+        slider.value=(currentAudio.currentTime/currentAudio.duration)*100;
+      }
+    }
+  };
+  currentAudio.onended=()=>{
+    btn.classList.remove('playing');
+    activeBtn=null;
+    currentAudio=null;
+    player.classList.remove('active');
+  };
+  currentAudio.onerror=()=>{
+    btn.classList.remove('playing');
+    activeBtn=null;
+    currentAudio=null;
+    player.classList.remove('active');
+  };
   currentAudio.play();
 }
 
