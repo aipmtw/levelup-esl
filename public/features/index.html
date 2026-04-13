@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Features | MarkLuce.ai</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+:root{--bg:#09090b;--surface:#18181b;--surface2:#27272a;--text:#fafafa;--text2:#a1a1aa;--text3:#52525b;--accent:#22d3ee;--accent2:#a78bfa;--border:#27272a;--card-hover:#1f1f23;--tag-bg:rgba(34,211,238,.1);--tag-text:#22d3ee;--code-bg:#1e1e2e;--quote-border:#a78bfa}
+[data-theme="light"]{--bg:#fafafa;--surface:#fff;--surface2:#f4f4f5;--text:#18181b;--text2:#71717a;--text3:#a1a1aa;--accent:#0891b2;--accent2:#7c3aed;--border:#e4e4e7;--card-hover:#f4f4f5;--tag-bg:rgba(8,145,178,.08);--tag-text:#0891b2;--code-bg:#f4f4f5;--quote-border:#7c3aed}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'SF Pro Text','Noto Sans TC',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+.container{max-width:720px;margin:0 auto;padding:0 1.25rem}
+
+nav{padding:1rem 0;display:flex;justify-content:space-between;align-items:center}
+nav a{color:var(--text3);text-decoration:none;font-size:.8rem;letter-spacing:.02em}
+nav a:hover{color:var(--accent)}
+.nav-right{display:flex;gap:.75rem;align-items:center}
+.theme-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:1rem}
+.theme-btn:hover{color:var(--accent)}
+
+/* List view */
+.list-header{padding:2rem 0 1rem;border-bottom:1px solid var(--border)}
+.list-header h1{font-size:1.5rem;font-weight:700;letter-spacing:-.03em}
+.list-header h1 span{color:var(--accent)}
+.list-header p{font-size:.85rem;color:var(--text3);margin-top:.3rem}
+.list{padding:1.5rem 0}
+.list-card{display:block;text-decoration:none;color:var(--text);padding:1.2rem;margin-bottom:.75rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);transition:all .15s}
+.list-card:hover{border-color:var(--accent);background:var(--card-hover);transform:translateY(-1px)}
+.list-card h2{font-size:1.05rem;font-weight:600;margin-bottom:.3rem}
+.list-card .meta{font-size:.8rem;color:var(--text3);display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.list-card .meta .tag{display:inline-block;font-size:.7rem;padding:.1rem .4rem;border-radius:3px;background:var(--tag-bg);color:var(--tag-text)}
+
+/* Article view */
+.article-page{display:none}
+.article-page.active{display:block}
+.list-page.hidden{display:none}
+.article-header{padding:2.5rem 0 1.5rem;border-bottom:1px solid var(--border)}
+.article-header .date{font-size:.8rem;color:var(--accent);font-weight:600;margin-bottom:.5rem}
+.article-header h1{font-size:1.6rem;font-weight:700;line-height:1.4;letter-spacing:-.02em}
+.article-header .tags{margin-top:.75rem;display:flex;gap:.4rem;flex-wrap:wrap}
+.article-header .tag{font-size:.7rem;padding:.15rem .5rem;border-radius:4px;background:var(--tag-bg);color:var(--tag-text)}
+.font-controls{display:flex;align-items:center;gap:.3rem;margin-top:.75rem}
+.font-btn{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:.2rem .5rem;color:var(--text);cursor:pointer;font-size:.75rem;font-weight:700}
+.font-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.article-body{padding:2rem 0 3rem;line-height:1.9;transition:font-size .2s}
+.article-body h1{font-size:1.4rem;font-weight:700;margin:2rem 0 .75rem;color:var(--text)}
+.article-body h2{font-size:1.2rem;font-weight:700;margin:1.8rem 0 .6rem;color:var(--text);padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.article-body h3{font-size:1.05rem;font-weight:600;margin:1.5rem 0 .5rem;color:var(--text)}
+.article-body p{margin:.75rem 0;color:var(--text2)}
+.article-body strong{color:var(--text);font-weight:600}
+.article-body a{color:var(--accent);text-decoration:none}
+.article-body a:hover{text-decoration:underline}
+.article-body ul,.article-body ol{margin:.75rem 0;padding-left:1.5rem;color:var(--text2)}
+.article-body li{margin:.3rem 0}
+.article-body blockquote{border-left:3px solid var(--quote-border);padding:.75rem 1rem;margin:1rem 0;background:var(--surface);border-radius:0 8px 8px 0;color:var(--text3);font-size:.9rem}
+.article-body code{background:var(--code-bg);padding:.15rem .4rem;border-radius:4px;font-size:.88em;font-family:'SF Mono','Fira Code',monospace}
+.article-body pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.article-body pre code{background:none;padding:0}
+.article-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+.article-body th,.article-body td{padding:.6rem .75rem;border:1px solid var(--border);text-align:left}
+.article-body th{background:var(--surface);color:var(--text);font-weight:600;font-size:.8rem}
+.article-body td{color:var(--text2)}
+.article-body hr{border:none;border-top:1px solid var(--border);margin:2rem 0}
+
+.footer{padding:1.5rem 0;border-top:1px solid var(--border);text-align:center;font-size:.75rem;color:var(--text3)}
+.footer a{color:var(--accent);text-decoration:none}
+.loading{padding:3rem 0;text-align:center;color:var(--text3)}
+
+@media(max-width:480px){.container{padding:0 1rem}.article-header h1{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<nav>
+<a href="/">MarkLuce.ai</a>
+<div class="nav-right">
+<a href="/daily-brief">Daily Brief</a>
+<a href="/esl">ESL</a>
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()">&#9789;</button>
+</div>
+</nav>
+
+<!-- LIST PAGE -->
+<div class="list-page" id="listPage">
+<div class="list-header">
+<h1><span>&lt;/&gt;</span> Features</h1>
+<p>AI 開發工具深度分析與專題文章</p>
+</div>
+<div class="list" id="featureList">
+<div class="loading">載入中...</div>
+</div>
+</div>
+
+<!-- ARTICLE PAGE -->
+<div class="article-page" id="articlePage">
+<div class="article-header">
+<div class="date" id="artDate"></div>
+<h1 id="artTitle"></h1>
+<div class="tags" id="artTags"></div>
+<div class="font-controls">
+<button class="font-btn" onclick="changeFontSize(-1)">A-</button>
+<button class="font-btn" id="fontLabel">16</button>
+<button class="font-btn" onclick="changeFontSize(1)">A+</button>
+</div>
+</div>
+<div class="article-body" id="artBody"></div>
+</div>
+
+<div class="footer">
+由 <a href="https://markluce.ai/">MarkLuce.ai</a> 出品 · 與 Claude Opus 4.6 共同創作
+</div>
+</div>
+
+<script>
+let fontSize=16;
+
+async function init(){
+  const params=new URLSearchParams(location.search);
+  const slug=params.get('slug');
+  if(slug){loadArticle(slug);}
+  else{loadList();}
+}
+
+async function loadList(){
+  document.getElementById('listPage').classList.remove('hidden');
+  document.getElementById('articlePage').classList.remove('active');
+  const r=await fetch('/api/features');
+  const data=await r.json();
+  document.getElementById('featureList').innerHTML=data.map(f=>`
+    <a class="list-card" href="?slug=${f.slug}" onclick="event.preventDefault();loadArticle('${f.slug}')">
+      <h2>${f.title}</h2>
+      <div class="meta">
+        <span>${f.date}</span>
+        ${(f.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}
+      </div>
+    </a>
+  `).join('')||'<div class="loading">尚無文章</div>';
+}
+
+async function loadArticle(slug){
+  document.getElementById('listPage').classList.add('hidden');
+  document.getElementById('articlePage').classList.add('active');
+  document.getElementById('artBody').innerHTML='<div class="loading">載入中...</div>';
+  history.pushState(null,'','?slug='+slug);
+
+  const r=await fetch('/api/features?slug='+slug);
+  const d=await r.json();
+  if(!d){
+    document.getElementById('artBody').innerHTML='<div class="loading">文章不存在</div>';
+    return;
+  }
+  document.getElementById('artDate').textContent=d.date;
+  document.getElementById('artTitle').textContent=d.title;
+  document.title=d.title+' | MarkLuce.ai';
+  document.getElementById('artTags').innerHTML=(d.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
+  document.getElementById('artBody').innerHTML=marked.parse(d.content);
+  applyFontSize();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function changeFontSize(delta){
+  fontSize=Math.max(13,Math.min(24,fontSize+delta));
+  document.getElementById('fontLabel').textContent=fontSize;
+  applyFontSize();
+  localStorage.setItem('feat-fontsize',fontSize);
+}
+
+function applyFontSize(){
+  const body=document.getElementById('artBody');
+  body.style.fontSize=fontSize+'px';
+}
+
+function toggleTheme(){
+  const h=document.documentElement;
+  if(h.getAttribute('data-theme')==='light'){
+    h.removeAttribute('data-theme');
+    localStorage.setItem('feat-theme','dark');
+  }else{
+    h.setAttribute('data-theme','light');
+    localStorage.setItem('feat-theme','light');
+  }
+}
+
+window.addEventListener('popstate',()=>{
+  const params=new URLSearchParams(location.search);
+  const slug=params.get('slug');
+  if(slug)loadArticle(slug);else loadList();
+});
+
+(function(){
+  if(localStorage.getItem('feat-theme')==='light')document.documentElement.setAttribute('data-theme','light');
+  const s=localStorage.getItem('feat-fontsize');if(s)fontSize=parseInt(s);
+  document.getElementById('fontLabel').textContent=fontSize;
+})();
+
+init();
+</script>
+</body>
+</html>

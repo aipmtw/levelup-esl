@@ -1,0 +1,153 @@
+# OpenClaw vs Claude Code：功能、架構與安全性全面比較
+
+2026 年最受矚目的兩款 AI 開發工具——OpenClaw 與 Claude Code——代表了完全不同的設計哲學。一個是開源、模型無關的生活自動化平台；另一個是專注於軟體開發的終端 AI 助手。本文從功能、架構、安全性三大面向進行深度比較，幫助你選擇最適合的工具。
+
+---
+
+## 一、產品定位：生活自動化 vs 專業開發
+
+**OpenClaw** 是一個開源 AI 虛擬助理平台，透過 Discord、Telegram、WhatsApp、Signal 等通訊軟體提供服務。它有 100+ 內建技能、50+ 整合工具，涵蓋聊天、生產力、智慧家居、音樂串流等領域。GitHub 上累積超過 34 萬顆星，是 2026 年最熱門的開源 AI 專案之一。
+
+**Claude Code** 是 Anthropic 官方推出的 CLI 工具，專為軟體工程師設計。它直接在終端機中運行，能理解整個程式碼庫、跨檔案編輯、執行命令、自動修 bug。2026 年新增了電腦操控（Computer Use）、排程任務、語音模式、自動模式等功能，配合 100 萬 token 的上下文窗口，已成為許多開發者的日常作業系統。
+
+**核心差異**：OpenClaw 是「什麼都能做一點」的通用平台；Claude Code 是「把寫程式這件事做到極致」的專業工具。
+
+---
+
+## 二、架構設計：持久運行 vs 會話式協作
+
+### OpenClaw：永不停歇的 Agent 運行時
+
+OpenClaw 採用**持久化 Agent 運行時**架構。它作為一個長駐程序運行，可以：
+- 訂閱 Webhook、輪詢 API
+- 回應日曆事件、自動發送郵件
+- 建立 GitHub Issue、協調子代理
+- 透過 cron 排程和 Webhook 觸發器自動執行任務
+
+即使你離開鍵盤，OpenClaw 仍持續運作。支援 200+ LLM 後端（Claude、GPT-4o、Gemini、Llama、Mistral、Kimi 2.5 等），是真正的模型無關平台。
+
+### Claude Code：受控的會話式協作
+
+Claude Code 採用**會話式、無狀態模型**。每次開啟終端並啟動 Claude Code，都會建立新的上下文窗口。它從磁碟讀取檔案來建構上下文，但沒有「永遠在線」的後台程序。
+
+2026 年新增的**排程任務**功能部分彌補了這個差距——你可以將任務交給 Anthropic 託管的雲端基礎設施，即使電腦關機也能持續執行。但這與 OpenClaw 的全面自動化仍有本質區別。
+
+Claude Code 的設計哲學是：**AI 應該是受引導的協作者**，而非自主行動的代理。每個操作（編輯檔案、執行命令、存取網路）都經過權限系統把關。
+
+---
+
+## 三、功能比較
+
+| 面向 | OpenClaw | Claude Code |
+|------|----------|-------------|
+| **主要用途** | 生活/工作自動化 | 軟體開發 |
+| **運行方式** | 持久化後台程序 | 會話式 CLI + 排程任務 |
+| **LLM 支援** | 200+ 模型（模型無關） | 僅 Claude 模型系列 |
+| **通訊整合** | Discord、Telegram、WhatsApp、Signal、Slack 等 | 終端機 + VS Code 擴充 |
+| **程式碼理解** | 基本（透過 GitHub 整合） | 深度（100 萬 token 上下文） |
+| **瀏覽器操作** | 內建瀏覽器整合 | Computer Use（Pro/Max） |
+| **語音支援** | 透過通訊平台語音 | /voice 推播對講，20 語言 |
+| **插件生態** | ClawHub 技能市集 | MCP 協定（9,700 萬安裝） |
+| **多代理協作** | 子代理協調 | Multi-Agent + Cowork 模式 |
+| **定價** | 開源免費（需付 API 費用） | Claude Pro/Max 訂閱制 |
+
+---
+
+## 四、安全性：天壤之別
+
+這是兩款工具差距最大的領域，也是選擇時最需要慎重考慮的因素。
+
+### OpenClaw：138 個 CVE 的警鐘
+
+截至 2026 年 4 月，OpenClaw 已累積 **138 個已知 CVE**，其中包括：
+- **7 個 Critical（CVSS 9.0+）**
+- **49 個 High（CVSS 7.0–8.9）**
+
+最嚴重的幾個漏洞：
+
+**CVE-2026-25253（CVSS 8.8）— 遠端程式碼執行**：OpenClaw 的控制 UI 盲目信任 URL 參數 `gatewayUrl` 並自動連線，導致使用者的認證 token 外洩。2026 年 2 月 3 日公開時，已有超過 40,000 個 OpenClaw 實例暴露在公共網路上，其中 63% 可被遠端利用。
+
+**CVE-2026-32922 — 嚴重權限提升**：OpenClaw 歷史上最嚴重的漏洞。只需一個 API 呼叫，就能將配對 token 轉換為完整管理員控制權，包括 RCE 能力。
+
+**2026 年 3 月「漏洞洪水」**：四天內連續揭露 9 個 CVE，暴露出 OpenClaw 的安全審計流程嚴重不足。
+
+此外，ClawHub 技能市集中發現**超過 800 個惡意「技能」（插件）**，可能竊取使用者資料或執行惡意程式碼。
+
+截至目前，全球有超過 **135,000 個 OpenClaw 實例**暴露在公共網路上，分布於 82 個國家，其中超過 15,000 個直接存在遠端程式碼執行風險。
+
+### Claude Code：設計即安全
+
+Claude Code 的安全模型從架構層面就截然不同：
+
+**三層權限系統**：
+- 讀取操作（搜尋、列目錄）：自動允許
+- 修改操作（編輯檔案、執行命令）：需使用者確認
+- 拒絕清單：即使被要求也無法執行
+
+**作業系統級沙箱**：
+- Linux 使用 bubblewrap、macOS 使用 seatbelt，在 OS 層面強制檔案系統和網路隔離
+- 內部測試數據顯示，沙箱安全地減少了 84% 的權限提示
+
+**攻擊面更窄**：Claude Code 僅接觸你的程式碼庫和終端機，不像 OpenClaw 連接到郵件、通訊、智慧家居等多個外部系統。
+
+**但非完美無瑕**：2026 年 3 月，安全研究公司 Ona 發現 Claude Code 可以透過路徑技巧（如 `/proc/self/root/usr/bin/npx`）繞過拒絕清單。Anthropic 已修補此問題，但這提醒我們：即使是設計良好的安全系統也需要持續審計。
+
+### 安全性總結
+
+| 安全指標 | OpenClaw | Claude Code |
+|---------|----------|-------------|
+| 已知 CVE 數量 | 138（7 Critical） | 極少（已修補） |
+| 暴露實例 | 135,000+（82 國） | N/A（本地運行） |
+| 惡意插件 | 800+（ClawHub） | MCP 協定有審查機制 |
+| 沙箱機制 | 無原生沙箱 | OS 級沙箱（bubblewrap/seatbelt） |
+| 權限模型 | 預設開放 | 預設需確認 |
+| 認證問題 | 63% 實例無認證 | 不適用 |
+
+---
+
+## 五、台灣觀點：怎麼選？
+
+### 適合用 OpenClaw 的場景
+- 你需要跨平台自動化（LINE → Slack → Email）
+- 你想用開源 + 本地模型降低成本
+- 你的用途是非敏感的個人效率提升
+- 你有能力自行管理安全配置
+
+### 適合用 Claude Code 的場景
+- 你是專業軟體工程師
+- 你需要深度理解程式碼庫的 AI 助手
+- 安全性和資料隱私是優先考量
+- 你願意為穩定可靠的服務付費
+
+### 台灣開發者的務實建議
+
+1. **不要二選一，而是分層使用**：用 Claude Code 處理程式碼開發，用 OpenClaw 處理非敏感的日常自動化。兩者的定位根本不同，強行比較反而會忽略各自的強項。
+
+2. **OpenClaw 的安全問題不容忽視**：138 個 CVE、800+ 惡意插件、13.5 萬個暴露實例——這些數字意味著，如果你在企業環境中使用 OpenClaw，必須投入額外資源進行安全加固。台灣的資安法規對關鍵基礎設施日趨嚴格，選擇工具時務必評估合規成本。
+
+3. **MCP vs ClawHub 的生態之爭**：Anthropic 的 MCP 協定已突破 9,700 萬安裝，且所有主要 AI 供應商都已支援。相較於 ClawHub 的安全爭議，MCP 的標準化路線對企業更有吸引力。
+
+4. **成本計算要全面**：OpenClaw 看似免費，但 API 費用 + 安全管理 + 維運人力的總成本可能超過 Claude Code 的訂閱費用。特別是 Kimi 2.5 雖然便宜，但在繁體中文場景的表現仍需評估。
+
+---
+
+## 結語
+
+OpenClaw 和 Claude Code 不是同一個賽道的選手。OpenClaw 是 AI 時代的「瑞士刀」，什麼都能做，但刀刃不夠鋒利、安全鎖也不夠牢固。Claude Code 是精密的「手術刀」，專門切一種東西，但切得又快又準又安全。
+
+對於台灣的開發者和企業來說，2026 年的選擇不再是「哪個 AI 工具最強」，而是「哪個工具最適合我的風險承受能力和使用場景」。在安全性上，Claude Code 目前有明顯優勢；在靈活性上，OpenClaw 仍有其不可替代的價值——前提是你能管好那 138 個漏洞。
+
+---
+
+> Sources:
+> - [OpenClaw vs Claude Code — DataCamp](https://www.datacamp.com/blog/openclaw-vs-claude-code)
+> - [OpenClaw vs Claude Code in 5 mins — Medium](https://medium.com/@hugolu87/openclaw-vs-claude-code-in-5-mins-1cf02124bc08)
+> - [OpenClaw Security: 138+ CVEs Tracked — Blink](https://blink.new/blog/openclaw-security-best-practices-2026)
+> - [CVE-2026-25253 RCE — ProArch](https://www.proarch.com/blog/threats-vulnerabilities/openclaw-rce-vulnerability-cve-2026-25253)
+> - [CVE-2026-32922 Privilege Escalation — ARMO](https://www.armosec.io/blog/cve-2026-32922-openclaw-privilege-escalation-cloud-security/)
+> - [Nine CVEs in Four Days — OpenClawAI](https://openclawai.io/blog/openclaw-cve-flood-nine-vulnerabilities-four-days-march-2026)
+> - [Claude Code Sandboxing — Anthropic](https://www.anthropic.com/engineering/claude-code-sandboxing)
+> - [Claude Code Security — Backslash](https://www.backslash.security/blog/claude-code-security-best-practices)
+> - [Claude Code Overview — Anthropic Docs](https://code.claude.com/docs/en/overview)
+> - [What is OpenClaw — DigitalOcean](https://www.digitalocean.com/resources/articles/what-is-openclaw)
+> - [OpenClaw — KDnuggets](https://www.kdnuggets.com/openclaw-explained-the-free-ai-agent-tool-going-viral-already-in-2026)

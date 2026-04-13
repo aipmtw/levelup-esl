@@ -4,6 +4,7 @@
     { "source": "/api/track", "destination": "/api/track.js" },
     { "source": "/api/admin", "destination": "/api/admin.js" },
     { "source": "/api/brief", "destination": "/api/brief.js" },
-    { "source": "/api/briefs", "destination": "/api/briefs.js" }
+    { "source": "/api/briefs", "destination": "/api/briefs.js" },
+    { "source": "/api/features", "destination": "/api/features.js" }
   ]
 }
