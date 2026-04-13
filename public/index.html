@@ -8,110 +8,121 @@
   <title>MarkLuce.ai — 馬克路思科技</title>
   <meta name="description" content="MarkLuce.ai — AI-powered solutions by 馬克路思科技有限公司" />
   <style>
-    :root{--bg:#09090b;--surface:#18181b;--surface2:#27272a;--text:#fafafa;--text2:#a1a1aa;--text3:#52525b;--accent:#22d3ee;--accent2:#a78bfa;--border:#27272a}
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:-apple-system,'SF Pro Text','Noto Sans TC',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
-    .bg-glow{position:fixed;inset:0;pointer-events:none;overflow:hidden}
-    .bg-glow div{position:absolute;border-radius:50%;filter:blur(80px)}
-    .bg-glow .g1{top:-10%;right:-5%;width:400px;height:400px;background:rgba(34,211,238,.06)}
-    .bg-glow .g2{bottom:-10%;left:-5%;width:350px;height:350px;background:rgba(167,139,250,.05)}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',Roboto,sans-serif;color:#212529;background:#fff;-webkit-font-smoothing:antialiased}
+    a{color:#0d6efd;text-decoration:none}
+    a:hover{color:#0a58ca;text-decoration:underline}
 
-    .container{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:0 1.25rem}
+    .container{max-width:960px;margin:0 auto;padding:0 1.5rem}
 
     /* Header */
-    .header{padding:3rem 0 1rem;text-align:center}
-    .logo{font-size:2.2rem;font-weight:800;letter-spacing:-.04em}
-    .logo span{color:var(--accent)}
-    .company{font-size:.9rem;color:var(--text3);margin-top:.4rem;letter-spacing:.05em}
-    .namecard-link{display:inline-block;margin-top:.8rem;font-size:.8rem;color:var(--accent);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.3rem .8rem;transition:all .15s}
-    .namecard-link:hover{border-color:var(--accent);background:rgba(34,211,238,.08)}
+    .header{padding:3rem 0 2rem;text-align:center;border-bottom:1px solid #e9ecef}
+    .logo{font-size:2rem;font-weight:800;letter-spacing:-.03em;color:#212529}
+    .logo span{color:#0d6efd}
+    .company{font-size:.9rem;color:#6c757d;margin-top:.3rem}
+    .header-links{margin-top:1rem;display:flex;justify-content:center;gap:1rem}
+    .header-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.85rem;color:#6c757d;padding:.35rem .8rem;border:1px solid #dee2e6;border-radius:6px;transition:all .15s}
+    .header-link:hover{color:#0d6efd;border-color:#0d6efd;text-decoration:none;background:#f8f9fa}
 
-    /* Section */
-    .section{padding:2rem 0}
-    .section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+    /* Hero */
+    .hero{padding:2.5rem 0 1.5rem;text-align:center}
+    .hero h2{font-size:1.4rem;font-weight:600;color:#212529}
+    .hero p{font-size:1rem;color:#6c757d;margin-top:.4rem;max-width:540px;margin-left:auto;margin-right:auto}
 
-    /* Project cards */
-    .projects{display:grid;gap:.75rem}
-    .project{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);text-decoration:none;color:var(--text);transition:all .15s}
-    .project:hover{border-color:var(--accent);background:var(--surface2);transform:translateY(-1px)}
-    .project-icon{flex-shrink:0;width:2.5rem;height:2.5rem;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:#000}
-    .project-info{flex:1;min-width:0}
-    .project-info h3{font-size:.95rem;font-weight:600;margin-bottom:.15rem}
-    .project-info p{font-size:.8rem;color:var(--text2);line-height:1.4}
-    .project-arrow{color:var(--text3);font-size:.9rem;flex-shrink:0}
-    .project:hover .project-arrow{color:var(--accent)}
+    /* Grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;padding:1rem 0 3rem}
+    .card{border:1px solid #e9ecef;border-radius:10px;padding:1.5rem;transition:all .2s;display:block;color:inherit}
+    .card:hover{border-color:#0d6efd;box-shadow:0 4px 12px rgba(13,110,253,.08);text-decoration:none;transform:translateY(-2px)}
+    .card-icon{width:2.5rem;height:2.5rem;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;margin-bottom:1rem}
+    .card h3{font-size:1.05rem;font-weight:600;color:#212529;margin-bottom:.3rem}
+    .card p{font-size:.88rem;color:#6c757d;line-height:1.6}
+    .card .tag{display:inline-block;font-size:.7rem;padding:.15rem .4rem;border-radius:3px;background:#e7f1ff;color:#0d6efd;margin-top:.6rem;font-weight:500}
+    .card .tag.ext{background:#fff3cd;color:#856404}
 
-    /* Contact */
-    .contact{padding:1.5rem 0 3rem}
-    .contact-links{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
-    .contact-link{font-size:.8rem;color:var(--text2);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.3rem .7rem;transition:all .15s}
-    .contact-link:hover{border-color:var(--accent);color:var(--accent)}
+    /* Footer */
+    .footer{border-top:1px solid #e9ecef;padding:1.5rem 0;text-align:center}
+    .footer-links{display:flex;justify-content:center;gap:1.2rem;margin-bottom:.5rem}
+    .footer-links a{font-size:.85rem;color:#6c757d}
+    .footer-links a:hover{color:#0d6efd}
+    .footer-copy{font-size:.78rem;color:#adb5bd}
 
-    .footer{padding:1rem 0;text-align:center;font-size:.7rem;color:var(--text3);border-top:1px solid var(--border)}
-
-    @media(max-width:480px){.header{padding:2rem 0 .5rem}.logo{font-size:1.8rem}}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}.header{padding:2rem 0 1.5rem}.hero h2{font-size:1.2rem}}
   </style>
 </head>
 <body>
-<div class="bg-glow"><div class="g1"></div><div class="g2"></div></div>
 
 <div class="container">
   <div class="header">
     <div class="logo"><span>Mark</span>Luce<span>.</span>ai</div>
     <div class="company">馬克路思科技有限公司 MarkLuce Technology Co., Ltd.</div>
-    <a class="namecard-link" href="/namecard/">📇 名片 Name Card</a>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Projects</div>
-    <div class="projects">
-      <a class="project" href="/daily-brief/">
-        <div class="project-icon" style="background:#22d3ee">>_</div>
-        <div class="project-info">
-          <h3>AI Dev Brief</h3>
-          <p>每日三則 AI 開發工具與程式設計生態快訊</p>
-        </div>
-        <span class="project-arrow">→</span>
-      </a>
-      <a class="project" href="/features/">
-        <div class="project-icon" style="background:#a78bfa">&lt;/&gt;</div>
-        <div class="project-info">
-          <h3>Features</h3>
-          <p>AI 開發工具深度分析與專題文章</p>
-        </div>
-        <span class="project-arrow">→</span>
-      </a>
-      <a class="project" href="/esl/">
-        <div class="project-icon" style="background:#4ecdc4">ESL</div>
-        <div class="project-info">
-          <h3>LevelUp ESL</h3>
-          <p>CEFR 分級英語閱讀與聽力自評平台，中英雙語</p>
-        </div>
-        <span class="project-arrow">→</span>
-      </a>
-      <a class="project" href="https://line2discord-uk6j.onrender.com/public/agents.html" target="_blank">
-        <div class="project-icon" style="background:#f9ca24">AI</div>
-        <div class="project-info">
-          <h3>AI Agents 目錄</h3>
-          <p>175 個即插即用的 AI 專家角色，繁體中文版</p>
-        </div>
-        <span class="project-arrow">↗</span>
-      </a>
+    <div class="header-links">
+      <a class="header-link" href="/namecard/">📇 名片</a>
+      <a class="header-link" href="https://github.com/aipmtw" target="_blank">GitHub</a>
+      <a class="header-link" href="mailto:mark@aipm.com.tw">Email</a>
     </div>
   </div>
 
-  <div class="contact">
-    <div class="section-title">Connect</div>
-    <div class="contact-links">
-      <a class="contact-link" href="/namecard/">名片</a>
-      <a class="contact-link" href="https://github.com/aipmtw" target="_blank">GitHub</a>
-      <a class="contact-link" href="mailto:mark@aipm.com.tw">Email</a>
-    </div>
+  <div class="hero">
+    <h2>AI-Powered Projects</h2>
+    <p>用 AI 打造的產品與工具，從構想到上線，每個專案都是 AI 協作的成果。</p>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="/daily-brief/">
+      <div class="card-icon" style="background:#0d6efd">>_</div>
+      <h3>AI Dev Brief</h3>
+      <p>每日三則 AI 開發工具與程式設計生態快訊。聚焦 Anthropic、OpenAI、Google 等平台的最新動態。</p>
+      <span class="tag">每日更新</span>
+    </a>
+
+    <a class="card" href="/features/">
+      <div class="card-icon" style="background:#6f42c1">&lt;/&gt;</div>
+      <h3>Features 深度文章</h3>
+      <p>AI 開發工具的深度比較與分析。Claude Code、OpenClaw、Codex 等工具的實戰評測。</p>
+      <span class="tag">深度分析</span>
+    </a>
+
+    <a class="card" href="/esl/">
+      <div class="card-icon" style="background:#198754">ESL</div>
+      <h3>LevelUp ESL</h3>
+      <p>CEFR 分級英語閱讀與聽力自評平台。中英雙語對照，72 支 TTS 語音，適合親子共學。</p>
+      <span class="tag">教育</span>
+    </a>
+
+    <a class="card" href="https://line2discord-uk6j.onrender.com/public/agents.html" target="_blank">
+      <div class="card-icon" style="background:#fd7e14">AI</div>
+      <h3>AI Agents 目錄</h3>
+      <p>175 個即插即用的 AI 專家角色，涵蓋工程、設計、行銷等 17 個部門。繁體中文版。</p>
+      <span class="tag ext">外部連結</span>
+    </a>
+
+    <a class="card" href="https://discord.gg/vuQkpqUtwH" target="_blank">
+      <div class="card-icon" style="background:#5865f2">DC</div>
+      <h3>Discord 社群</h3>
+      <p>經理人AIPM班 Discord 伺服器。LINE 群組訊息同步、資源分享、AI 工具討論。</p>
+      <span class="tag ext">外部連結</span>
+    </a>
+
+    <a class="card" href="https://dailyai.tw/" target="_blank">
+      <div class="card-icon" style="background:#dc3545">AI</div>
+      <h3>Daily AI Taiwan</h3>
+      <p>台灣觀點的雙語 AI 新聞平台。每日日報、月報、年報、專題深度分析。</p>
+      <span class="tag ext">外部連結</span>
+    </a>
   </div>
 
   <div class="footer">
-    © 2026 馬克路思科技有限公司 · Powered by AI
+    <div class="footer-links">
+      <a href="/namecard/">名片</a>
+      <a href="https://github.com/aipmtw" target="_blank">GitHub</a>
+      <a href="mailto:mark@aipm.com.tw">Email</a>
+      <a href="/daily-brief/">Daily Brief</a>
+      <a href="/features/">Features</a>
+      <a href="/esl/">ESL</a>
+    </div>
+    <div class="footer-copy">© 2026 馬克路思科技有限公司 · Powered by AI</div>
   </div>
 </div>
+
 </body>
 </html>
