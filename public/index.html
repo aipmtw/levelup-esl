@@ -3,39 +3,115 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex, nofollow" />
   <meta name="google-site-verification" content="nl1dp2sQ6i4IMasDHqIRDB9GH4GxaQ90i_Bf0GkTrmY" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230EA5E9'/><text x='32' y='28' font-family='Arial,sans-serif' font-size='16' font-weight='bold' fill='white' text-anchor='middle'>MARK</text><text x='32' y='48' font-family='Arial,sans-serif' font-size='14' font-weight='bold' fill='%2322D3EE' text-anchor='middle'>LUCE</text></svg>" />
-  <title>馬克路思科技有限公司</title>
-  <meta name="description" content="馬克路思科技有限公司" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { theme: { extend: { fontFamily: { sans: ['"Noto Sans TC"', 'Inter', 'system-ui', 'sans-serif'] } } } }
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <title>MarkLuce.ai — 馬克路思科技</title>
+  <meta name="description" content="MarkLuce.ai — AI-powered solutions by 馬克路思科技有限公司" />
   <style>
-    .gradient-text { background: linear-gradient(135deg, #38bdf8, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    :root{--bg:#09090b;--surface:#18181b;--surface2:#27272a;--text:#fafafa;--text2:#a1a1aa;--text3:#52525b;--accent:#22d3ee;--accent2:#a78bfa;--border:#27272a}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:-apple-system,'SF Pro Text','Noto Sans TC',system-ui,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100vh}
+    .bg-glow{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+    .bg-glow div{position:absolute;border-radius:50%;filter:blur(80px)}
+    .bg-glow .g1{top:-10%;right:-5%;width:400px;height:400px;background:rgba(34,211,238,.06)}
+    .bg-glow .g2{bottom:-10%;left:-5%;width:350px;height:350px;background:rgba(167,139,250,.05)}
+
+    .container{position:relative;z-index:1;max-width:680px;margin:0 auto;padding:0 1.25rem}
+
+    /* Header */
+    .header{padding:3rem 0 1rem;text-align:center}
+    .logo{font-size:2.2rem;font-weight:800;letter-spacing:-.04em}
+    .logo span{color:var(--accent)}
+    .company{font-size:.9rem;color:var(--text3);margin-top:.4rem;letter-spacing:.05em}
+    .namecard-link{display:inline-block;margin-top:.8rem;font-size:.8rem;color:var(--accent);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.3rem .8rem;transition:all .15s}
+    .namecard-link:hover{border-color:var(--accent);background:rgba(34,211,238,.08)}
+
+    /* Section */
+    .section{padding:2rem 0}
+    .section-title{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text3);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--border)}
+
+    /* Project cards */
+    .projects{display:grid;gap:.75rem}
+    .project{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);text-decoration:none;color:var(--text);transition:all .15s}
+    .project:hover{border-color:var(--accent);background:var(--surface2);transform:translateY(-1px)}
+    .project-icon{flex-shrink:0;width:2.5rem;height:2.5rem;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;color:#000}
+    .project-info{flex:1;min-width:0}
+    .project-info h3{font-size:.95rem;font-weight:600;margin-bottom:.15rem}
+    .project-info p{font-size:.8rem;color:var(--text2);line-height:1.4}
+    .project-arrow{color:var(--text3);font-size:.9rem;flex-shrink:0}
+    .project:hover .project-arrow{color:var(--accent)}
+
+    /* Contact */
+    .contact{padding:1.5rem 0 3rem}
+    .contact-links{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center}
+    .contact-link{font-size:.8rem;color:var(--text2);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:.3rem .7rem;transition:all .15s}
+    .contact-link:hover{border-color:var(--accent);color:var(--accent)}
+
+    .footer{padding:1rem 0;text-align:center;font-size:.7rem;color:var(--text3);border-top:1px solid var(--border)}
+
+    @media(max-width:480px){.header{padding:2rem 0 .5rem}.logo{font-size:1.8rem}}
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 text-white font-sans flex items-center justify-center">
+<body>
+<div class="bg-glow"><div class="g1"></div><div class="g2"></div></div>
 
-  <div class="fixed inset-0 pointer-events-none overflow-hidden">
-    <div class="absolute -top-40 -right-40 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl"></div>
-    <div class="absolute top-1/2 -left-40 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl"></div>
-    <div class="absolute -bottom-40 right-1/3 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl"></div>
+<div class="container">
+  <div class="header">
+    <div class="logo"><span>Mark</span>Luce<span>.</span>ai</div>
+    <div class="company">馬克路思科技有限公司 MarkLuce Technology Co., Ltd.</div>
+    <a class="namecard-link" href="/namecard/">📇 名片 Name Card</a>
   </div>
 
-  <div class="relative z-10 text-center px-6">
-    <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
-      <span class="text-sky-400">mark</span>luce
-    </h1>
-    <p class="text-slate-400 text-lg mb-8">馬克路思科技有限公司</p>
-    <a href="https://markluce.ai/namecard/" class="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white font-semibold rounded-xl transition text-lg">
-      名片
-    </a>
+  <div class="section">
+    <div class="section-title">Projects</div>
+    <div class="projects">
+      <a class="project" href="/daily-brief/">
+        <div class="project-icon" style="background:#22d3ee">>_</div>
+        <div class="project-info">
+          <h3>AI Dev Brief</h3>
+          <p>每日三則 AI 開發工具與程式設計生態快訊</p>
+        </div>
+        <span class="project-arrow">→</span>
+      </a>
+      <a class="project" href="/features/">
+        <div class="project-icon" style="background:#a78bfa">&lt;/&gt;</div>
+        <div class="project-info">
+          <h3>Features</h3>
+          <p>AI 開發工具深度分析與專題文章</p>
+        </div>
+        <span class="project-arrow">→</span>
+      </a>
+      <a class="project" href="/esl/">
+        <div class="project-icon" style="background:#4ecdc4">ESL</div>
+        <div class="project-info">
+          <h3>LevelUp ESL</h3>
+          <p>CEFR 分級英語閱讀與聽力自評平台，中英雙語</p>
+        </div>
+        <span class="project-arrow">→</span>
+      </a>
+      <a class="project" href="https://line2discord-uk6j.onrender.com/public/agents.html" target="_blank">
+        <div class="project-icon" style="background:#f9ca24">AI</div>
+        <div class="project-info">
+          <h3>AI Agents 目錄</h3>
+          <p>175 個即插即用的 AI 專家角色，繁體中文版</p>
+        </div>
+        <span class="project-arrow">↗</span>
+      </a>
+    </div>
   </div>
 
+  <div class="contact">
+    <div class="section-title">Connect</div>
+    <div class="contact-links">
+      <a class="contact-link" href="/namecard/">名片</a>
+      <a class="contact-link" href="https://github.com/aipmtw" target="_blank">GitHub</a>
+      <a class="contact-link" href="mailto:mark@aipm.com.tw">Email</a>
+    </div>
+  </div>
+
+  <div class="footer">
+    © 2026 馬克路思科技有限公司 · Powered by AI
+  </div>
+</div>
 </body>
 </html>
