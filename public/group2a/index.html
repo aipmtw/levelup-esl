@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CompetitorLens — AI 智能競品分析系統 | 第二組專題</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',Roboto,sans-serif;color:#212529;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:#0d6efd;text-decoration:none}
+a:hover{color:#0a58ca;text-decoration:underline}
+.container{max-width:900px;margin:0 auto;padding:0 1.5rem}
+
+nav{padding:.8rem 0;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e9ecef}
+nav a{color:#6c757d;font-size:.85rem}
+nav a:hover{color:#0d6efd;text-decoration:none}
+
+.hero{padding:2.5rem 0 2rem;text-align:center;border-bottom:1px solid #e9ecef}
+.hero h1{font-size:1.8rem;font-weight:700}
+.hero h1 span{color:#0d6efd}
+.hero p{font-size:1rem;color:#6c757d;margin-top:.4rem;max-width:600px;margin-left:auto;margin-right:auto}
+.hero .badges{margin-top:1rem;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap}
+.badge{font-size:.75rem;padding:.25rem .6rem;border-radius:4px;font-weight:500}
+.badge-blue{background:#e7f1ff;color:#0d6efd}
+.badge-purple{background:#f0e7ff;color:#6f42c1}
+.badge-green{background:#d1e7dd;color:#0f5132}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:2px solid #e9ecef;margin-top:1.5rem;overflow-x:auto}
+.tab{padding:.75rem 1.25rem;font-size:.9rem;font-weight:500;color:#6c757d;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s}
+.tab:hover{color:#0d6efd}
+.tab.active{color:#0d6efd;border-bottom-color:#0d6efd}
+
+/* Tab content */
+.tab-content{display:none;padding:2rem 0 3rem}
+.tab-content.active{display:block}
+
+/* Markdown content styling */
+.md-body{line-height:1.8}
+.md-body h1{font-size:1.4rem;font-weight:700;margin:1.5rem 0 .75rem}
+.md-body h2{font-size:1.2rem;font-weight:700;margin:1.5rem 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid #e9ecef}
+.md-body h3{font-size:1.05rem;font-weight:600;margin:1.2rem 0 .5rem}
+.md-body p{margin:.6rem 0;color:#495057;font-size:.92rem}
+.md-body strong{color:#212529}
+.md-body ul,.md-body ol{margin:.5rem 0;padding-left:1.5rem;color:#495057;font-size:.92rem}
+.md-body li{margin:.25rem 0}
+.md-body blockquote{border-left:3px solid #6f42c1;padding:.6rem 1rem;margin:1rem 0;background:#f8f9fa;border-radius:0 6px 6px 0;color:#6c757d;font-size:.88rem}
+.md-body code{background:#f1f3f5;padding:.1rem .35rem;border-radius:3px;font-size:.85em;color:#d63384}
+.md-body pre{background:#212529;border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.md-body pre code{background:none;color:#e9ecef}
+.md-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.88rem}
+.md-body th,.md-body td{padding:.5rem .7rem;border:1px solid #dee2e6;text-align:left}
+.md-body th{background:#f8f9fa;font-weight:600;font-size:.82rem}
+.md-body td{color:#495057}
+.md-body hr{border:none;border-top:1px solid #e9ecef;margin:1.5rem 0}
+
+/* Demo section */
+.demo-section{padding:1rem 0}
+.demo-input{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.demo-input input{flex:1;min-width:200px;padding:.6rem 1rem;border:1px solid #dee2e6;border-radius:8px;font-size:.9rem}
+.demo-input button{padding:.6rem 1.2rem;background:#0d6efd;color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:500;cursor:pointer}
+.demo-input button:hover{background:#0b5ed7}
+.demo-result{background:#f8f9fa;border:1px solid #e9ecef;border-radius:10px;padding:1.5rem;min-height:200px;font-size:.9rem;line-height:1.7;white-space:pre-wrap;color:#495057}
+.demo-result .loading{color:#adb5bd;text-align:center;padding:2rem}
+
+/* Value section */
+.value-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin:1.5rem 0}
+.value-card{border:1px solid #e9ecef;border-radius:10px;padding:1.2rem}
+.value-card h4{font-size:.95rem;font-weight:600;margin-bottom:.3rem}
+.value-card p{font-size:.85rem;color:#6c757d;line-height:1.5}
+.value-card .metric{font-size:1.5rem;font-weight:700;color:#0d6efd;margin-bottom:.3rem}
+
+.footer{padding:1.5rem 0;border-top:1px solid #e9ecef;text-align:center;font-size:.78rem;color:#adb5bd}
+.footer a{color:#6c757d}
+
+@media(max-width:600px){.hero h1{font-size:1.4rem}.tabs{gap:0}.tab{padding:.6rem .8rem;font-size:.82rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<nav>
+<a href="/">← MarkLuce.ai</a>
+<a href="/features/">Features</a>
+</nav>
+
+<div class="hero">
+<h1><span>CompetitorLens</span></h1>
+<p>AI 智能競品分析系統 — 用 AI 自動追蹤競品動態，每天 5 分鐘掌握競爭全貌</p>
+<div class="badges">
+<span class="badge badge-blue">LLM 爬蟲與摘要</span>
+<span class="badge badge-purple">RAG 知識庫</span>
+<span class="badge badge-green">情緒分析</span>
+</div>
+</div>
+
+<div class="tabs">
+<div class="tab active" onclick="showTab('demo')">Live Demo</div>
+<div class="tab" onclick="showTab('prd')">PRD 產品需求</div>
+<div class="tab" onclick="showTab('arch')">技術架構</div>
+<div class="tab" onclick="showTab('value')">商業價值</div>
+</div>
+
+<!-- DEMO TAB -->
+<div class="tab-content active" id="tab-demo">
+<div class="demo-section">
+<h2 style="font-size:1.1rem;font-weight:600;margin-bottom:1rem">互動式 Demo：輸入競品名稱，AI 即時分析</h2>
+<div class="demo-input">
+<input type="text" id="compInput" placeholder="輸入產品或品牌名稱，例如：Notion、Shopify、蝦皮" value="Notion">
+<button onclick="runDemo()">分析競品</button>
+</div>
+<div class="demo-result" id="demoResult">
+<div class="loading">👆 輸入競品名稱並點擊「分析競品」開始體驗</div>
+</div>
+</div>
+</div>
+
+<!-- PRD TAB -->
+<div class="tab-content" id="tab-prd">
+<div class="md-body" id="prdContent"><div class="loading" style="padding:2rem;text-align:center;color:#adb5bd">載入中...</div></div>
+</div>
+
+<!-- ARCHITECTURE TAB -->
+<div class="tab-content" id="tab-arch">
+<div class="md-body" id="archContent"><div class="loading" style="padding:2rem;text-align:center;color:#adb5bd">載入中...</div></div>
+</div>
+
+<!-- VALUE TAB -->
+<div class="tab-content" id="tab-value">
+<h2 style="font-size:1.2rem;font-weight:700;margin:1rem 0">解決痛點與商業價值</h2>
+
+<h3 style="font-size:1rem;margin:1.5rem 0 .5rem;color:#0d6efd">對外：客戶體驗改善</h3>
+<div class="value-cards">
+<div class="value-card">
+<div class="metric">5 分鐘</div>
+<h4>每日掌握競爭動態</h4>
+<p>原本需要 2-3 小時的人工搜集，現在每天 5 分鐘閱讀 AI 摘要即可</p>
+</div>
+<div class="value-card">
+<div class="metric">即時</div>
+<h4>價格異常警報</h4>
+<p>競品降價超過 5% 立即 LINE 通知，不再錯過應對時機</p>
+</div>
+<div class="value-card">
+<div class="metric">360°</div>
+<h4>全方位競品視角</h4>
+<p>產品規格、價格、評價、社群輿情一站整合，不再碎片化</p>
+</div>
+</div>
+
+<h3 style="font-size:1rem;margin:1.5rem 0 .5rem;color:#6f42c1">對內：效率提升的量化效益</h3>
+<div class="value-cards">
+<div class="value-card">
+<div class="metric">-80%</div>
+<h4>資料收集時間</h4>
+<p>從每週 8-15 小時降至 1-2 小時，年化節省約 400 工時</p>
+</div>
+<div class="value-card">
+<div class="metric">+3x</div>
+<h4>決策速度</h4>
+<p>定價調整回應時間從 1-2 週縮短至 1-2 天</p>
+</div>
+<div class="value-card">
+<div class="metric">$50萬+</div>
+<h4>年化效益（中型企業）</h4>
+<p>節省人力成本 + 減少定價損失 + 提前捕捉市場機會</p>
+</div>
+</div>
+
+<h3 style="font-size:1rem;margin:1.5rem 0 .5rem">產品路線圖</h3>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr><th style="padding:.5rem;border:1px solid #dee2e6;background:#f8f9fa">階段</th><th style="padding:.5rem;border:1px solid #dee2e6;background:#f8f9fa">功能</th><th style="padding:.5rem;border:1px solid #dee2e6;background:#f8f9fa">定價策略</th></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">MVP</td><td style="padding:.5rem;border:1px solid #dee2e6">單一競品追蹤 + 每日摘要</td><td style="padding:.5rem;border:1px solid #dee2e6">免費</td></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">基礎版</td><td style="padding:.5rem;border:1px solid #dee2e6">5 個競品 + 儀表板</td><td style="padding:.5rem;border:1px solid #dee2e6">$500/月</td></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">專業版</td><td style="padding:.5rem;border:1px solid #dee2e6">無限競品 + 輿情分析 + API</td><td style="padding:.5rem;border:1px solid #dee2e6">$2,000/月</td></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">企業版</td><td style="padding:.5rem;border:1px solid #dee2e6">客製化 + 專屬顧問</td><td style="padding:.5rem;border:1px solid #dee2e6">面議</td></tr>
+</table>
+</div>
+
+<div class="footer">
+AIPM 第一期 第二組 · CompetitorLens · 由 <a href="https://markluce.ai/">MarkLuce.ai</a> 與 Claude Opus 4.6 共同創作
+</div>
+</div>
+
+<script>
+mermaid.initialize({startOnLoad:false,theme:'default'});
+
+let prdLoaded=false,archLoaded=false;
+
+function showTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+
+  if(id==='prd'&&!prdLoaded){loadMd('/group2a/PRD.md','prdContent');prdLoaded=true;}
+  if(id==='arch'&&!archLoaded){loadMd('/group2a/architecture.md','archContent',true);archLoaded=true;}
+}
+
+async function loadMd(url,elId,hasMermaid){
+  const r=await fetch(url);
+  const text=await r.text();
+  const el=document.getElementById(elId);
+
+  if(hasMermaid){
+    // Extract mermaid blocks and render separately
+    let html=marked.parse(text);
+    el.innerHTML=html;
+    // Find code blocks with mermaid
+    el.querySelectorAll('pre code.language-mermaid').forEach(async(block,i)=>{
+      const container=document.createElement('div');
+      container.className='mermaid';
+      container.textContent=block.textContent;
+      block.parentElement.replaceWith(container);
+    });
+    await mermaid.run({querySelector:'.mermaid'});
+  }else{
+    el.innerHTML=marked.parse(text);
+  }
+}
+
+function runDemo(){
+  const name=document.getElementById('compInput').value.trim();
+  if(!name)return;
+  const el=document.getElementById('demoResult');
+  el.innerHTML='<div class="loading">🔍 AI 正在分析「'+name+'」的競品情報...</div>';
+
+  // Simulate AI analysis with pre-built data
+  setTimeout(()=>{
+    const analyses={
+      'Notion':{
+        name:'Notion',
+        category:'生產力工具',
+        competitors:['Obsidian','Coda','Confluence','Clickup'],
+        pricing:'免費版 + $8-15 USD/月',
+        sentiment:'正面 78% / 中立 15% / 負面 7%',
+        recent:'2026 Q1 推出 Notion AI 2.0，整合 Claude 模型，月活用戶突破 1 億。近期主要競爭壓力來自 Obsidian 的本地化 AI 功能。',
+        trend:'⬆️ 上升趨勢：AI 整合加速用戶成長，但企業市場面臨 Confluence 價格戰'
+      },
+      'Shopify':{
+        name:'Shopify',
+        category:'電商平台',
+        competitors:['WooCommerce','Wix','BigCommerce','91APP'],
+        pricing:'$29-399 USD/月',
+        sentiment:'正面 72% / 中立 18% / 負面 10%',
+        recent:'2026 Q1 推出 AI Toolkit 支援 Claude Code，開發者生態大幅擴張。台灣市場佔有率持續成長，挑戰 91APP。',
+        trend:'⬆️ 上升趨勢：AI 開發工具整合帶動開發者遷移'
+      }
+    };
+
+    const data=analyses[name]||{
+      name:name,
+      category:'待分析',
+      competitors:['需要更多數據來識別競品'],
+      pricing:'搜集中...',
+      sentiment:'分析中...',
+      recent:`正在追蹤「${name}」的最新動態。完整版本將在 24 小時內生成首份報告。`,
+      trend:'📊 數據收集中，預計 24 小時後提供趨勢分析'
+    };
+
+    el.innerHTML=`<strong>📊 ${data.name} 競品分析報告</strong>
+<strong>產業類別：</strong>${data.category}
+
+<strong>主要競品：</strong>${data.competitors.join('、')}
+
+<strong>定價區間：</strong>${data.pricing}
+
+<strong>輿情分析：</strong>${data.sentiment}
+
+<strong>近期動態：</strong>
+${data.recent}
+
+<strong>趨勢判斷：</strong>${data.trend}
+
+<em style="color:#adb5bd">— 此為 Demo 模擬資料。完整版本將接入即時爬蟲與 LLM 分析引擎。</em>`;
+  },1500);
+}
+</script>
+</body>
+</html>
