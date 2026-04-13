@@ -138,7 +138,10 @@ body{font-family:'Segoe UI','Noto Sans TC',system-ui,sans-serif;background:var(-
 </div>
 
 <div class="audio-player" id="audioPlayer">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem">
 <div class="audio-player-label" id="audioPlayerLabel"></div>
+<button class="font-btn" onclick="stopAudio()" style="font-size:.7rem;padding:.2rem .5rem">&#9632; Stop</button>
+</div>
 <div class="audio-slider-row">
 <span class="audio-time" id="audioTimeCur">0:00</span>
 <input type="range" class="audio-slider" id="audioSlider" min="0" max="100" value="0">
@@ -280,16 +283,39 @@ slider.addEventListener('change',()=>{
   seeking=false;
 });
 
-function playAudio(audioLang,voice,btn){
-  if(currentAudio){currentAudio.pause();currentAudio=null;}
-  document.querySelectorAll('.audio-btn').forEach(b=>{b.classList.remove('playing');});
-  if(activeBtn)activeBtn=null;
+let currentSrc=null;
 
+function stopAudio(){
+  if(currentAudio){currentAudio.pause();currentAudio=null;}
+  document.querySelectorAll('.audio-btn').forEach(b=>b.classList.remove('playing'));
+  activeBtn=null;
+  currentSrc=null;
+  player.classList.remove('active');
+}
+
+function playAudio(audioLang,voice,btn){
   const suffix=audioLang==='zh'?`-zh-${voice}`:(`-${voice}`);
   const src=`/audio/${currentTopic.id}${suffix}.mp3`;
+
+  // Same button clicked — toggle pause/resume
+  if(currentAudio&&currentSrc===src){
+    if(currentAudio.paused){
+      currentAudio.play();
+      btn.classList.add('playing');
+    }else{
+      currentAudio.pause();
+      btn.classList.remove('playing');
+    }
+    return;
+  }
+
+  // Different audio — stop old, play new
+  stopAudio();
+
   const voiceLabel=audioLang==='zh'?(voice==='female'?'中文 女聲':'中文 男聲'):(voice==='female'?'English Female':'English Male');
 
   currentAudio=new Audio(src);
+  currentSrc=src;
   activeBtn=btn;
   btn.classList.add('playing');
   playerLabel.textContent=voiceLabel;
@@ -313,12 +339,14 @@ function playAudio(audioLang,voice,btn){
     btn.classList.remove('playing');
     activeBtn=null;
     currentAudio=null;
+    currentSrc=null;
     player.classList.remove('active');
   };
   currentAudio.onerror=()=>{
     btn.classList.remove('playing');
     activeBtn=null;
     currentAudio=null;
+    currentSrc=null;
     player.classList.remove('active');
   };
   currentAudio.play();
