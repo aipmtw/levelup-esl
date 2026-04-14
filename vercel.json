@@ -25,9 +25,6 @@
     { "source": "/mvp/api/generate", "destination": "/api/mvp-generate.js" },
     { "source": "/mvp/api/get", "destination": "/api/mvp-get.js" },
     { "source": "/mvp/builder", "destination": "/mvp/builder/index.html" },
-    { "source": "/mvp/:slug", "destination": "/mvp/index.html" },
-    { "source": "/mei", "destination": "/app/reader.html" },
-    { "source": "/amy", "destination": "/app/reader.html" },
-    { "source": "/max", "destination": "/app/reader.html" }
+    { "source": "/mvp/:slug", "destination": "/mvp/index.html" }
   ]
 }
