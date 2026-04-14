@@ -11,6 +11,7 @@
     { "source": "/scottsu/api/info", "destination": "/api/scottsu-info.js" },
     { "source": "/api/sql", "destination": "/api/sql.js" },
     { "source": "/api/line-auth", "destination": "/api/line-auth.js" },
+    { "source": "/api/book-logins", "destination": "/api/book-logins.js" },
     { "source": "/features/:path*", "destination": "/features/index.html" },
     { "source": "/mvp/api/generate", "destination": "/api/mvp-generate.js" },
     { "source": "/mvp/api/get", "destination": "/api/mvp-get.js" },

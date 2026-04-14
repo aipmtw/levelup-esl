@@ -2,6 +2,9 @@ const LINE_CHANNEL_ID = '2009738746';
 const LINE_CHANNEL_SECRET = '030f5af9d09f93db8983cd76b6200df8';
 const crypto = require('crypto');
 
+const SUPABASE_URL = 'https://reipdepbltfbfxnjjegy.supabase.co';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+
 const COOKIE_SECRET = process.env.LINE_COOKIE_SECRET || 'markluce-line-2026';
 
 function signToken(payload) {
@@ -52,6 +55,35 @@ module.exports = async (req, res) => {
     }
 
     const profile = await profileRes.json();
+
+    // Log login to Supabase
+    if (SUPABASE_SERVICE_KEY) {
+      const ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || 'unknown';
+      const ua = req.headers['user-agent'] || '';
+      // Extract book slug from returnUrl
+      let bookSlug = 'unknown';
+      try {
+        const u = returnUrl.startsWith('http') ? new URL(returnUrl) : { pathname: returnUrl };
+        bookSlug = (u.pathname || returnUrl).replace(/^\//, '').replace(/\/.*/, '') || 'markluce';
+      } catch {}
+      fetch(`${SUPABASE_URL}/rest/v1/book_logins`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({
+          line_user_id: profile.userId,
+          display_name: profile.displayName,
+          picture_url: profile.pictureUrl || '',
+          book_slug: bookSlug,
+          ip: typeof ip === 'string' ? ip.split(',')[0].trim() : ip,
+          user_agent: ua.substring(0, 500),
+        }),
+      }).catch(e => console.error('Login log error:', e));
+    }
 
     // Create signed token cookie
     const token = signToken({
