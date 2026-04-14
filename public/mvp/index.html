@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MVP 規劃書 | MarkLuce.ai</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',Roboto,sans-serif;color:#212529;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:#0d6efd;text-decoration:none}
+a:hover{color:#0a58ca;text-decoration:underline}
+.container{max-width:780px;margin:0 auto;padding:0 1.5rem}
+
+nav{padding:.8rem 0;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e9ecef}
+nav a{color:#6c757d;font-size:.85rem}
+nav a:hover{color:#0d6efd;text-decoration:none}
+
+.hero{padding:2.5rem 0 1.5rem;text-align:center;border-bottom:1px solid #e9ecef}
+.hero h1{font-size:1.8rem;font-weight:800;color:#212529}
+.hero .badge{display:inline-block;background:#e7f1ff;color:#0d6efd;font-size:.78rem;font-weight:600;padding:.2rem .6rem;border-radius:4px;margin-bottom:.5rem}
+
+.section{padding:1.5rem 0;border-bottom:1px solid #e9ecef}
+.section:last-of-type{border-bottom:none}
+.section-title{font-size:1.1rem;font-weight:700;color:#0d6efd;margin-bottom:.75rem;display:flex;align-items:center;gap:.4rem}
+.section-num{display:inline-flex;align-items:center;justify-content:center;width:1.6rem;height:1.6rem;background:#0d6efd;color:#fff;border-radius:50%;font-size:.72rem;font-weight:700;flex-shrink:0}
+
+.summary-text{font-size:1rem;color:#495057;line-height:1.8}
+.summary-text strong{color:#212529}
+
+.feature-list,.story-list,.timeline-list,.competitor-list{list-style:none;padding:0}
+.feature-list li{padding:.5rem 0;border-bottom:1px solid #f1f3f5;font-size:.92rem;color:#495057;display:flex;align-items:flex-start;gap:.5rem}
+.feature-list li:last-child{border-bottom:none}
+.feature-dot{width:6px;height:6px;border-radius:50%;background:#0d6efd;flex-shrink:0;margin-top:.5rem}
+
+.story-card{background:#f8f9fa;border-radius:8px;padding:.8rem 1rem;margin-bottom:.6rem;font-size:.9rem;line-height:1.7;color:#495057}
+.story-card .role{color:#0d6efd;font-weight:600}
+
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem}
+.tech-item{background:#f8f9fa;border-radius:8px;padding:.8rem 1rem;text-align:center}
+.tech-label{font-size:.72rem;color:#6c757d;text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.tech-value{font-size:.95rem;font-weight:600;color:#212529;margin-top:.2rem}
+
+.landing-block{background:linear-gradient(135deg,#0d6efd,#6f42c1);border-radius:12px;padding:1.5rem;color:#fff;text-align:center}
+.landing-block .headline{font-size:1.3rem;font-weight:700;margin-bottom:.4rem}
+.landing-block .subheadline{font-size:.92rem;opacity:.9;margin-bottom:.8rem}
+.landing-block .cta-btn{display:inline-block;background:#fff;color:#0d6efd;padding:.5rem 1.5rem;border-radius:8px;font-weight:600;font-size:.9rem}
+
+.timeline-item{display:flex;gap:1rem;padding:.6rem 0;border-bottom:1px solid #f1f3f5}
+.timeline-item:last-child{border-bottom:none}
+.timeline-phase{min-width:80px;font-weight:600;color:#0d6efd;font-size:.88rem}
+.timeline-dur{font-size:.78rem;color:#6c757d}
+.timeline-tasks{font-size:.88rem;color:#495057;line-height:1.6}
+
+.competitor-item{display:flex;gap:1rem;padding:.6rem 0;border-bottom:1px solid #f1f3f5;font-size:.9rem}
+.competitor-item:last-child{border-bottom:none}
+.competitor-name{min-width:100px;font-weight:600;color:#212529}
+.competitor-compare{color:#495057;line-height:1.6}
+
+.permalink{padding:1.5rem 0;text-align:center;font-size:.82rem;color:#adb5bd}
+.permalink a{color:#6c757d}
+
+.footer{padding:1.5rem 0;border-top:1px solid #e9ecef;text-align:center;font-size:.78rem;color:#adb5bd}
+.footer a{color:#6c757d}
+
+.loading{padding:4rem 0;text-align:center;color:#adb5bd;font-size:.95rem}
+.error-msg{padding:4rem 0;text-align:center;color:#842029}
+.error-msg a{color:#0d6efd}
+
+@media(max-width:480px){.container{padding:0 1rem}.hero h1{font-size:1.4rem}.tech-grid{grid-template-columns:1fr 1fr}.timeline-item{flex-direction:column;gap:.2rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<nav>
+<a href="/">&larr; MarkLuce.ai</a>
+<a href="/mvp/builder">建立新的 MVP</a>
+</nav>
+
+<div id="content">
+<div class="loading" id="loadingState">載入中...</div>
+</div>
+
+<div class="footer">
+由 <a href="/">MarkLuce.ai</a> 出品 · AI 生成的 MVP 規劃書
+</div>
+</div>
+
+<script>
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function getSlugFromPath() {
+  const m = location.pathname.match(/^\/mvp\/([^/]+)\/?$/);
+  return m ? m[1] : null;
+}
+
+async function init() {
+  const slug = getSlugFromPath();
+  if (!slug) {
+    document.getElementById('content').innerHTML = '<div class="error-msg">找不到此 MVP。<a href="/mvp/builder">建立一份新的 &rarr;</a></div>';
+    return;
+  }
+
+  try {
+    const res = await fetch('/mvp/api/get?slug=' + encodeURIComponent(slug));
+    if (!res.ok) throw new Error('Not found');
+    const data = await res.json();
+    render(data);
+  } catch (err) {
+    document.getElementById('content').innerHTML = '<div class="error-msg">找不到此 MVP 規劃書。<a href="/mvp/builder">建立一份新的 &rarr;</a></div>';
+  }
+}
+
+function render(mvp) {
+  const o = mvp.output || {};
+  const input = mvp.input || {};
+  document.title = mvp.project_name + ' — MVP 規劃書 | MarkLuce.ai';
+
+  let html = '';
+
+  // Hero
+  html += '<div class="hero">';
+  html += '<div class="badge">MVP 規劃書</div>';
+  html += '<h1>' + esc(mvp.project_name) + '</h1>';
+  html += '</div>';
+
+  // 1. Summary
+  html += '<div class="section">';
+  html += '<div class="section-title"><span class="section-num">1</span> 專案摘要</div>';
+  html += '<div class="summary-text">';
+  html += '<p><strong>一句話描述：</strong>' + esc(input.description) + '</p>';
+  if (o.summary) html += '<p style="margin-top:.5rem">' + esc(o.summary) + '</p>';
+  html += '</div></div>';
+
+  // 2. Target Users
+  html += '<div class="section">';
+  html += '<div class="section-title"><span class="section-num">2</span> 目標用戶</div>';
+  html += '<div class="summary-text">' + esc(o.target_users) + '</div>';
+  html += '</div>';
+
+  // 3. Core Features
+  if (o.core_features && o.core_features.length) {
+    html += '<div class="section">';
+    html += '<div class="section-title"><span class="section-num">3</span> 核心功能（MVP 範圍）</div>';
+    html += '<ul class="feature-list">';
+    o.core_features.forEach(f => {
+      html += '<li><span class="feature-dot"></span>' + esc(f) + '</li>';
+    });
+    html += '</ul></div>';
+  }
+
+  // 4. User Stories
+  if (o.user_stories && o.user_stories.length) {
+    html += '<div class="section">';
+    html += '<div class="section-title"><span class="section-num">4</span> 用戶故事</div>';
+    o.user_stories.forEach(s => {
+      html += '<div class="story-card">';
+      html += '作為 <span class="role">' + esc(s.role) + '</span>，我想要 ' + esc(s.action) + '，以便 ' + esc(s.benefit);
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // 5. Tech Stack
+  if (o.tech_stack) {
+    html += '<div class="section">';
+    html += '<div class="section-title"><span class="section-num">5</span> 技術選型建議</div>';
+    html += '<div class="tech-grid">';
+    const labels = { frontend: '前端', backend: '後端', database: '資料庫', deployment: '部署' };
+    for (const [key, label] of Object.entries(labels)) {
+      if (o.tech_stack[key]) {
+        html += '<div class="tech-item"><div class="tech-label">' + label + '</div><div class="tech-value">' + esc(o.tech_stack[key]) + '</div></div>';
+      }
+    }
+    html += '</div></div>';
+  }
+
+  // 6. Landing Page Copy
+  if (o.landing_page) {
+    html += '<div class="section">';
+    html += '<div class="section-title"><span class="section-num">6</span> Landing Page 文案</div>';
+    html += '<div class="landing-block">';
+    html += '<div class="headline">' + esc(o.landing_page.headline) + '</div>';
+    html += '<div class="subheadline">' + esc(o.landing_page.subheadline) + '</div>';
+    html += '<div class="cta-btn">' + esc(o.landing_page.cta) + '</div>';
+    html += '</div></div>';
+  }
+
+  // 7. Timeline
+  if (o.timeline && o.timeline.length) {
+    html += '<div class="section">';
+    html += '<div class="section-title"><span class="section-num">7</span> MVP 時程規劃</div>';
+    o.timeline.forEach(t => {
+      html += '<div class="timeline-item">';
+      html += '<div><div class="timeline-phase">' + esc(t.phase) + '</div><div class="timeline-dur">' + esc(t.duration) + '</div></div>';
+      html += '<div class="timeline-tasks">' + esc(Array.isArray(t.tasks) ? t.tasks.join('、') : t.tasks) + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // 8. Competitive Landscape
+  if (o.competitive_landscape && o.competitive_landscape.length) {
+    html += '<div class="section">';
+    html += '<div class="section-title"><span class="section-num">8</span> 競品分析</div>';
+    o.competitive_landscape.forEach(c => {
+      html += '<div class="competitor-item">';
+      html += '<div class="competitor-name">' + esc(c.name) + '</div>';
+      html += '<div class="competitor-compare">' + esc(c.comparison) + '</div>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Permalink / meta
+  const date = mvp.created_at ? new Date(mvp.created_at).toLocaleDateString('zh-TW') : '';
+  html += '<div class="permalink">';
+  if (date) html += '生成日期：' + date + ' · ';
+  html += '永久連結：<a href="/mvp/' + esc(mvp.slug) + '">markluce.ai/mvp/' + esc(mvp.slug) + '</a>';
+  html += '</div>';
+
+  document.getElementById('content').innerHTML = html;
+}
+
+init();
+</script>
+</body>
+</html>

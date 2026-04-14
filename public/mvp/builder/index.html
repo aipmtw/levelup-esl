@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MVP Builder | MarkLuce.ai</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',Roboto,sans-serif;color:#212529;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:#0d6efd;text-decoration:none}
+a:hover{color:#0a58ca;text-decoration:underline}
+.container{max-width:640px;margin:0 auto;padding:0 1.5rem}
+
+nav{padding:.8rem 0;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e9ecef}
+nav a{color:#6c757d;font-size:.85rem}
+nav a:hover{color:#0d6efd;text-decoration:none}
+
+.hero{padding:2.5rem 0 1.5rem;text-align:center}
+.hero h1{font-size:1.6rem;font-weight:700;color:#212529}
+.hero p{font-size:.95rem;color:#6c757d;margin-top:.4rem}
+
+.form-group{margin-bottom:1.25rem}
+.form-group label{display:block;font-size:.88rem;font-weight:600;color:#212529;margin-bottom:.35rem}
+.form-group .hint{font-size:.78rem;color:#6c757d;margin-bottom:.3rem}
+.form-group input,.form-group textarea{width:100%;padding:.6rem .8rem;border:1px solid #dee2e6;border-radius:8px;font-size:.92rem;font-family:inherit;color:#212529;transition:border-color .15s}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:#0d6efd;box-shadow:0 0 0 3px rgba(13,110,253,.12)}
+.form-group textarea{resize:vertical;min-height:80px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:.65rem 1.5rem;background:#0d6efd;color:#fff;border:none;border-radius:8px;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit;width:100%}
+.btn:hover{background:#0b5ed7}
+.btn:disabled{background:#6c757d;cursor:not-allowed}
+
+.msg{padding:.8rem 1rem;border-radius:8px;font-size:.88rem;margin-bottom:1.25rem;display:none}
+.msg.error{display:block;background:#f8d7da;color:#842029;border:1px solid #f5c2c7}
+.msg.info{display:block;background:#cff4fc;color:#055160;border:1px solid #b6effb}
+
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,.92);z-index:100;flex-direction:column;align-items:center;justify-content:center}
+.loading-overlay.active{display:flex}
+.spinner{width:40px;height:40px;border:3px solid #e9ecef;border-top-color:#0d6efd;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-overlay p{margin-top:1rem;color:#6c757d;font-size:.92rem}
+.loading-overlay .sub{font-size:.8rem;color:#adb5bd;margin-top:.3rem}
+
+.footer{padding:1.5rem 0;border-top:1px solid #e9ecef;text-align:center;font-size:.78rem;color:#adb5bd;margin-top:2rem}
+.footer a{color:#6c757d}
+
+@media(max-width:480px){.container{padding:0 1rem}.hero h1{font-size:1.3rem}}
+</style>
+</head>
+<body>
+<div class="container">
+<nav>
+<a href="/">&larr; MarkLuce.ai</a>
+</nav>
+
+<div class="hero">
+<h1>MVP Builder</h1>
+<p>描述你的專案構想，AI 即時生成完整 MVP 規劃書</p>
+</div>
+
+<div id="message" class="msg"></div>
+
+<form id="mvpForm" autocomplete="off">
+<div class="form-group">
+<label for="projectName">專案名稱 *</label>
+<input type="text" id="projectName" required maxlength="80" placeholder="例：FoodShare">
+</div>
+
+<div class="form-group">
+<label for="description">一句話描述 *</label>
+<div class="hint">用一句話說明這個產品要做什麼</div>
+<input type="text" id="description" required maxlength="200" placeholder="例：一個讓社區居民分享剩餘食物的平台">
+</div>
+
+<div class="form-group">
+<label for="audience">目標用戶</label>
+<div class="hint">這個產品要給誰用？他們有什麼特徵？</div>
+<textarea id="audience" maxlength="500" placeholder="例：25-45 歲的都市上班族，關心環保與食物浪費問題，習慣使用手機 App"></textarea>
+</div>
+
+<div class="form-group">
+<label for="problem">要解決的核心問題</label>
+<div class="hint">用戶目前遇到什麼痛點？為什麼現有方案不夠好？</div>
+<textarea id="problem" maxlength="500" placeholder="例：每天有大量食物被丟棄，同時很多人需要食物。現有的食物銀行流程繁瑣，無法即時媒合"></textarea>
+</div>
+
+<button type="submit" class="btn" id="submitBtn">生成 MVP 規劃書</button>
+</form>
+
+<div class="footer">
+由 <a href="/">MarkLuce.ai</a> 出品 · 與 AI 共同創作
+</div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay">
+<div class="spinner"></div>
+<p>AI 正在生成你的 MVP 規劃書...</p>
+<div class="sub">通常需要 15-30 秒</div>
+</div>
+
+<script>
+function getUserId() {
+  let id = localStorage.getItem('mvp_user_id');
+  if (!id) {
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    id = '';
+    for (let i = 0; i < 8; i++) id += chars[Math.floor(Math.random() * chars.length)];
+    localStorage.setItem('mvp_user_id', id);
+  }
+  return id;
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById('message');
+  el.className = 'msg ' + type;
+  el.innerHTML = text;
+}
+
+function hideMsg() {
+  document.getElementById('message').className = 'msg';
+}
+
+document.getElementById('mvpForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  hideMsg();
+
+  const userId = getUserId();
+  const projectName = document.getElementById('projectName').value.trim();
+  const description = document.getElementById('description').value.trim();
+  const audience = document.getElementById('audience').value.trim();
+  const problem = document.getElementById('problem').value.trim();
+
+  if (!projectName || !description) {
+    showMsg('請填寫專案名稱與一句話描述。', 'error');
+    return;
+  }
+
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  document.getElementById('loadingOverlay').classList.add('active');
+
+  try {
+    const res = await fetch('/mvp/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: userId, project_name: projectName, description, target_audience: audience, problem })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      document.getElementById('loadingOverlay').classList.remove('active');
+      submitBtn.disabled = false;
+
+      if (data.existing_slug) {
+        showMsg('你已經建立過一份 MVP 規劃書。<a href="/mvp/' + data.existing_slug + '">點此查看 &rarr;</a>', 'info');
+      } else {
+        showMsg(data.error || '生成失敗，請稍後再試。', 'error');
+      }
+      return;
+    }
+
+    window.location.href = '/mvp/' + data.slug;
+  } catch (err) {
+    document.getElementById('loadingOverlay').classList.remove('active');
+    submitBtn.disabled = false;
+    showMsg('網路錯誤，請檢查連線後重試。', 'error');
+  }
+});
+</script>
+</body>
+</html>

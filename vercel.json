@@ -10,6 +10,10 @@
     { "source": "/scottsu/api/tts", "destination": "/api/scottsu-tts.js" },
     { "source": "/scottsu/api/info", "destination": "/api/scottsu-info.js" },
     { "source": "/api/sql", "destination": "/api/sql.js" },
-    { "source": "/features/:slug", "destination": "/features/index.html" }
+    { "source": "/features/:path*", "destination": "/features/index.html" },
+    { "source": "/mvp/api/generate", "destination": "/api/mvp-generate.js" },
+    { "source": "/mvp/api/get", "destination": "/api/mvp-get.js" },
+    { "source": "/mvp/builder", "destination": "/mvp/builder/index.html" },
+    { "source": "/mvp/:slug", "destination": "/mvp/index.html" }
   ]
 }
