@@ -120,6 +120,21 @@ function render(mvp) {
   const input = mvp.input || {};
   document.title = mvp.project_name + ' — MVP 規劃書 | MarkLuce.ai';
 
+  // Handle pending status
+  if (mvp.status === 'pending' || !o.summary) {
+    let html = '<div style="text-align:center;padding:4rem 1rem">';
+    html += '<div style="font-size:3rem;margin-bottom:1rem">&#9997;</div>';
+    html += '<h1 style="font-size:1.4rem;font-weight:700;margin-bottom:.8rem">' + esc(mvp.project_name) + '</h1>';
+    html += '<div style="display:inline-block;background:#fff3cd;color:#856404;font-size:.82rem;padding:.3rem .8rem;border-radius:4px;margin-bottom:1.5rem">處理中</div>';
+    html += '<p style="color:#6c757d;line-height:1.8;max-width:400px;margin:0 auto">';
+    html += 'AI 正在深度分析你的專案構想，完成後會自動顯示完整的 MVP 規劃書。<br>請稍後重新載入此頁面。</p>';
+    if (input.description) html += '<p style="color:#adb5bd;font-size:.85rem;margin-top:1.5rem;border-top:1px solid #e9ecef;padding-top:1rem">「' + esc(input.description) + '」</p>';
+    if (mvp.source_url) html += '<p style="font-size:.82rem;color:#adb5bd;margin-top:.5rem">參考來源：<a href="' + esc(mvp.source_url) + '">' + esc(mvp.source_url) + '</a></p>';
+    html += '</div>';
+    document.getElementById('content').innerHTML = html;
+    return;
+  }
+
   let html = '';
 
   // Hero
