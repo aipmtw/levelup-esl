@@ -28,21 +28,23 @@
     .section-label { font-size: 13px; color: var(--gray-500); margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 0.5px; }
 
     /* Book grid */
-    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
-    .book-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .book-cover { width: 100%; aspect-ratio: 3/4; background: linear-gradient(135deg, var(--amber-light), #fde68a); display: flex; align-items: center; justify-content: center; font-size: 48px; position: relative; }
-    .book-cover img { width: 100%; height: 100%; object-fit: cover; }
-    .book-cover .badge { position: absolute; top: 8px; right: 8px; background: var(--green); color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; }
-    .book-info { padding: 12px; }
-    .book-title { font-size: 14px; font-weight: 600; color: var(--gray-900); }
-    .book-subtitle { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
-    .book-meta { font-size: 12px; color: var(--gray-500); margin-top: 6px; display: flex; justify-content: space-between; align-items: center; }
-    .price { font-weight: 700; color: var(--amber-dark); }
-    .book-actions { padding: 0 12px 12px; display: flex; gap: 8px; }
-    .btn-demo { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--amber); background: white; color: var(--amber-dark); font-size: 13px; cursor: pointer; text-align: center; }
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+    .book-card { border-radius: 20px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; }
+    .book-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+    .book-cover { width: 100%; padding: 28px 20px; text-align: center; color: white; position: relative; }
+    .book-cover .emoji { font-size: 64px; margin-bottom: 12px; }
+    .book-cover .badge { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.25); color: white; font-size: 11px; padding: 3px 10px; border-radius: 10px; font-weight: 600; }
+    .book-info { background: white; padding: 14px 16px; }
+    .book-title { font-size: 16px; font-weight: 700; color: var(--gray-900); }
+    .book-subtitle { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+    .book-meta { font-size: 12px; color: var(--gray-500); margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .book-meta .age-badge { background: var(--gray-100); padding: 2px 10px; border-radius: 10px; font-weight: 600; font-size: 11px; }
+    .price { font-weight: 700; color: #e91e63; font-size: 14px; }
+    .book-actions { background: white; padding: 0 16px 14px; display: flex; gap: 8px; }
+    .btn-demo { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--amber); background: white; color: var(--amber-dark); font-size: 13px; cursor: pointer; text-align: center; font-weight: 600; }
     .btn-demo:hover { background: var(--amber-light); }
-    .btn-buy { flex: 1; padding: 8px; border-radius: 8px; border: none; background: var(--amber); color: white; font-size: 13px; cursor: pointer; font-weight: 600; text-align: center; }
-    .btn-buy:hover { background: var(--amber-dark); }
+    .btn-buy { flex: 1; padding: 10px; border-radius: 10px; border: none; background: #e91e63; color: white; font-size: 13px; cursor: pointer; font-weight: 600; text-align: center; }
+    .btn-buy:hover { background: #c2185b; }
 
     .empty { text-align: center; padding: 40px; color: var(--gray-500); }
   </style>
@@ -56,10 +58,9 @@
 
 <div class="filters" id="filters">
   <div class="pill active" onclick="filterAge('')">全部</div>
-  <div class="pill" onclick="filterAge('2-4')">2-4 歲</div>
-  <div class="pill" onclick="filterAge('3-6')">3-6 歲</div>
-  <div class="pill" onclick="filterAge('4-7')">4-7 歲</div>
-  <div class="pill" onclick="filterAge('6-8')">6-8 歲</div>
+  <div class="pill" onclick="filterAge('4-6')">4-6 歲</div>
+  <div class="pill" onclick="filterAge('7-9')">7-9 歲</div>
+  <div class="pill" onclick="filterAge('10-12')">10-12 歲</div>
 </div>
 
 <div class="content">
@@ -110,27 +111,37 @@
     renderGrid('paidGrid', paid);
   }
 
+  // Book visual config matching app.markluce.ai
+  const BOOK_STYLES = {
+    mei: { emoji: '🦕', gradient: 'linear-gradient(135deg, #ff6f61, #ff8a65)' },
+    amy: { emoji: '🎤', gradient: 'linear-gradient(135deg, #e91e63, #f06292)' },
+    max: { emoji: '🚀', gradient: 'linear-gradient(135deg, #1a237e, #311b92)' },
+  };
+  const DEFAULT_STYLE = { emoji: '📖', gradient: 'linear-gradient(135deg, #f59e0b, #fbbf24)' };
+
   function renderGrid(id, books) {
-    document.getElementById(id).innerHTML = books.map(b => `
+    document.getElementById(id).innerHTML = books.map(b => {
+      const style = BOOK_STYLES[b.slug] || DEFAULT_STYLE;
+      return `
       <div class="book-card">
-        <div class="book-cover">
-          ${b.cover_url ? `<img src="${b.cover_url}" alt="${b.title_en}" onerror="this.style.display='none';this.parentElement.textContent='📖'">` : '📖'}
-          ${b.is_demo ? '<span class="badge">免費</span>' : ''}
+        <div class="book-cover" style="background:${style.gradient}">
+          <div class="emoji">${style.emoji}</div>
+          <div style="font-size:18px;font-weight:800;line-height:1.3">${b.title_zh}</div>
+          <div style="font-size:13px;opacity:.85;margin-top:4px">${b.title_en}</div>
+          ${b.is_demo ? '<span class="badge">免費試閱</span>' : ''}
         </div>
         <div class="book-info">
-          <div class="book-title">${b.title_zh}</div>
-          <div class="book-subtitle">${b.title_en}</div>
           <div class="book-meta">
-            <span>${b.age_tier} 歲</span>
-            <span class="price">${b.is_demo ? '免費' : (b.price_ntd ? 'NT$' + b.price_ntd : '即將推出')}</span>
+            <span class="age-badge">${b.age_tier} 歲</span>
+            <span class="price">${b.is_demo ? '免費' : (b.price_ntd ? 'NT$' + b.price_ntd : 'NT$99')}</span>
           </div>
         </div>
         <div class="book-actions">
           <button class="btn-demo" onclick="location.href='/app/reader.html?book=${b.slug}'">試閱</button>
           ${b.is_demo ? '' : '<button class="btn-buy" onclick="buyBook(\'' + b.slug + '\')">購買</button>'}
         </div>
-      </div>
-    `).join('');
+      </div>`;
+    }).join('');
   }
 
   function buyBook(slug) {
