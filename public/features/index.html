@@ -67,16 +67,16 @@ nav a:hover{color:#0d6efd;text-decoration:none}
 .footer a{color:#6c757d}
 .loading{padding:3rem 0;text-align:center;color:#adb5bd}
 
-/* Ref section */
-.ref-section{margin-top:2rem;padding-top:1.5rem;border-top:2px solid #e9ecef}
-.ref-section h3{font-size:.95rem;font-weight:700;color:#212529;margin-bottom:.8rem}
-.ref-meta{font-size:.82rem;color:#6c757d;line-height:1.8;margin-bottom:1rem}
+/* Ref section — wiki style */
+.ref-section{margin-top:2.5rem;padding-top:1.2rem;border-top:1px solid #a2a9b1}
+.ref-section h3{font-size:1.1rem;font-weight:700;color:#212529;margin-bottom:.3rem;padding-bottom:.3rem;border-bottom:1px solid #a2a9b1}
+.ref-meta{font-size:.82rem;color:#495057;line-height:1.8;margin:.8rem 0}
 .ref-meta a{color:#0d6efd;word-break:break-all}
-.ref-sources{list-style:none;padding:0;margin:0}
-.ref-sources li{padding:.4rem 0;border-bottom:1px solid #f1f3f5;font-size:.85rem}
-.ref-sources li:last-child{border-bottom:none}
+.ref-sources{list-style:none;padding:0;margin:.5rem 0 0;counter-reset:ref}
+.ref-sources li{padding:.25rem 0;font-size:.82rem;color:#495057;line-height:1.6;padding-left:2.5em;text-indent:-2.5em}
+.ref-sources li::before{counter-increment:ref;content:"[" counter(ref) "] ";color:#0d6efd;font-weight:600;font-size:.78rem}
 .ref-sources a{color:#0d6efd}
-.ref-sources .src-title{font-weight:500;color:#212529}
+.ref-sources .src-domain{color:#006400;font-size:.78rem}
 
 @media(max-width:480px){.container{padding:0 1rem}.article-header h1{font-size:1.25rem}}
 </style>
@@ -183,28 +183,30 @@ async function loadArticle(slug){
   // Render article content
   let html=marked.parse(d.content||'');
 
-  // Build Ref section
+  // Build Ref section — wiki style
   const sources=d.sources||[];
-  let refHtml=`<div class="ref-section"><h3>Ref.</h3>`;
-  refHtml+=`<div class="ref-meta">`;
-  refHtml+=`<strong>${esc(d.title)}</strong><br>`;
-  refHtml+=`發表日期：${d.date}<br>`;
-  if(d.tags&&d.tags.length) refHtml+=`標籤：${d.tags.map(t=>esc(t)).join(' · ')}<br>`;
-  refHtml+=`永久連結：<a href="${permalink}">${permalink}</a><br>`;
-  refHtml+=`來源：<a href="https://markluce.ai/">MarkLuce.ai</a> · 與 Claude Opus 4.6 共同創作`;
-  refHtml+=`</div>`;
+  function domain(url){ try{ return new URL(url).hostname; }catch{ return ''; } }
+  function fmtDate(ds){ if(!ds)return ''; const p=ds.split('-'); return p[0]+'-'+p[1]+'-'+p[2]; }
+
+  let refHtml=`<div class="ref-section"><h3>參考來源</h3>`;
 
   if(sources.length){
-    refHtml+=`<ul class="ref-sources">`;
+    refHtml+=`<ol class="ref-sources">`;
     sources.forEach(s=>{
       if(s.url){
-        refHtml+=`<li><a href="${esc(s.url)}" target="_blank" rel="noopener"><span class="src-title">${esc(s.title||s.url)}</span></a></li>`;
+        const dom=domain(s.url);
+        refHtml+=`<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title||dom)}</a>. <span class="src-domain">${esc(dom)}</span>.${s.date?' ['+esc(s.date)+'].':''}</li>`;
       }else if(s.title){
-        refHtml+=`<li><span class="src-title">${esc(s.title)}</span></li>`;
+        refHtml+=`<li>${esc(s.title)}.${s.date?' ['+esc(s.date)+'].':''}</li>`;
       }
     });
-    refHtml+=`</ul>`;
+    refHtml+=`</ol>`;
   }
+
+  refHtml+=`<div class="ref-meta">`;
+  refHtml+=`本文「${esc(d.title)}」由 <a href="https://markluce.ai/">MarkLuce.ai</a> 與 Claude Opus 4.6 共同創作，發表於 ${d.date}。<br>`;
+  refHtml+=`永久連結：<a href="${permalink}">${permalink}</a>`;
+  refHtml+=`</div>`;
   refHtml+=`</div>`;
 
   document.getElementById('artBody').innerHTML=html+refHtml;
