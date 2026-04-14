@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scott Su 蘇彥儒 | 致敬成長，成就大師 — 26-27 CGD Candidate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f2847;
+      --accent: #d4a574;
+      --bg-light: #fafaf8;
+      --card: #ffffff;
+      --text: #2c3e50;
+      --muted: #7a8a9a;
+      --divider: #e8e6e2;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      color: var(--text);
+      background: var(--bg-light);
+      line-height: 1.6;
+    }
+
+    /* Top Nav */
+    .top-nav {
+      background: var(--primary);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: none;
+      border-bottom: 1px solid rgba(212, 165, 116, 0.2);
+    }
+
+    .top-nav .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .top-nav .brand {
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 14px 0;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo {
+      height: 36px;
+      width: auto;
+      display: block;
+    }
+
+    .top-nav .brand .accent {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 1px;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 14px 16px;
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: white;
+      border-bottom-color: var(--accent);
+    }
+
+    /* Mobile social drawer */
+    .mobile-social-drawer {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-social-drawer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        position: fixed;
+        right: 0;
+        top: 40%;
+        z-index: 150;
+      }
+
+      .mobile-social-tab {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px 0 0 8px;
+        width: 24px;
+        padding: 10px 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        line-height: 1;
+        font-family: sans-serif;
+        font-weight: 700;
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .mobile-social-icons {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        overflow: hidden;
+        max-height: 0;
+        transition: max-height 0.35s ease, opacity 0.3s ease;
+        opacity: 0;
+      }
+
+      .mobile-social-icons.open {
+        max-height: 400px;
+        opacity: 1;
+      }
+
+      .mobile-social-icons a {
+        width: 44px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+        border-radius: 8px 0 0 8px;
+      }
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 8px;
+    }
+
+    /* Hero */
+    .hero {
+      background: url('media/BannerBG.png') center center / cover no-repeat;
+      color: white;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes portraitReveal {
+      from {
+        opacity: 0;
+        transform: translateY(60px) scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    .hero-portrait {
+      width: 380px;
+      min-width: 280px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.55));
+      animation: portraitReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+      align-self: flex-end;
+    }
+
+    .hero-text {
+      flex: 1;
+      text-align: left;
+      padding-bottom: 80px;
+    }
+
+    @keyframes goldShimmer {
+
+      0%,
+      100% {
+        background-position: 0% center;
+      }
+
+      50% {
+        background-position: 100% center;
+      }
+    }
+
+    .hero-main-title {
+      font-size: 3.2rem;
+      font-weight: 900;
+      line-height: 1.25;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      background: linear-gradient(105deg,
+          #c8952e 0%,
+          #e8c55a 20%,
+          #ffe170 35%,
+          #fff8e0 50%,
+          #ffe170 65%,
+          #e8c55a 80%,
+          #c8952e 100%);
+      background-size: 300% auto;
+      background-position: 0% center;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation:
+        fadeInUp 0.9s ease 0.8s both,
+        goldShimmer 4s ease-in-out infinite;
+    }
+
+    .hero-main-title .en-line {
+      display: block;
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .hero-sub-title {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.88);
+      font-weight: 400;
+      line-height: 1.9;
+      border-top: 2px solid var(--accent);
+      padding-top: 14px;
+      margin-top: 4px;
+      animation: fadeInUp 0.9s ease 1.15s both;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 14px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.9s ease 1.5s both;
+    }
+
+    .hero-btn {
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: 700;
+      font-family: 'Noto Sans TC', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      border: 2px solid transparent;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      display: inline-block;
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .hero-btn-primary {
+      background: linear-gradient(105deg, #c8952e 0%, #ffe170 50%, #c8952e 100%);
+      color: #1a1a1a;
+      border-color: transparent;
+    }
+
+    .hero-btn-primary:hover {
+      background: linear-gradient(105deg, #d4a43a 0%, #fff0a0 50%, #d4a43a 100%);
+    }
+
+    .hero-btn-secondary {
+      background: transparent;
+      color: white;
+      border-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .hero-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: white;
+    }
+
+    .hero-sub-title strong {
+      display: block;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .hero-banner {
+      display: none;
+    }
+
+    .hero-photo {
+      display: none;
+    }
+
+    /* legacy selectors (unused but kept for safety) */
+    .hero h1 {
+      display: none;
+    }
+
+    .hero .subtitle,
+    .hero .subtitle-en,
+    .hero .position,
+    .hero .tagline {
+      display: none;
+    }
+
+    /* Mobile: <768px */
+    @media (max-width: 768px) {
+      .hero-content {
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 20px 36px;
+        gap: 0;
+      }
+
+      .hero-portrait {
+        width: min(240px, 65vw);
+        min-width: unset;
+        align-self: center;
+        margin-bottom: -108px;
+      }
+
+      .hero-text {
+        text-align: center;
+        padding-bottom: 0;
+      }
+
+      .hero-main-title {
+        font-size: 1.9rem;
+      }
+
+      .hero-main-title .en-line {
+        font-size: 1.3rem;
+      }
+
+      .hero-sub-title {
+        font-size: 0.9rem;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .hero-btn {
+        padding: 10px 22px;
+        font-size: 0.92rem;
+      }
+    }
+
+    /* Sections */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 56px 24px;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 900;
+      color: var(--primary);
+      margin-bottom: 40px;
+      padding-bottom: 0;
+      border-bottom: none;
+      display: block;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    .section-alt {
+      background: var(--bg-light);
+      margin: 0;
+      max-width: 100%;
+      padding: 56px 24px;
+    }
+
+    .section-alt>.inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Vision */
+    .vision-intro {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+      margin-bottom: 44px;
+    }
+
+    .vision-intro img {
+      width: 280px;
+      border-radius: 4px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .vision-intro .vision-text {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    .vision-discovery {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+
+    .vision-discovery img {
+      max-width: 100%;
+      width: 100%;
+      border-radius: 4px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    @media (max-width: 640px) {
+      .vision-intro {
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .vision-intro img {
+        width: 100%;
+      }
+    }
+
+    .vision-box {
+      background: var(--card);
+      border-radius: 4px;
+      padding: 36px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      font-size: 0.95rem;
+      line-height: 1.75;
+      position: relative;
+      border-left: none;
+      border-top: 4px solid var(--accent);
+    }
+
+    /* Pillar cards */
+    .pillar-card {
+      background: var(--card);
+      border-radius: 4px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border-left: none;
+      border-top: 3px solid var(--accent);
+    }
+
+    .pillar-card h3 {
+      font-size: 1.1rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+    }
+
+    .pillar-card .pillar-sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 14px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .pillar-card .problem {
+      background: rgba(212, 165, 116, 0.08);
+      border-radius: 4px;
+      padding: 9px 12px;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+      color: var(--text);
+      border-left: 3px solid var(--accent);
+      line-height: 1.5;
+    }
+
+    .pillar-card .problem::before {
+      content: '問題：';
+      font-weight: 700;
+      margin-right: 4px;
+    }
+
+    .pillar-card .goal-text {
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .pillar-card ul {
+      display: none;
+      /* Hide action list for cleaner scanning */
+    }
+
+    .pillar-card .achievements {
+      display: none;
+      /* Hide achievements for cleaner scanning */
+    }
+
+    .pillar-card .commitment {
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 0.84rem;
+      border-top: 1px solid var(--divider);
+      padding-top: 10px;
+      margin-top: 6px;
+      line-height: 1.6;
+    }
+
+    /* Why section */
+    .why-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .why-card {
+      background: var(--card);
+      border-radius: 4px;
+      padding: 36px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border-top: 4px solid var(--accent);
+    }
+
+    .why-card h3 {
+      color: var(--primary);
+      margin-bottom: 18px;
+      font-size: 1.15rem;
+      font-weight: 900;
+      letter-spacing: -0.2px;
+    }
+
+    .why-card p {
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.75;
+      font-weight: 400;
+    }
+
+    /* Invitation */
+    .invitation-box {
+      background: var(--primary);
+      color: white;
+      border-radius: 4px;
+      padding: 44px;
+      text-align: center;
+    }
+
+    .invitation-box h3 {
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin-bottom: 20px;
+      letter-spacing: -0.3px;
+      line-height: 1.3;
+    }
+
+    .invitation-box p {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 32px;
+      font-weight: 400;
+    }
+
+    .invitation-cta-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .invitation-cta {
+      display: inline-block;
+      padding: 14px 32px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.92rem;
+      letter-spacing: 0.3px;
+      transition: all 0.2s;
+      border: none;
+      cursor: pointer;
+      min-width: 140px;
+    }
+
+    .invitation-cta.primary {
+      background: var(--accent);
+      color: var(--primary);
+      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.25);
+    }
+
+    .invitation-cta.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(212, 165, 116, 0.45);
+    }
+
+    .invitation-cta.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .invitation-cta.secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: white;
+      transform: translateY(-2px);
+    }
+
+    /* Contact */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .contact-card {
+      background: var(--card);
+      border-radius: 4px;
+      padding: 28px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s;
+      border-top: 4px solid var(--accent);
+    }
+
+    .contact-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .contact-card .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .contact-card .info .label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      font-weight: 700;
+    }
+
+    .contact-card .info .value {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--primary);
+    }
+
+    /* Social Sidebar */
+    .social-sidebar {
+      position: fixed;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+    }
+
+    .social-sidebar-item {
+      display: flex;
+      align-items: center;
+      flex-direction: row-reverse;
+      background: var(--primary);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px 0 0 8px;
+      overflow: hidden;
+      max-width: 44px;
+      transition: max-width 0.3s ease, background 0.2s;
+      cursor: pointer;
+      white-space: nowrap;
+      padding-left: 10px;
+    }
+
+    .social-sidebar-item:hover,
+    .social-sidebar-item:focus {
+      max-width: 200px;
+      background: var(--accent);
+      color: #1a1a1a;
+    }
+
+    .social-sidebar-icon {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .social-sidebar-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0 12px 0 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease 0.1s;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    .social-sidebar-item:hover .social-sidebar-label,
+    .social-sidebar-item:focus .social-sidebar-label {
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .social-sidebar {
+        display: none;
+      }
+    }
+
+    /* Footer */
+    footer {
+      background: var(--primary);
+      color: rgba(255, 255, 255, 0.65);
+      text-align: center;
+      padding: 36px 24px;
+      font-size: 0.8rem;
+      border-top: 1px solid rgba(212, 165, 116, 0.15);
+    }
+
+    footer p {
+      margin-bottom: 6px;
+      letter-spacing: 0.2px;
+    }
+
+    footer strong {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 600;
+    }
+
+    /* Chatbot */
+    .chatbot-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(212, 165, 116, 0.7);
+      color: var(--primary);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      font-size: 1.1rem;
+      z-index: 200;
+      transition: all 0.2s;
+      opacity: 0.85;
+    }
+
+    .chatbot-toggle:hover {
+      transform: scale(1.05);
+      background: rgba(212, 165, 116, 0.9);
+      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.2);
+      opacity: 1;
+    }
+
+    .chatbot-panel {
+      position: fixed;
+      bottom: 100px;
+      right: 24px;
+      width: 440px;
+      max-height: 70vh;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+      z-index: 200;
+      overflow: hidden;
+      resize: both;
+      min-width: 320px;
+      min-height: 400px;
+    }
+
+    .chatbot-panel.open {
+      display: flex;
+    }
+
+    .chatbot-panel.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100vw !important;
+      max-width: 100vw !important;
+      max-height: 100vh !important;
+      height: 100vh !important;
+      border-radius: 0;
+      resize: none;
+      z-index: 9999;
+    }
+
+    .chatbot-header {
+      background: var(--primary);
+      color: white;
+      padding: 10px 14px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chatbot-header button {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.8);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: color 0.2s;
+    }
+
+    .chatbot-header button:hover {
+      color: white;
+    }
+
+    .chatbot-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      min-height: 200px;
+    }
+
+    .chat-msg {
+      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-msg.user {
+      align-items: flex-end;
+    }
+
+    .chat-msg.bot {
+      align-items: flex-start;
+    }
+
+    .chat-bubble {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .chat-msg.user .chat-bubble {
+      background: var(--primary);
+      color: white;
+    }
+
+    .chat-msg.bot .chat-bubble {
+      background: #f0f0f0;
+      color: var(--text);
+    }
+
+    .chat-bubble-wrap {
+      max-width: 90%;
+    }
+
+    .tts-btn {
+      background: var(--primary);
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: white;
+      padding: 5px 12px;
+      border-radius: 14px;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tts-btn:hover {
+      background: var(--accent2);
+      transform: scale(1.05);
+    }
+
+    .tts-btn.loading {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .tts-label {
+      font-size: 0.75rem;
+    }
+
+    .audio-player {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #e8e8e8;
+      border-radius: 18px;
+      padding: 4px 10px;
+      margin-top: 6px;
+      width: 100%;
+    }
+
+    .audio-player button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .audio-player button:hover {
+      background: var(--accent2);
+    }
+
+    .audio-player input[type="range"] {
+      flex: 1;
+      height: 4px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    .audio-player .time {
+      font-size: 0.7rem;
+      color: var(--muted);
+      min-width: 32px;
+      text-align: center;
+    }
+
+    .chatbot-input {
+      display: flex;
+      border-top: 1px solid #eee;
+      padding: 10px;
+      gap: 8px;
+    }
+
+    .chatbot-input input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      outline: none;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    .chatbot-input button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 8px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
+    .chatbot-input button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .typing-indicator {
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 4px 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero {
+        padding: 36px 20px 44px;
+      }
+
+      .hero h1 {
+        font-size: 1.85rem;
+        line-height: 1.2;
+      }
+
+      .hero-banner {
+        max-width: 100%;
+        margin-bottom: 18px;
+      }
+
+      .hero-candidate {
+        font-size: 0.85rem;
+        margin-bottom: 4px;
+      }
+
+      .hero-role {
+        font-size: 0.65rem;
+        margin-bottom: 20px;
+      }
+
+      .hero-cta-group {
+        gap: 10px;
+      }
+
+      .hero-cta {
+        padding: 12px 26px;
+        font-size: 0.88rem;
+        min-width: auto;
+      }
+
+      .section-title {
+        font-size: 1.45rem;
+        margin-bottom: 32px;
+      }
+
+      section {
+        padding: 44px 20px;
+      }
+
+      .section-alt {
+        padding: 44px 20px;
+      }
+
+      .why-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .why-card {
+        padding: 32px;
+      }
+
+      .why-card h3 {
+        font-size: 1.05rem;
+      }
+
+      .vision-intro {
+        gap: 20px;
+      }
+
+      .vision-intro img {
+        width: 100%;
+      }
+
+      .pillar-card {
+        padding: 18px;
+        margin-bottom: 14px;
+        border-top: 2px solid var(--accent);
+      }
+
+      .pillar-card h3 {
+        font-size: 0.98rem;
+      }
+
+      .pillar-card .pillar-sub {
+        margin-bottom: 10px;
+        font-size: 0.68rem;
+      }
+
+      .pillar-card .problem {
+        padding: 8px 11px;
+        margin-bottom: 8px;
+        font-size: 0.78rem;
+      }
+
+      .pillar-card .goal-text {
+        margin-bottom: 8px;
+        font-size: 0.82rem;
+      }
+
+      .pillar-card .commitment {
+        padding-top: 8px;
+        font-size: 0.81rem;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .invitation-cta-group {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .invitation-cta {
+        padding: 12px 24px;
+        min-width: auto;
+      }
+
+      .chatbot-panel {
+        width: calc(100vw - 32px);
+        right: 16px;
+        bottom: 80px;
+      }
+
+      .chatbot-toggle {
+        width: 44px;
+        height: 44px;
+        font-size: 1.1rem;
+        bottom: 16px;
+        right: 16px;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--primary);
+        padding: 8px 0;
+      }
+
+      .why-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chatbot-panel {
+        width: calc(100vw - 32px);
+        right: 16px;
+        bottom: 90px;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--primary);
+        padding: 10px 0;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links a {
+        padding: 12px 20px;
+      }
+
+      .hamburger {
+        display: block;
+      }
+    }
+
+    @media (max-width: 330px) {
+      .hero-portrait {
+        margin-bottom: -144px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <img src="media/toastmasters-logo.png" alt="Toastmasters International" class="nav-logo">
+        <span class="accent">Scott Su</span> 蘇彥儒
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="選單">&#9776;</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#hero">首頁</a></li>
+        <li><a href="#vision">願景</a></li>
+        <li><a href="#pillars">四大政見</a></li>
+        <li><a href="#why">理念</a></li>
+        <li><a href="#invitation">邀請</a></li>
+        <li><a href="#contact">聯絡</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero" id="hero">
+    <div class="hero-content">
+      <img src="media/ScottTransparent.png" alt="Scott Su 蘇彥儒" class="hero-portrait">
+      <div class="hero-text">
+        <div class="hero-main-title">
+          致敬成長，成就大師
+          <span class="en-line">Toast to Discovery<br>Lead to Mastery</span>
+        </div>
+        <div class="hero-sub-title">
+          <strong>Scott Su 蘇彥儒</strong>
+          2026–2027 Toastmasters District 67 (Taiwan)<br>
+          Candidate for Club Growth Director<br>
+          2026-2027 分會成長執行長候選人
+        </div>
+        <div class="hero-buttons">
+          <a href="#vision" class="hero-btn hero-btn-primary">看我的政見</a>
+          <button class="hero-btn hero-btn-secondary" id="heroChatBtn">和我聊聊</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vision -->
+  <section id="vision">
+    <h2 class="section-title">從探索自我，到影響他人</h2>
+    <div class="vision-intro">
+      <img src="headshot.jpeg" alt="Scott Su 蘇彥儒">
+      <div class="vision-text" id="vision-text-intro">
+        親愛的台灣 Toastmasters 夥伴們，大家好<br>
+        我是 Scott Su 蘇彥儒。<br><br>
+        在 Toastmasters 的旅程中，我們每一個人，都曾在某個時刻，為自己的勇敢與改變舉杯致敬——<br>
+        那可能是第一次上台、第一次帶領團隊，或第一次意識到自己已成為他人的榜樣。
+      </div>
+    </div>
+    <div class="vision-discovery">
+      <img src="discovery.jpeg" alt="From Discovery to Influence">
+    </div>
+    <div class="vision-box" id="vision-box"></div>
+  </section>
+
+  <!-- Four Pillars -->
+  <div class="section-alt" id="pillars">
+    <div class="inner">
+      <h2 class="section-title">2026-27 四大行動方向</h2>
+      <div id="pillars-list"></div>
+    </div>
+  </div>
+
+  <!-- Why -->
+  <section id="why">
+    <h2 class="section-title">核心理念</h2>
+    <div class="why-grid">
+      <div class="why-card">
+        <h3>為什麼是「致敬成長」？</h3>
+        <p id="why-growth"></p>
+      </div>
+      <div class="why-card">
+        <h3>為什麼是「成就大師」？</h3>
+        <p id="why-mastery"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Invitation -->
+  <div class="section-alt" id="invitation">
+    <div class="inner">
+      <div class="invitation-box">
+        <h3 id="invitation-title"></h3>
+        <p id="invitation-text"></p>
+        <div class="invitation-cta-group">
+          <a href="https://www.facebook.com/TMID67.ScottSu" target="_blank" class="invitation-cta primary">支持我</a>
+          <a href="#contact" class="invitation-cta secondary">聯絡我</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact -->
+  <section id="contact">
+    <h2 class="section-title">聯絡 Scott</h2>
+    <div class="contact-grid" id="contact-grid"></div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p><strong>Scott Su 蘇彥儒</strong> — 26-27 Club Growth Director Candidate</p>
+    <p>District 67 Toastmasters Taiwan | 致敬成長，成就大師</p>
+  </footer>
+
+  <!-- Social Sidebar (desktop) -->
+  <div class="social-sidebar" id="socialSidebar"></div>
+
+  <!-- Social Drawer (mobile) -->
+  <div class="mobile-social-drawer" id="mobileSocialDrawer">
+    <button class="mobile-social-tab" id="mobileSocialTab">&#9664;</button>
+    <div class="mobile-social-icons" id="mobileSocialIcons"></div>
+  </div>
+
+  <!-- Chatbot -->
+  <button class="chatbot-toggle" id="chatToggle" title="Ask AI about Scott's Campaign">&#x1F4AC;</button>
+  <div class="chatbot-panel" id="chatPanel">
+    <div class="chatbot-header">
+      <span>和我聊聊</span>
+      <div>
+        <button id="chatClose">&times;</button>
+      </div>
+    </div>
+
+    <div class="chatbot-messages" id="chatMessages">
+      <div class="chat-msg bot">
+        <div class="chat-bubble" id="welcomeMsg"></div>
+      </div>
+    </div>
+
+    <div class="chatbot-input">
+      <input type="text" id="chatInput" placeholder="輸入問題 / Ask a question..." autocomplete="off">
+      <button id="chatSend">送出</button>
+    </div>
+  </div>
+
+  <script>
+    // Mobile nav toggle
+    document.getElementById('hamburger').onclick = () => {
+      document.getElementById('navLinks').classList.toggle('open');
+    };
+    // Close mobile nav on link click
+    document.querySelectorAll('.nav-links a').forEach(a => {
+      a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+    });
+
+    // Active nav highlight on scroll
+    const sections = document.querySelectorAll('section, .section-alt, .hero');
+    const navLinks = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (s.getBoundingClientRect().top <= 100) current = s.id || '';
+      });
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    });
+
+    // Load and render data
+    fetch('/scottsu/api/info').then(r => r.json()).then(data => {
+      // Vision
+      document.getElementById('vision-box').textContent = data.vision || '';
+
+      // Pillars
+      const pillarsList = document.getElementById('pillars-list');
+      (data.pillars || []).forEach(p => {
+        const actionsHtml = p.actions.map(a => `<li>${esc(a)}</li>`).join('');
+        const achieveHtml = (p.achievements && p.achievements.length)
+          ? `<div class="achievements"><h4>正在創造的影響力</h4><ul>${p.achievements.map(a => `<li>${esc(a)}</li>`).join('')}</ul></div>`
+          : '';
+        pillarsList.innerHTML += `
+          <div class="pillar-card">
+            <h3>${esc(p.name)}</h3>
+            <div class="pillar-sub">${esc(p.subtitle)}</div>
+            <div class="problem">${esc(p.core_problem)}</div>
+            <div class="goal-text">${esc(p.goal)}</div>
+            <ul>${actionsHtml}</ul>
+            ${achieveHtml}
+            <div class="commitment">${esc(p.commitment)}</div>
+          </div>`;
+      });
+
+      // Why
+      document.getElementById('why-growth').textContent = data.why_toast_to_growth || '';
+      document.getElementById('why-mastery').textContent = data.why_lead_to_mastery || '';
+
+      // Invitation
+      document.getElementById('invitation-title').textContent = '一起把成長帶到下一個階段';
+      document.getElementById('invitation-text').textContent = data.invitation || '';
+
+      // Contact
+      const cg = document.getElementById('contact-grid');
+      const c = data.contact || {};
+      const contacts = [
+        { icon: 'fb', label: '競選粉專 Facebook', value: 'TMID67.ScottSu', url: c.facebook_campaign },
+        { icon: 'ig', label: 'Instagram', value: '@tmt.scottie', url: c.instagram },
+        { icon: 'in', label: 'LinkedIn', value: 'symphonicrain', url: c.linkedin },
+        { icon: 'fb', label: '個人 Facebook', value: 'yengju.su', url: c.facebook_personal },
+        { icon: 'Li', label: 'Line ID', value: c.line_id, url: null },
+        { icon: '@', label: 'Email', value: c.email, url: 'mailto:' + c.email },
+        { icon: 'W', label: '經歷與故事', value: 'club.toastmasters.org.tw', url: c.profile_page },
+        { icon: 'B', label: '預約會面', value: 'Book a Meeting', url: c.booking },
+      ];
+      // Social sidebar
+      const sidebar = document.getElementById('socialSidebar');
+      const socials = [
+        { icon: 'f', label: '競選粉專', url: c.facebook_campaign, color: '#1877f2' },
+        { icon: 'f', label: '個人 Facebook', url: c.facebook_personal, color: '#5c3d9e' },
+        { icon: 'ig', label: 'Instagram', url: c.instagram, color: '#e1306c' },
+        { icon: 'in', label: 'LinkedIn', url: c.linkedin, color: '#0a66c2' },
+        { icon: 'W', label: '經歷與故事', url: c.profile_page, color: '#2c5f8a' },
+        { icon: 'B', label: '預約會面', url: c.booking, color: '#e8a838' },
+      ].filter(s => s.url);
+      const mobileIcons = document.getElementById('mobileSocialIcons');
+      socials.forEach(s => {
+        // desktop sidebar
+        const a = document.createElement('a');
+        a.className = 'social-sidebar-item';
+        a.href = s.url;
+        a.target = '_blank';
+        if (s.color) a.style.background = s.color;
+        a.rel = 'noopener';
+        a.title = s.label;
+        a.innerHTML = `<span class="social-sidebar-icon">${esc(s.icon)}</span><span class="social-sidebar-label">${esc(s.label)}</span>`;
+        sidebar.appendChild(a);
+        // mobile drawer
+        const b = document.createElement('a');
+        b.href = s.url;
+        b.target = '_blank';
+        b.rel = 'noopener';
+        b.title = s.label;
+        if (s.color) b.style.background = s.color;
+        b.textContent = s.icon;
+        mobileIcons.appendChild(b);
+      });
+
+      const mobileTab = document.getElementById('mobileSocialTab');
+      mobileTab.addEventListener('click', () => {
+        const isOpen = mobileIcons.classList.toggle('open');
+        mobileTab.innerHTML = isOpen ? '&#9654;' : '&#9664;';
+      });
+
+      contacts.forEach(item => {
+        const tag = item.url ? 'a' : 'div';
+        const href = item.url ? ` href="${esc(item.url)}" target="_blank" rel="noopener"` : '';
+        cg.innerHTML += `
+          <${tag} class="contact-card"${href}>
+            <div class="icon">${esc(item.icon)}</div>
+            <div class="info">
+              <div class="label">${esc(item.label)}</div>
+              <div class="value">${esc(item.value || '')}</div>
+            </div>
+          </${tag}>`;
+      });
+    });
+
+    function esc(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Welcome message topics
+    const allTopics = [
+      '「致敬成長，成就大師」這個主題的涵義是什麼？',
+      'Scott 在 Microsoft 的經驗如何影響他的競選願景？',
+      '影響力中心具體要做什麼？',
+      '策略關係委員會有哪些已經在進行的合作？',
+      'Microsoft × Toastmasters Coding Angels 計畫是什麼？',
+      'Rotary Taipei 2026 扶輪年會合作計畫是什麼？',
+      '多元文化委員會如何支持不同語言社群？',
+      '會員成功委員會如何解決新會員流失問題？',
+      '每年 300 萬元的數位資源是怎麼爭取到的？',
+      '為什麼說「成就大師不是終點，而是擴散點」？',
+      'Scott 提出了哪四大行動方向？',
+      '跨分會導師媒合機制具體怎麼運作？',
+      'AI 對話代理在 Toastmasters 的應用是什麼？',
+      '企業、學校、政府的策略合作模式有哪些？',
+      '興趣導向同好會如何提高會員留存率？',
+    ];
+    function pickTopics(n) {
+      const shuffled = [...allTopics].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, n);
+    }
+    const picked = pickTopics(3);
+    document.getElementById('welcomeMsg').innerHTML =
+      '你好！我是 Scott Su 競選助理 AI<br><br>' +
+      '想了解什麼呢？選個數字或直接提問：<br>' +
+      picked.map((t, i) => `${i + 1}. ${t}`).join('<br>');
+
+    // Chatbot logic
+    const chatToggle = document.getElementById('chatToggle');
+    const chatPanel = document.getElementById('chatPanel');
+    const chatClose = document.getElementById('chatClose');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatMessages = document.getElementById('chatMessages');
+    const heroChat = document.getElementById('heroChat');
+    let chatHistory = [];
+    let sending = false;
+
+    chatToggle.onclick = () => chatPanel.classList.toggle('open');
+    chatClose.onclick = () => chatPanel.classList.remove('open');
+    document.getElementById('heroChatBtn').onclick = () => chatPanel.classList.add('open');
+    chatClose.onclick = () => { chatPanel.classList.remove('open'); resetView(); };
+
+    chatExpand.onclick = () => {
+      if (viewMode === 'expanded') { resetView(); return; }
+      resetView();
+      chatPanel.style.width = '90vw';
+      chatPanel.style.maxWidth = '800px';
+      chatPanel.style.maxHeight = '80vh';
+      chatPanel.style.bottom = '80px';
+      chatExpand.innerHTML = '&#x2750;';
+      viewMode = 'expanded';
+    };
+
+    chatFull.onclick = () => {
+      if (viewMode === 'fullscreen') { resetView(); return; }
+      resetView();
+      chatPanel.classList.add('fullscreen', 'show-font');
+      chatFull.innerHTML = '&#x2923;';
+      viewMode = 'fullscreen';
+    };
+
+    function resetView() {
+      chatPanel.classList.remove('fullscreen');
+      chatPanel.style.width = '';
+      chatPanel.style.maxWidth = '';
+      chatPanel.style.maxHeight = '';
+      chatPanel.style.bottom = '';
+      chatExpand.innerHTML = '&#x26F6;';
+      chatFull.innerHTML = '&#x2922;';
+      chatPanel.classList.remove('fs125', 'fs150', 'fs175', 'show-font');
+      fontBar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      fontBar.querySelector('[data-scale="100"]').classList.add('active');
+      viewMode = 'normal';
+    }
+
+    fontBar.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-scale]');
+      if (!btn) return;
+      const scale = btn.dataset.scale;
+      chatPanel.classList.remove('fs125', 'fs150', 'fs175');
+      if (scale !== '100') chatPanel.classList.add('fs' + scale);
+      fontBar.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      setTimeout(() => { chatMessages.scrollTop = chatMessages.scrollHeight; }, 50);
+    });
+
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !sending) sendMessage();
+    });
+    chatSend.onclick = () => { if (!sending) sendMessage(); };
+
+    async function sendMessage() {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+      chatInput.value = '';
+      sending = true;
+      chatSend.disabled = true;
+      appendMsg('user', msg);
+      chatHistory.push({ role: 'user', content: msg });
+
+      const typingEl = document.createElement('div');
+      typingEl.className = 'typing-indicator';
+      typingEl.textContent = 'AI 思考中...';
+      chatMessages.appendChild(typingEl);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      try {
+        const res = await fetch('/scottsu/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: msg, history: chatHistory.slice(-10) })
+        });
+        const data = await res.json();
+        typingEl.remove();
+        if (data.reply) {
+          appendMsg('bot', data.reply);
+          chatHistory.push({ role: 'assistant', content: data.reply });
+        } else {
+          appendMsg('bot', '抱歉，目前無法回應，請稍後再試。');
+        }
+      } catch (err) {
+        typingEl.remove();
+        appendMsg('bot', '連線錯誤，請稍後再試。');
+      }
+      sending = false;
+      chatSend.disabled = false;
+    }
+
+    function appendMsg(role, text) {
+      const div = document.createElement('div');
+      div.className = `chat-msg ${role}`;
+      if (role === 'bot') {
+        const ttsText = stripMarkdown(text);
+        div.innerHTML = `<div class="chat-bubble-wrap">
+          <div><button class="tts-btn tts-top" title="播放語音">&#x1f50a;<span class="tts-label">播放</span></button></div>
+          <div class="chat-bubble">${renderMarkdown(text)}</div>
+          <div><button class="tts-btn tts-bottom" title="播放語音">&#x1f50a;<span class="tts-label">播放</span></button></div>
+        </div>`;
+        div.querySelectorAll('.tts-btn').forEach(btn => {
+          btn.addEventListener('click', function () { loadAndPlay(this, ttsText, div); });
+        });
+      } else {
+        div.innerHTML = `<div class="chat-bubble">${esc(text).replace(/\n/g, '<br>')}</div>`;
+      }
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function renderMarkdown(str) {
+      let html = esc(str);
+      html = html.replace(/^### (.+)$/gm, '<strong style="font-size:1rem;">$1</strong>');
+      html = html.replace(/^## (.+)$/gm, '<strong style="font-size:1.05rem;">$1</strong>');
+      html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+      html = html.replace(/^(\d+)\.\s+/gm, '<span style="color:var(--accent);font-weight:700;">$1.</span> ');
+      html = html.replace(/\n/g, '<br>');
+      return html;
+    }
+
+    function stripMarkdown(str) {
+      return str.replace(/#{1,6}\s*/g, '').replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1').replace(/`(.+?)`/g, '$1');
+    }
+
+    // Azure TTS
+    let currentAudio = null;
+    async function loadAndPlay(btn, text, msgDiv) {
+      const existingPlayer = msgDiv.querySelector('.audio-player');
+      if (existingPlayer) {
+        const audio = existingPlayer._audio;
+        if (audio.paused) { audio.play(); } else { audio.pause(); }
+        return;
+      }
+      if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+      const gender = document.querySelector('input[name="voice"]:checked').value;
+      btn.classList.add('loading');
+      btn.innerHTML = '&#x23F3;<span class="tts-label">載入中...</span>';
+      try {
+        const res = await fetch('/scottsu/api/tts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text, voice: gender })
+        });
+        if (!res.ok) throw new Error('TTS failed');
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio();
+        audio.preload = 'auto';
+        audio.src = url;
+        currentAudio = audio;
+        const player = document.createElement('div');
+        player.className = 'audio-player';
+        player._audio = audio;
+        player.innerHTML = `
+          <button class="pp-btn" title="播放/暫停">&#x25B6;</button>
+          <span class="time cur" style="font-size:0.8rem;font-weight:600">0:00</span>
+          <input type="range" min="0" max="1000" value="0" step="1" class="seek">
+          <span class="time dur" style="font-size:0.8rem;font-weight:600">--:--</span>
+        `;
+        const ppBtn = player.querySelector('.pp-btn');
+        const seekBar = player.querySelector('.seek');
+        const curTime = player.querySelector('.cur');
+        const durTime = player.querySelector('.dur');
+        function fmt(s) {
+          if (!s || !isFinite(s)) return '--:--';
+          const m = Math.floor(s / 60);
+          return m + ':' + (Math.floor(s % 60) + '').padStart(2, '0');
+        }
+        function updateDuration() {
+          if (audio.duration && isFinite(audio.duration)) durTime.textContent = fmt(audio.duration);
+        }
+        audio.addEventListener('loadedmetadata', updateDuration);
+        audio.addEventListener('durationchange', updateDuration);
+        audio.addEventListener('canplay', updateDuration);
+        audio.addEventListener('timeupdate', () => {
+          if (!seekBar._dragging && audio.duration && isFinite(audio.duration))
+            seekBar.value = Math.floor(audio.currentTime / audio.duration * 1000);
+          curTime.textContent = fmt(audio.currentTime);
+          updateDuration();
+        });
+        audio.addEventListener('play', () => { ppBtn.innerHTML = '&#x23F8;'; });
+        audio.addEventListener('pause', () => { ppBtn.innerHTML = '&#x25B6;'; });
+        audio.addEventListener('ended', () => { ppBtn.innerHTML = '&#x25B6;'; seekBar.value = 0; curTime.textContent = '0:00'; });
+        ppBtn.onclick = () => { audio.paused ? audio.play() : audio.pause(); };
+        seekBar.addEventListener('mousedown', () => { seekBar._dragging = true; });
+        seekBar.addEventListener('mouseup', () => { seekBar._dragging = false; });
+        seekBar.addEventListener('touchstart', () => { seekBar._dragging = true; });
+        seekBar.addEventListener('touchend', () => { seekBar._dragging = false; });
+        seekBar.addEventListener('input', () => {
+          if (audio.duration && isFinite(audio.duration))
+            audio.currentTime = (seekBar.value / 1000) * audio.duration;
+        });
+        const bubble = msgDiv.querySelector('.chat-bubble');
+        bubble.insertAdjacentElement('afterend', player);
+        msgDiv.querySelectorAll('.tts-btn').forEach(b => {
+          b.classList.remove('loading');
+          b.innerHTML = '&#x1f50a;<span class="tts-label">播放</span>';
+        });
+        audio.play();
+      } catch (err) {
+        btn.classList.remove('loading');
+        btn.innerHTML = '&#x1f50a;<span class="tts-label">失敗</span>';
+        console.error('TTS error:', err);
+      }
+    }
+  </script>
+</body>
+
+</html>

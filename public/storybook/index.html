@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 個人化語言繪本 — 0–12 歲兒童專屬 | MarkLuce.ai</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans TC',Roboto,sans-serif;color:#212529;background:#fff;-webkit-font-smoothing:antialiased}
+a{color:#0d6efd;text-decoration:none}
+a:hover{color:#0a58ca;text-decoration:underline}
+.container{max-width:900px;margin:0 auto;padding:0 1.5rem}
+
+nav{padding:.8rem 0;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #e9ecef}
+nav a{color:#6c757d;font-size:.85rem}
+nav a:hover{color:#0d6efd;text-decoration:none}
+
+.hero{padding:2.5rem 0 2rem;text-align:center;border-bottom:1px solid #e9ecef}
+.hero h1{font-size:1.8rem;font-weight:700}
+.hero h1 span{color:#0d6efd}
+.hero p{font-size:1rem;color:#6c757d;margin-top:.4rem;max-width:640px;margin-left:auto;margin-right:auto;line-height:1.7}
+.hero .badges{margin-top:1rem;display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap}
+.badge{font-size:.75rem;padding:.25rem .6rem;border-radius:4px;font-weight:500}
+.badge-blue{background:#e7f1ff;color:#0d6efd}
+.badge-purple{background:#f0e7ff;color:#6f42c1}
+.badge-green{background:#d1e7dd;color:#0f5132}
+.badge-orange{background:#fff3cd;color:#856404}
+.badge-red{background:#f8d7da;color:#842029}
+
+/* Tabs */
+.tabs{display:flex;gap:0;border-bottom:2px solid #e9ecef;margin-top:1.5rem;overflow-x:auto}
+.tab{padding:.75rem 1.25rem;font-size:.9rem;font-weight:500;color:#6c757d;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s}
+.tab:hover{color:#0d6efd}
+.tab.active{color:#0d6efd;border-bottom-color:#0d6efd}
+
+/* Tab content */
+.tab-content{display:none;padding:2rem 0 3rem}
+.tab-content.active{display:block}
+
+/* Sub-nav within tabs */
+.sub-nav{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.sub-nav button{padding:.4rem .8rem;font-size:.8rem;border:1px solid #dee2e6;border-radius:6px;background:#fff;color:#6c757d;cursor:pointer;transition:all .15s}
+.sub-nav button:hover{border-color:#0d6efd;color:#0d6efd}
+.sub-nav button.active{background:#0d6efd;color:#fff;border-color:#0d6efd}
+
+/* Markdown content styling */
+.md-body{line-height:1.8}
+.md-body h1{font-size:1.4rem;font-weight:700;margin:1.5rem 0 .75rem}
+.md-body h2{font-size:1.2rem;font-weight:700;margin:1.5rem 0 .6rem;padding-bottom:.4rem;border-bottom:1px solid #e9ecef}
+.md-body h3{font-size:1.05rem;font-weight:600;margin:1.2rem 0 .5rem}
+.md-body p{margin:.6rem 0;color:#495057;font-size:.92rem}
+.md-body strong{color:#212529}
+.md-body ul,.md-body ol{margin:.5rem 0;padding-left:1.5rem;color:#495057;font-size:.92rem}
+.md-body li{margin:.25rem 0}
+.md-body blockquote{border-left:3px solid #6f42c1;padding:.6rem 1rem;margin:1rem 0;background:#f8f9fa;border-radius:0 6px 6px 0;color:#6c757d;font-size:.88rem}
+.md-body code{background:#f1f3f5;padding:.1rem .35rem;border-radius:3px;font-size:.85em;color:#d63384}
+.md-body pre{background:#212529;border-radius:8px;padding:1rem;overflow-x:auto;margin:1rem 0}
+.md-body pre code{background:none;color:#e9ecef}
+.md-body table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.88rem}
+.md-body th,.md-body td{padding:.5rem .7rem;border:1px solid #dee2e6;text-align:left}
+.md-body th{background:#f8f9fa;font-weight:600;font-size:.82rem}
+.md-body td{color:#495057}
+.md-body hr{border:none;border-top:1px solid #e9ecef;margin:1.5rem 0}
+
+/* Key points section */
+.key-points{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem;margin:1.5rem 0}
+.key-point{border:1px solid #e9ecef;border-radius:10px;padding:1.2rem}
+.key-point h4{font-size:.95rem;font-weight:600;margin-bottom:.3rem}
+.key-point p{font-size:.85rem;color:#6c757d;line-height:1.5}
+.key-point .icon{font-size:1.5rem;margin-bottom:.5rem}
+
+.loading{padding:2rem;text-align:center;color:#adb5bd}
+
+.footer{padding:1.5rem 0;border-top:1px solid #e9ecef;text-align:center;font-size:.78rem;color:#adb5bd}
+.footer a{color:#6c757d}
+
+.lang-toggle{display:inline-flex;border:1px solid #dee2e6;border-radius:6px;overflow:hidden;margin-left:.5rem;font-size:.75rem}
+.lang-toggle button{padding:.2rem .5rem;border:none;background:#fff;color:#6c757d;cursor:pointer;font-size:.75rem}
+.lang-toggle button.active{background:#0d6efd;color:#fff}
+
+@media(max-width:600px){.hero h1{font-size:1.4rem}.tabs{gap:0}.tab{padding:.6rem .8rem;font-size:.82rem}.key-points{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+<nav>
+<a href="/">← MarkLuce.ai</a>
+<span>
+  <span class="lang-toggle" id="globalLang">
+    <button class="active" onclick="setLang('zh')">中文</button>
+    <button onclick="setLang('en')">EN</button>
+  </span>
+</span>
+</nav>
+
+<div class="hero">
+<h1>AI <span>個人化語言繪本</span></h1>
+<p>0–12 歲兒童專屬繪本。AI 草擬，人類審閱簽核後才出貨。<br>以 LINE 登入的 PWA 交付，支援繁中、英文、日文。</p>
+<div class="badges">
+<span class="badge badge-blue">AI + 人類審閱</span>
+<span class="badge badge-purple">LINE PWA 交付</span>
+<span class="badge badge-green">0–12 歲分級</span>
+<span class="badge badge-orange">繁中 · 英 · 日</span>
+<span class="badge badge-red">隱私優先</span>
+</div>
+</div>
+
+<div class="tabs">
+<div class="tab active" onclick="showTab('overview')">總覽</div>
+<div class="tab" onclick="showTab('concept')">概念</div>
+<div class="tab" onclick="showTab('product')">產品</div>
+<div class="tab" onclick="showTab('tech')">技術</div>
+<div class="tab" onclick="showTab('partners')">合作夥伴</div>
+<div class="tab" onclick="showTab('pricing')">定價</div>
+<div class="tab" onclick="showTab('roadmap')">路線圖</div>
+<div class="tab" onclick="showTab('market')">市場</div>
+</div>
+
+<!-- OVERVIEW TAB -->
+<div class="tab-content active" id="tab-overview">
+<h2 style="font-size:1.2rem;font-weight:700;margin:1rem 0">核心商業邏輯</h2>
+<div class="key-points">
+<div class="key-point">
+<div class="icon">🤖</div>
+<h4>AI 草擬</h4>
+<p>LLM 生成故事文本，AI 繪製插畫，Azure TTS 朗讀。每本書為孩子量身客製。</p>
+</div>
+<div class="key-point">
+<div class="icon">👩</div>
+<h4>人類審閱簽核</h4>
+<p>合作夥伴逐頁審閱、編修、簽核。沒有人類簽核就沒有書出貨。這是商業模式本身。</p>
+</div>
+<div class="key-point">
+<div class="icon">📱</div>
+<h4>PWA 交付</h4>
+<p>每本書一個獨立 PWA，LINE 登入綁定，離線可播放。家長載入後孩子隨時隨地可讀。</p>
+</div>
+<div class="key-point">
+<div class="icon">🛡️</div>
+<h4>隱私優先</h4>
+<p>不上傳孩子照片。環境照片卡通化後原圖 24 小時內刪除。符合 GDPR / 個資法 / COPPA。</p>
+</div>
+<div class="key-point">
+<div class="icon">🤝</div>
+<h4>B2B 合作夥伴制</h4>
+<p>三位主合作夥伴覆蓋 0–12 歲。Mark 不直接面對終端使用者，合作夥伴是信任介面。</p>
+</div>
+<div class="key-point">
+<div class="icon">📖</div>
+<h4>三語支援</h4>
+<p>繁體中文為基礎，英文必備，日文選購。絕不做簡體中文。</p>
+</div>
+</div>
+
+<h2 style="font-size:1.2rem;font-weight:700;margin:2rem 0 1rem">合作夥伴</h2>
+<div class="key-points">
+<div class="key-point">
+<h4>Audrey</h4>
+<p>4–12 歲。職場家長，6 歲與 10 歲兩個孩子。學校家長社群通路。MVP 主要審閱者。</p>
+</div>
+<div class="key-point">
+<h4>Arita</h4>
+<p>4–12 歲。兒童英語老師，1:1 家長直接接觸。教師通路。</p>
+</div>
+<div class="key-point">
+<h4>Amy</h4>
+<p>0–3 歲。新手家長（Mark 的女兒），1 歲兒子。新生兒 / 嬰幼兒通路。</p>
+</div>
+</div>
+
+<h2 style="font-size:1.2rem;font-weight:700;margin:2rem 0 1rem">技術架構</h2>
+<table style="width:100%;border-collapse:collapse;font-size:.88rem">
+<tr><th style="padding:.5rem;border:1px solid #dee2e6;background:#f8f9fa">層面</th><th style="padding:.5rem;border:1px solid #dee2e6;background:#f8f9fa">選型</th></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">前端 / PWA</td><td style="padding:.5rem;border:1px solid #dee2e6">Next.js 14+, Service Worker 離線快取</td></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">後端 / 部署</td><td style="padding:.5rem;border:1px solid #dee2e6">Vercel (Edge Functions)</td></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">資料庫 / 驗證</td><td style="padding:.5rem;border:1px solid #dee2e6">Supabase (PostgreSQL + RLS + Auth)</td></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">故事生成</td><td style="padding:.5rem;border:1px solid #dee2e6">OpenAI GPT-4o</td></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">插畫生成</td><td style="padding:.5rem;border:1px solid #dee2e6">M1: OpenAI gpt-image-1 → M2: Flux + LoRA</td></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">語音朗讀</td><td style="padding:.5rem;border:1px solid #dee2e6">Azure Neural TTS (zh-TW, en, ja)</td></tr>
+<tr><td style="padding:.5rem;border:1px solid #dee2e6">登入驗證</td><td style="padding:.5rem;border:1px solid #dee2e6">LINE Login v2.1 (OIDC)</td></tr>
+</table>
+</div>
+
+<!-- CONCEPT TAB -->
+<div class="tab-content" id="tab-concept">
+<div class="sub-nav" id="concept-nav">
+<button class="active" onclick="loadDoc('concept','what-we-sell')">我們賣什麼</button>
+<button onclick="loadDoc('concept','concept')">完整概念</button>
+<button onclick="loadDoc('concept','master-partner-model')">合作夥伴模式</button>
+<button onclick="loadDoc('concept','book-lifecycle')">繪本生命週期</button>
+<button onclick="loadDoc('concept','future-domain')">未來發展</button>
+</div>
+<div class="md-body" id="concept-content"><div class="loading">選擇文件載入...</div></div>
+</div>
+
+<!-- PRODUCT TAB -->
+<div class="tab-content" id="tab-product">
+<div class="sub-nav" id="product-nav">
+<button class="active" onclick="loadDoc('product','kid-book-spec')">繪本規格</button>
+<button onclick="loadDoc('product','review-workflow')">審閱流程</button>
+<button onclick="loadDoc('product','questionnaire-templates')">問卷範本</button>
+<button onclick="loadDoc('product','credits-attribution')">署名機制</button>
+<button onclick="loadDoc('product','offline-bundle-spec')">離線包規格</button>
+</div>
+<div class="md-body" id="product-content"><div class="loading">選擇文件載入...</div></div>
+</div>
+
+<!-- TECH TAB -->
+<div class="tab-content" id="tab-tech">
+<div class="sub-nav" id="tech-nav">
+<button class="active" onclick="loadDoc('tech','stack')">技術選型</button>
+<button onclick="loadDoc('tech','pwa-offline')">PWA 離線</button>
+<button onclick="loadDoc('tech','line-login')">LINE 登入</button>
+<button onclick="loadDoc('tech','image-gen')">圖像生成</button>
+<button onclick="loadDoc('tech','tts-azure')">TTS 語音</button>
+<button onclick="loadDoc('tech','image-upload-privacy')">照片隱私</button>
+<button onclick="loadDoc('tech','ai-attribution-compliance')">AI 合規</button>
+</div>
+<div class="md-body" id="tech-content"><div class="loading">選擇文件載入...</div></div>
+</div>
+
+<!-- PARTNERS TAB -->
+<div class="tab-content" id="tab-partners">
+<div class="sub-nav" id="partners-nav">
+<button class="active" onclick="loadDoc('partners','audrey')">Audrey</button>
+<button onclick="loadDoc('partners','arita')">Arita</button>
+<button onclick="loadDoc('partners','amy')">Amy</button>
+<button onclick="loadDoc('partners','partner-onboarding')">合作夥伴加入</button>
+<button onclick="loadDoc('partners','partner-page-spec')">合作夥伴頁面</button>
+<button onclick="loadDoc('partners','family-governance')">家族治理</button>
+</div>
+<div class="md-body" id="partners-content"><div class="loading">選擇文件載入...</div></div>
+</div>
+
+<!-- PRICING TAB -->
+<div class="tab-content" id="tab-pricing">
+<div class="sub-nav" id="pricing-nav">
+<button class="active" onclick="loadDoc('pricing','partner-tiers')">合作夥伴等級</button>
+<button onclick="loadDoc('pricing','list-price')">建議售價</button>
+<button onclick="loadDoc('pricing','partner-terms')">合作條款</button>
+</div>
+<div class="md-body" id="pricing-content"><div class="loading">選擇文件載入...</div></div>
+</div>
+
+<!-- ROADMAP TAB -->
+<div class="tab-content" id="tab-roadmap">
+<div class="sub-nav" id="roadmap-nav">
+<button class="active" onclick="loadDoc('roadmap','m1')">M1 — MVP</button>
+<button onclick="loadDoc('roadmap','m2')">M2 — 擴展</button>
+</div>
+<div class="md-body" id="roadmap-content"><div class="loading">選擇文件載入...</div></div>
+</div>
+
+<!-- MARKET TAB -->
+<div class="tab-content" id="tab-market">
+<div class="sub-nav" id="market-nav">
+<button class="active" onclick="loadDoc('market','target-audience')">目標受眾</button>
+<button onclick="loadDoc('market','audrey-review')">Audrey 回饋</button>
+<button onclick="loadDoc('market','arita-review')">Arita 回饋</button>
+</div>
+<div class="md-body" id="market-content"><div class="loading">選擇文件載入...</div></div>
+</div>
+
+<div class="footer">
+AI 個人化語言繪本 · <a href="https://markluce.ai/">MarkLuce.ai</a> · 馬克路思科技
+</div>
+</div>
+
+<script>
+let currentLang='zh';
+
+function setLang(lang){
+  currentLang=lang;
+  document.querySelectorAll('#globalLang button').forEach(b=>{
+    b.classList.toggle('active',b.textContent.trim()===(lang==='zh'?'中文':'EN'));
+  });
+  // Reload current doc if any is loaded
+  const activeTab=document.querySelector('.tab-content.active');
+  if(activeTab){
+    const nav=activeTab.querySelector('.sub-nav');
+    if(nav){
+      const activeBtn=nav.querySelector('button.active');
+      if(activeBtn) activeBtn.click();
+    }
+  }
+}
+
+function showTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+
+  // Auto-load first doc in sub-nav if content area shows loading
+  const content=document.getElementById(id+'-content');
+  if(content && content.querySelector('.loading')){
+    const firstBtn=document.querySelector('#'+id+'-nav button.active');
+    if(firstBtn) firstBtn.click();
+  }
+}
+
+function loadDoc(section,name){
+  const nav=document.getElementById(section+'-nav');
+  nav.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  const suffix=currentLang==='zh'?'zh':'en';
+  const url='/storybook/'+section+'/'+name+'-'+suffix+'.md';
+  const el=document.getElementById(section+'-content');
+  el.innerHTML='<div class="loading">載入中...</div>';
+
+  fetch(url)
+    .then(r=>{
+      if(!r.ok) throw new Error('Not found');
+      return r.text();
+    })
+    .then(text=>{
+      el.innerHTML=marked.parse(text);
+    })
+    .catch(()=>{
+      // Try the other language as fallback
+      const fallback=currentLang==='zh'?'en':'zh';
+      const fallbackUrl='/storybook/'+section+'/'+name+'-'+fallback+'.md';
+      fetch(fallbackUrl)
+        .then(r=>r.ok?r.text():Promise.reject())
+        .then(text=>{el.innerHTML=marked.parse(text);})
+        .catch(()=>{el.innerHTML='<div class="loading">找不到文件 / File not found</div>';});
+    });
+}
+</script>
+</body>
+</html>

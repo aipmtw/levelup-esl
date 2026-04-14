@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — MarkLuce.ai</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI','Noto Sans TC',system-ui,sans-serif;background:#0f0f1a;color:#e0e0e0;line-height:1.6}
+a{color:#4ecdc4;text-decoration:none}
+a:hover{text-decoration:underline}
+
+.top-bar{background:#1a1a2e;border-bottom:1px solid rgba(255,255,255,.06);padding:.6rem 1.5rem;display:flex;justify-content:space-between;align-items:center}
+.top-bar .brand{font-size:.85rem;color:#888}
+.top-bar .brand strong{color:#4ecdc4}
+.top-bar .links{display:flex;gap:1rem;font-size:.8rem}
+
+/* Login */
+.login{max-width:320px;margin:6rem auto;text-align:center;padding:0 1.5rem}
+.login h1{font-size:1.3rem;color:#4ecdc4;margin-bottom:1rem}
+.login input{padding:.6rem 1rem;border:1px solid #333;border-radius:6px;background:#1a1a2e;color:#fff;width:100%;margin-bottom:.8rem;font-size:.9rem}
+.login button{padding:.6rem 1.5rem;background:#4ecdc4;color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:.9rem}
+
+/* Tabs */
+.container{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+.tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,.08);margin-top:1rem;overflow-x:auto}
+.tab{padding:.7rem 1.2rem;font-size:.85rem;font-weight:500;color:#888;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;transition:all .15s}
+.tab:hover{color:#4ecdc4}
+.tab.active{color:#4ecdc4;border-bottom-color:#4ecdc4}
+
+.tab-content{display:none;padding:1.5rem 0 3rem}
+.tab-content.active{display:block}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin:1rem 0}
+.stat{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:1rem;text-align:center}
+.stat .num{font-size:1.8rem;font-weight:700;color:#4ecdc4}
+.stat .label{font-size:.78rem;color:#888;margin-top:.3rem}
+
+h2{font-size:1rem;color:#fff;margin:1.5rem 0 .5rem}
+
+table{width:100%;border-collapse:collapse;margin:.5rem 0;font-size:.82rem}
+th,td{padding:.5rem .7rem;border-bottom:1px solid rgba(255,255,255,.06);text-align:left}
+th{color:#888;font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+
+select,input[type="number"]{padding:.35rem .5rem;background:#1a1a2e;color:#fff;border:1px solid #333;border-radius:4px;font-size:.82rem}
+button.sm{padding:.3rem .8rem;background:#333;border:1px solid #555;color:#fff;border-radius:4px;cursor:pointer;font-size:.8rem}
+button.sm:hover{border-color:#4ecdc4;color:#4ecdc4}
+
+/* SQL Runner */
+.sql-area{width:100%;min-height:120px;padding:1rem;background:#1a1a2e;border:1px solid #333;border-radius:8px;color:#e0e0e0;font-family:'SF Mono','Fira Code',monospace;font-size:.85rem;resize:vertical;outline:none}
+.sql-area:focus{border-color:#4ecdc4}
+.sql-result{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:1rem;margin-top:1rem;font-family:'SF Mono',monospace;font-size:.82rem;max-height:400px;overflow:auto;white-space:pre-wrap;word-break:break-all}
+.sql-result.error{border-color:#eb4d4b;color:#eb4d4b}
+.sql-result.ok{border-color:#4ecdc4}
+.sql-presets{display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0}
+.sql-presets button{padding:.3rem .7rem;background:rgba(78,205,196,.1);border:1px solid rgba(78,205,196,.2);color:#4ecdc4;border-radius:4px;cursor:pointer;font-size:.75rem}
+.sql-presets button:hover{background:rgba(78,205,196,.2);border-color:#4ecdc4}
+
+/* Quick links */
+.quick-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.8rem;margin:1rem 0}
+.qlink{display:block;padding:.8rem 1rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#e0e0e0;font-size:.85rem;transition:all .15s}
+.qlink:hover{border-color:#4ecdc4;text-decoration:none;background:rgba(78,205,196,.05)}
+.qlink .ql-title{font-weight:600;color:#fff;margin-bottom:.2rem}
+.qlink .ql-desc{font-size:.75rem;color:#888}
+
+.bar{display:inline-block;height:14px;background:#4ecdc4;border-radius:3px;min-width:2px}
+.bar-label{font-size:.72rem;color:#aaa;margin-left:.4rem}
+
+@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.quick-links{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+<div class="brand"><strong>MarkLuce.ai</strong> Admin</div>
+<div class="links"><a href="/">← 首頁</a></div>
+</div>
+
+<!-- LOGIN -->
+<div class="login" id="loginForm">
+<h1>Admin</h1>
+<input type="password" id="passInput" placeholder="Password" onkeydown="if(event.key==='Enter')login()">
+<br><button onclick="login()">Enter</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="container" id="dashboard" style="display:none">
+
+<div class="tabs">
+<div class="tab active" onclick="showTab('overview')">Overview</div>
+<div class="tab" onclick="showTab('esl')">ESL Analytics</div>
+<div class="tab" onclick="showTab('sql')">SQL Runner</div>
+<div class="tab" onclick="showTab('links')">Quick Links</div>
+</div>
+
+<!-- OVERVIEW TAB -->
+<div class="tab-content active" id="tab-overview">
+<h2>Site Sections</h2>
+<div class="stats" id="overviewStats">
+<div class="stat"><div class="num" id="featureCount">—</div><div class="label">Feature Articles</div></div>
+<div class="stat"><div class="num" id="briefCount">—</div><div class="label">Daily Briefs</div></div>
+<div class="stat"><div class="num">8</div><div class="label">Site Sections</div></div>
+</div>
+
+<h2>Feature Articles</h2>
+<table id="featureTable"><thead><tr><th>Date</th><th>Slug</th><th>Title</th><th>Tags</th></tr></thead><tbody></tbody></table>
+</div>
+
+<!-- ESL TAB -->
+<div class="tab-content" id="tab-esl">
+<div style="display:flex;gap:.5rem;align-items:center">
+<label>Period:</label>
+<select id="days" onchange="loadEsl()">
+<option value="1">Today</option>
+<option value="7" selected>7 days</option>
+<option value="30">30 days</option>
+<option value="90">90 days</option>
+</select>
+<button class="sm" onclick="loadEsl()">Refresh</button>
+</div>
+<div class="stats" id="eslStats"></div>
+<h2>Level Engagement</h2><div id="levelChart"></div>
+<h2>Self-Assessment</h2><div id="assessChart"></div>
+<h2>Audio Completion</h2><div id="audioChart"></div>
+<h2>Recent Visitors</h2>
+<table id="visitorTable"><thead><tr><th>IP</th><th>Device</th><th>Events</th><th>Levels</th><th>First Seen</th></tr></thead><tbody></tbody></table>
+</div>
+
+<!-- SQL TAB -->
+<div class="tab-content" id="tab-sql">
+<h2>Supabase SQL Runner</h2>
+<p style="font-size:.8rem;color:#888;margin-bottom:.8rem">Execute SQL directly on Supabase. Use with caution.</p>
+
+<div class="sql-presets">
+<button onclick="setSQL('SELECT column_name, data_type FROM information_schema.columns WHERE table_name = \'features\' ORDER BY ordinal_position;')">features schema</button>
+<button onclick="setSQL('SELECT column_name, data_type FROM information_schema.columns WHERE table_name = \'briefs\' ORDER BY ordinal_position;')">briefs schema</button>
+<button onclick="setSQL('ALTER TABLE features ADD COLUMN sources jsonb DEFAULT \'[]\';')">+ features.sources</button>
+<button onclick="setSQL('SELECT id, slug, date, sources FROM features ORDER BY date DESC;')">features list</button>
+<button onclick="setSQL('SELECT table_name FROM information_schema.tables WHERE table_schema = \'public\' ORDER BY table_name;')">list tables</button>
+</div>
+
+<textarea class="sql-area" id="sqlInput" placeholder="SELECT * FROM features LIMIT 5;"></textarea>
+<div style="margin-top:.5rem">
+<button onclick="runSQL()" style="padding:.5rem 1.2rem;background:#4ecdc4;color:#000;border:none;border-radius:6px;cursor:pointer;font-weight:600">Run SQL</button>
+</div>
+<div class="sql-result" id="sqlResult" style="display:none"></div>
+</div>
+
+<!-- LINKS TAB -->
+<div class="tab-content" id="tab-links">
+<h2>External Dashboards</h2>
+<div class="quick-links">
+<a class="qlink" href="https://supabase.com/dashboard/project/reipdepbltfbfxnjjegy" target="_blank">
+<div class="ql-title">Supabase Dashboard (markluce-ai)</div>
+<div class="ql-desc">reipdepbltfbfxnjjegy · markluceai@gmail.com · Features, Briefs, ESL Events</div>
+</a>
+<a class="qlink" href="https://supabase.com/dashboard/project/dcjlekszmobaenhrdbfl" target="_blank">
+<div class="ql-title">Supabase Dashboard (aipm-classmates)</div>
+<div class="ql-desc">dcjlekszmobaenhrdbfl · markluceai@gmail.com · Classmates</div>
+</a>
+<a class="qlink" href="https://supabase.com/dashboard/project/reipdepbltfbfxnjjegy/editor" target="_blank">
+<div class="ql-title">Supabase Table Editor</div>
+<div class="ql-desc">直接編輯資料表</div>
+</a>
+<a class="qlink" href="https://supabase.com/dashboard/project/reipdepbltfbfxnjjegy/sql/new" target="_blank">
+<div class="ql-title">Supabase SQL Editor</div>
+<div class="ql-desc">直接執行 SQL（最可靠的方式）</div>
+</a>
+<a class="qlink" href="https://vercel.com/dashboard" target="_blank">
+<div class="ql-title">Vercel Dashboard</div>
+<div class="ql-desc">部署狀態、環境變數、Logs</div>
+</a>
+<a class="qlink" href="https://github.com/aipmtw/markluce-ai" target="_blank">
+<div class="ql-title">GitHub Repo</div>
+<div class="ql-desc">aipmtw/markluce-ai</div>
+</a>
+<a class="qlink" href="https://portal.azure.com" target="_blank">
+<div class="ql-title">Azure Portal</div>
+<div class="ql-desc">Scott Su App Service · OpenAI · Speech</div>
+</a>
+</div>
+</div>
+
+</div>
+
+<script>
+let adminPass='';
+const LEVELS=['a1','a2','b1','b2','c1','c2'];
+const COLORS={a1:'#4ecdc4',a2:'#45b7d1',b1:'#f9ca24',b2:'#f0932b',c1:'#eb4d4b',c2:'#6c5ce7'};
+
+function login(){
+  adminPass=document.getElementById('passInput').value;
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('dashboard').style.display='block';
+  loadOverview();
+}
+
+function showTab(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-'+id).classList.add('active');
+  if(id==='esl' && !document.getElementById('eslStats').innerHTML) loadEsl();
+}
+
+// OVERVIEW
+async function loadOverview(){
+  try{
+    const [fr, br] = await Promise.all([
+      fetch('/api/features'),
+      fetch('/api/briefs?limit=999')
+    ]);
+    const features = await fr.json();
+    const briefs = await br.json();
+    document.getElementById('featureCount').textContent = features.length;
+    document.getElementById('briefCount').textContent = Array.isArray(briefs) ? briefs.length : '—';
+
+    const tb = document.querySelector('#featureTable tbody');
+    tb.innerHTML = features.map(f => `<tr>
+      <td>${f.date}</td>
+      <td><a href="/features/${f.date.substring(0,7)}-${f.slug}" target="_blank">${f.date.substring(0,7)}-${f.slug}</a></td>
+      <td>${f.title ? f.title.substring(0,40) : ''}</td>
+      <td>${(f.tags||[]).join(', ')}</td>
+    </tr>`).join('');
+  }catch(e){ console.error(e); }
+}
+
+// ESL ANALYTICS
+async function loadEsl(){
+  const days=document.getElementById('days')?.value||7;
+  try{
+    const r=await fetch(`/api/admin?pass=${encodeURIComponent(adminPass)}&days=${days}`);
+    if(!r.ok){alert('Error loading ESL data');return;}
+    const d=await r.json();
+    renderEsl(d);
+  }catch(e){alert('Error: '+e.message);}
+}
+
+function renderEsl(d){
+  document.getElementById('eslStats').innerHTML=`
+    <div class="stat"><div class="num">${d.total_events}</div><div class="label">Total Events</div></div>
+    <div class="stat"><div class="num">${d.unique_visitors}</div><div class="label">Unique Visitors</div></div>
+    <div class="stat"><div class="num">${Object.values(d.audio_plays||{}).reduce((a,b)=>a+b,0)}</div><div class="label">Audio Plays</div></div>
+    <div class="stat"><div class="num">${Object.values(d.audio_completes||{}).reduce((a,b)=>a+b,0)}</div><div class="label">Audio Completed</div></div>`;
+
+  const maxV=Math.max(...LEVELS.map(l=>d.level_views?.[l]||0),1);
+  document.getElementById('levelChart').innerHTML=LEVELS.map(l=>{
+    const v=d.level_views?.[l]||0;
+    return `<div style="margin:.3rem 0"><strong style="color:${COLORS[l]}">${l.toUpperCase()}</strong> <span class="bar" style="width:${Math.max((v/maxV)*300,2)}px;background:${COLORS[l]}"></span><span class="bar-label">${v} views</span></div>`;
+  }).join('');
+
+  document.getElementById('assessChart').innerHTML=LEVELS.map(l=>{
+    const a=d.assessments?.[l];if(!a)return '';
+    const t=(a.easy||0)+(a.ok||0)+(a.hard||0);if(!t)return '';
+    return `<div style="margin:.4rem 0"><strong style="color:${COLORS[l]}">${l.toUpperCase()}</strong> <span style="color:#4ecdc4">Easy:${a.easy||0}</span> <span style="color:#f9ca24">OK:${a.ok||0}</span> <span style="color:#eb4d4b">Hard:${a.hard||0}</span></div>`;
+  }).join('')||'<div style="color:#666">No data</div>';
+
+  document.getElementById('audioChart').innerHTML=LEVELS.map(l=>{
+    const p=d.audio_plays?.[l]||0,c=d.audio_completes?.[l]||0;if(!p)return '';
+    return `<div style="margin:.3rem 0"><strong style="color:${COLORS[l]}">${l.toUpperCase()}</strong> ${c}/${p} (${Math.round(c/p*100)}%)</div>`;
+  }).join('')||'<div style="color:#666">No data</div>';
+
+  document.querySelector('#visitorTable tbody').innerHTML=(d.visitors||[]).map(v=>`<tr>
+    <td>${v.ip}</td><td>${v.device}</td><td>${v.events}</td>
+    <td>${(v.levels||[]).map(l=>`<span style="color:${COLORS[l]||'#fff'}">${l.toUpperCase()}</span>`).join(' ')}</td>
+    <td>${new Date(v.first_seen).toLocaleString()}</td>
+  </tr>`).join('');
+}
+
+// SQL RUNNER
+function setSQL(q){ document.getElementById('sqlInput').value=q; }
+
+async function runSQL(){
+  const query=document.getElementById('sqlInput').value.trim();
+  if(!query)return;
+  const el=document.getElementById('sqlResult');
+  el.style.display='block';
+  el.className='sql-result';
+  el.textContent='Executing...';
+
+  try{
+    const r=await fetch('/api/sql',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-admin-pass':adminPass},
+      body:JSON.stringify({query})
+    });
+    const d=await r.json();
+    if(!r.ok){
+      el.className='sql-result error';
+      el.textContent='Error: '+(d.error||'Unknown error')+'\n\n'+(d.detail||'');
+    }else{
+      el.className='sql-result ok';
+      el.textContent=JSON.stringify(d.result,null,2);
+    }
+  }catch(e){
+    el.className='sql-result error';
+    el.textContent='Request failed: '+e.message;
+  }
+}
+</script>
+</body>
+</html>

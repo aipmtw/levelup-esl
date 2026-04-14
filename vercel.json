@@ -5,6 +5,11 @@
     { "source": "/api/admin", "destination": "/api/admin.js" },
     { "source": "/api/brief", "destination": "/api/brief.js" },
     { "source": "/api/briefs", "destination": "/api/briefs.js" },
-    { "source": "/api/features", "destination": "/api/features.js" }
+    { "source": "/api/features", "destination": "/api/features.js" },
+    { "source": "/scottsu/api/chat", "destination": "/api/scottsu-chat.js" },
+    { "source": "/scottsu/api/tts", "destination": "/api/scottsu-tts.js" },
+    { "source": "/scottsu/api/info", "destination": "/api/scottsu-info.js" },
+    { "source": "/api/sql", "destination": "/api/sql.js" },
+    { "source": "/features/:slug", "destination": "/features/index.html" }
   ]
 }

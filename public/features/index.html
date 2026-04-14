@@ -67,6 +67,17 @@ nav a:hover{color:#0d6efd;text-decoration:none}
 .footer a{color:#6c757d}
 .loading{padding:3rem 0;text-align:center;color:#adb5bd}
 
+/* Ref section */
+.ref-section{margin-top:2rem;padding-top:1.5rem;border-top:2px solid #e9ecef}
+.ref-section h3{font-size:.95rem;font-weight:700;color:#212529;margin-bottom:.8rem}
+.ref-meta{font-size:.82rem;color:#6c757d;line-height:1.8;margin-bottom:1rem}
+.ref-meta a{color:#0d6efd;word-break:break-all}
+.ref-sources{list-style:none;padding:0;margin:0}
+.ref-sources li{padding:.4rem 0;border-bottom:1px solid #f1f3f5;font-size:.85rem}
+.ref-sources li:last-child{border-bottom:none}
+.ref-sources a{color:#0d6efd}
+.ref-sources .src-title{font-weight:500;color:#212529}
+
 @media(max-width:480px){.container{padding:0 1rem}.article-header h1{font-size:1.25rem}}
 </style>
 </head>
@@ -113,10 +124,20 @@ nav a:hover{color:#0d6efd;text-decoration:none}
 
 <script>
 let fontSize=16;
+let featureCache=[];
+
+function datePrefix(date){ return date ? date.substring(0,7)+'-' : ''; }
+function fullSlug(date,slug){ return '/features/'+datePrefix(date)+slug; }
+function parsePathSlug(){
+  const p=location.pathname.replace(/^\/features\/?/,'').replace(/\/$/,'');
+  if(!p) return null;
+  // Strip YYYY-MM- prefix to get original slug
+  const m=p.match(/^\d{4}-\d{2}-(.+)$/);
+  return m ? m[1] : p;
+}
 
 async function init(){
-  const params=new URLSearchParams(location.search);
-  const slug=params.get('slug');
+  const slug=parsePathSlug();
   if(slug){loadArticle(slug);}
   else{loadList();}
 }
@@ -124,38 +145,75 @@ async function init(){
 async function loadList(){
   document.getElementById('listPage').classList.remove('hidden');
   document.getElementById('articlePage').classList.remove('active');
+  document.title='Features | MarkLuce.ai';
   const r=await fetch('/api/features');
-  const data=await r.json();
-  document.getElementById('featureList').innerHTML=data.map(f=>`
-    <a class="list-card" href="?slug=${f.slug}" onclick="event.preventDefault();loadArticle('${f.slug}')">
+  featureCache=await r.json();
+  document.getElementById('featureList').innerHTML=featureCache.map(f=>{
+    const href=fullSlug(f.date,f.slug);
+    return `<a class="list-card" href="${href}" onclick="event.preventDefault();history.pushState(null,'','${href}');loadArticle('${f.slug}')">
       <h2>${f.title}</h2>
       <div class="meta">
         <span>${f.date}</span>
-        ${(f.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('')}
+        ${(f.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}
       </div>
-    </a>
-  `).join('')||'<div class="loading">尚無文章</div>';
+    </a>`;
+  }).join('')||'<div class="loading">尚無文章</div>';
 }
 
 async function loadArticle(slug){
   document.getElementById('listPage').classList.add('hidden');
   document.getElementById('articlePage').classList.add('active');
   document.getElementById('artBody').innerHTML='<div class="loading">載入中...</div>';
-  history.pushState(null,'','?slug='+slug);
 
-  const r=await fetch('/api/features?slug='+slug);
+  const r=await fetch('/api/features?slug='+encodeURIComponent(slug));
   const d=await r.json();
   if(!d){
     document.getElementById('artBody').innerHTML='<div class="loading">文章不存在</div>';
     return;
   }
+
+  const permalink='https://markluce.ai'+fullSlug(d.date,d.slug);
+  history.replaceState(null,'',fullSlug(d.date,d.slug));
+
   document.getElementById('artDate').textContent=d.date;
   document.getElementById('artTitle').textContent=d.title;
   document.title=d.title+' | MarkLuce.ai';
-  document.getElementById('artTags').innerHTML=(d.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('');
-  document.getElementById('artBody').innerHTML=marked.parse(d.content);
+  document.getElementById('artTags').innerHTML=(d.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+
+  // Render article content
+  let html=marked.parse(d.content||'');
+
+  // Build Ref section
+  const sources=d.sources||[];
+  let refHtml=`<div class="ref-section"><h3>Ref.</h3>`;
+  refHtml+=`<div class="ref-meta">`;
+  refHtml+=`<strong>${esc(d.title)}</strong><br>`;
+  refHtml+=`發表日期：${d.date}<br>`;
+  if(d.tags&&d.tags.length) refHtml+=`標籤：${d.tags.map(t=>esc(t)).join(' · ')}<br>`;
+  refHtml+=`永久連結：<a href="${permalink}">${permalink}</a><br>`;
+  refHtml+=`來源：<a href="https://markluce.ai/">MarkLuce.ai</a> · 與 Claude Opus 4.6 共同創作`;
+  refHtml+=`</div>`;
+
+  if(sources.length){
+    refHtml+=`<ul class="ref-sources">`;
+    sources.forEach(s=>{
+      if(s.url){
+        refHtml+=`<li><a href="${esc(s.url)}" target="_blank" rel="noopener"><span class="src-title">${esc(s.title||s.url)}</span></a></li>`;
+      }else if(s.title){
+        refHtml+=`<li><span class="src-title">${esc(s.title)}</span></li>`;
+      }
+    });
+    refHtml+=`</ul>`;
+  }
+  refHtml+=`</div>`;
+
+  document.getElementById('artBody').innerHTML=html+refHtml;
   applyFontSize();
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function esc(s){
+  const d=document.createElement('div');d.textContent=s;return d.innerHTML;
 }
 
 function changeFontSize(delta){
@@ -170,8 +228,7 @@ function applyFontSize(){
 }
 
 window.addEventListener('popstate',()=>{
-  const params=new URLSearchParams(location.search);
-  const slug=params.get('slug');
+  const slug=parsePathSlug();
   if(slug)loadArticle(slug);else loadList();
 });
 
