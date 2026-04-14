@@ -27,9 +27,9 @@
     .spread { display: flex; width: 100%; height: 100%; }
     .pane { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 24px; overflow-y: auto; }
     .pane-zh { background: #fffbeb; text-align: right; }
-    .pane-img { flex: 2; background: var(--gray-100); display: flex; align-items: center; justify-content: center; }
+    .pane-img { flex: 1.2; background: var(--gray-100); display: flex; align-items: center; justify-content: center; max-width: 40%; }
     .pane-img img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
-    .pane-img .placeholder { font-size: 120px; opacity: 0.3; }
+    .pane-img .placeholder { font-size: 80px; opacity: 0.3; }
     .pane-en { background: #f0f9ff; }
 
     .text-zh { font-size: 28px; line-height: 1.8; color: var(--gray-900); }
@@ -40,7 +40,7 @@
       .spread { flex-direction: column; }
       .pane { padding: 16px; flex: none; }
       .pane-zh { text-align: center; order: 2; }
-      .pane-img { order: 1; min-height: 40vh; flex: none; }
+      .pane-img { order: 1; min-height: 30vh; flex: none; max-width: 100%; }
       .pane-en { order: 3; text-align: center; }
       .text-zh { font-size: 22px; }
       .text-en { font-size: 18px; }
@@ -317,7 +317,12 @@
     if (audioEl) { audioEl.pause(); audioEl = null; }
     const p = pages[currentPage];
     const url = lang === 'zh' ? p.audio_zh_url : p.audio_en_url;
-    if (!url) return;
+    if (!url) {
+      const btn = document.querySelectorAll('.audio-btn')[lang === 'zh' ? 0 : 1];
+      btn.textContent = '暫無音檔';
+      setTimeout(() => { btn.textContent = lang === 'zh' ? '🔊 中文' : '🔊 English'; }, 1500);
+      return;
+    }
 
     document.querySelectorAll('.audio-btn').forEach(b => b.classList.remove('playing'));
     const btnIdx = lang === 'zh' ? 0 : 1;
