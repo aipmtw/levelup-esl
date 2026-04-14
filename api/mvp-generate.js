@@ -5,7 +5,7 @@ function slugify(text) {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\u4e00-\u9fff]+/g, '-')
+    .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .substring(0, 50);
 }
