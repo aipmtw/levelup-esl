@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>繪本商店 — AI Storybook Store</title>
+  <meta name="theme-color" content="#f59e0b">
+  <style>
+    :root {
+      --amber: #f59e0b; --amber-light: #fef3c7; --amber-dark: #d97706;
+      --gray-50: #f9fafb; --gray-100: #f3f4f6; --gray-200: #e5e7eb;
+      --gray-500: #6b7280; --gray-700: #374151; --gray-900: #111827;
+      --green: #10b981; --blue: #3b82f6; --radius: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans TC', sans-serif; background: var(--gray-50); min-height: 100vh; }
+
+    .header { background: white; padding: 16px 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 10; }
+    .header .back { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--gray-700); }
+    .header h1 { font-size: 18px; color: var(--gray-900); flex: 1; }
+
+    /* Age filter pills */
+    .filters { padding: 12px 20px; display: flex; gap: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .pill { padding: 6px 16px; border-radius: 20px; border: 1px solid var(--gray-200); background: white; font-size: 13px; color: var(--gray-700); cursor: pointer; white-space: nowrap; }
+    .pill.active { background: var(--amber); color: white; border-color: var(--amber); }
+
+    .content { padding: 16px 20px; max-width: 900px; margin: 0 auto; }
+    .section-label { font-size: 13px; color: var(--gray-500); margin: 20px 0 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Book grid */
+    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+    .book-card { background: white; border-radius: var(--radius); overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .book-cover { width: 100%; aspect-ratio: 3/4; background: linear-gradient(135deg, var(--amber-light), #fde68a); display: flex; align-items: center; justify-content: center; font-size: 48px; position: relative; }
+    .book-cover img { width: 100%; height: 100%; object-fit: cover; }
+    .book-cover .badge { position: absolute; top: 8px; right: 8px; background: var(--green); color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; }
+    .book-info { padding: 12px; }
+    .book-title { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+    .book-subtitle { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+    .book-meta { font-size: 12px; color: var(--gray-500); margin-top: 6px; display: flex; justify-content: space-between; align-items: center; }
+    .price { font-weight: 700; color: var(--amber-dark); }
+    .book-actions { padding: 0 12px 12px; display: flex; gap: 8px; }
+    .btn-demo { flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--amber); background: white; color: var(--amber-dark); font-size: 13px; cursor: pointer; text-align: center; }
+    .btn-demo:hover { background: var(--amber-light); }
+    .btn-buy { flex: 1; padding: 8px; border-radius: 8px; border: none; background: var(--amber); color: white; font-size: 13px; cursor: pointer; font-weight: 600; text-align: center; }
+    .btn-buy:hover { background: var(--amber-dark); }
+
+    .empty { text-align: center; padding: 40px; color: var(--gray-500); }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <button class="back" onclick="location.href='/app/'">&larr;</button>
+  <h1>繪本商店</h1>
+</div>
+
+<div class="filters" id="filters">
+  <div class="pill active" onclick="filterAge('')">全部</div>
+  <div class="pill" onclick="filterAge('2-4')">2-4 歲</div>
+  <div class="pill" onclick="filterAge('3-6')">3-6 歲</div>
+  <div class="pill" onclick="filterAge('4-7')">4-7 歲</div>
+  <div class="pill" onclick="filterAge('6-8')">6-8 歲</div>
+</div>
+
+<div class="content">
+  <p class="section-label" id="sectionLabel">全部繪本</p>
+  <div id="demoSection">
+    <p class="section-label">免費試閱</p>
+    <div class="book-grid" id="demoGrid"></div>
+  </div>
+  <div id="paidSection" style="margin-top:24px">
+    <p class="section-label">付費繪本</p>
+    <div class="book-grid" id="paidGrid"></div>
+  </div>
+  <div class="empty" id="emptyState" style="display:none">找不到符合條件的繪本</div>
+</div>
+
+<script>
+  let allBooks = [];
+  let activeAge = '';
+
+  async function loadBooks() {
+    try {
+      const r = await fetch('/api/books');
+      const d = await r.json();
+      if (d.ok) {
+        allBooks = d.books;
+        renderBooks();
+      }
+    } catch (e) { console.error(e); }
+  }
+
+  function filterAge(age) {
+    activeAge = age;
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    event.target.classList.add('active');
+    renderBooks();
+  }
+
+  function renderBooks() {
+    const filtered = activeAge ? allBooks.filter(b => b.age_tier === activeAge) : allBooks;
+    const demos = filtered.filter(b => b.is_demo);
+    const paid = filtered.filter(b => !b.is_demo);
+
+    document.getElementById('demoSection').style.display = demos.length ? 'block' : 'none';
+    document.getElementById('paidSection').style.display = paid.length ? 'block' : 'none';
+    document.getElementById('emptyState').style.display = (!demos.length && !paid.length) ? 'block' : 'none';
+
+    renderGrid('demoGrid', demos);
+    renderGrid('paidGrid', paid);
+  }
+
+  function renderGrid(id, books) {
+    document.getElementById(id).innerHTML = books.map(b => `
+      <div class="book-card">
+        <div class="book-cover">
+          ${b.cover_url ? `<img src="${b.cover_url}" alt="${b.title_en}" onerror="this.style.display='none';this.parentElement.textContent='📖'">` : '📖'}
+          ${b.is_demo ? '<span class="badge">免費</span>' : ''}
+        </div>
+        <div class="book-info">
+          <div class="book-title">${b.title_zh}</div>
+          <div class="book-subtitle">${b.title_en}</div>
+          <div class="book-meta">
+            <span>${b.age_tier} 歲</span>
+            <span class="price">${b.is_demo ? '免費' : (b.price_ntd ? 'NT$' + b.price_ntd : '即將推出')}</span>
+          </div>
+        </div>
+        <div class="book-actions">
+          <button class="btn-demo" onclick="location.href='/app/reader.html?book=${b.slug}'">試閱</button>
+          ${b.is_demo ? '' : '<button class="btn-buy" onclick="buyBook(\'' + b.slug + '\')">購買</button>'}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function buyBook(slug) {
+    const token = localStorage.getItem('ml_token');
+    if (!token) {
+      // Need login first
+      const LINE_CHANNEL_ID = '2009738746';
+      const returnUrl = encodeURIComponent(location.origin + '/app/store.html');
+      location.href = `https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=${LINE_CHANNEL_ID}&redirect_uri=${encodeURIComponent(location.origin + '/api/line-auth')}&state=${returnUrl}&scope=profile%20openid`;
+      return;
+    }
+    fetch('/api/ecpay-create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ product_type: 'single', book_slugs: [slug] }),
+    }).then(r => r.text()).then(html => {
+      document.open();
+      document.write(html);
+      document.close();
+    }).catch(e => alert('購買失敗，請稍後再試'));
+  }
+
+  // Check for auth return
+  (function() {
+    const p = new URLSearchParams(location.search);
+    if (p.get('ml_token')) {
+      localStorage.setItem('ml_token', p.get('ml_token'));
+      localStorage.setItem('ml_user', p.get('ml_user') || '');
+      history.replaceState({}, '', location.pathname);
+    }
+  })();
+
+  loadBooks();
+</script>
+</body>
+</html>

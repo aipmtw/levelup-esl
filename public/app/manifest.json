@@ -1,0 +1,14 @@
+{
+  "name": "繪本書架 — AI Storybook",
+  "short_name": "繪本書架",
+  "description": "Bilingual AI storybooks for kids 3-8",
+  "start_url": "/app/",
+  "display": "standalone",
+  "background_color": "#fef3c7",
+  "theme_color": "#f59e0b",
+  "orientation": "any",
+  "icons": [
+    { "src": "/app/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/app/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
