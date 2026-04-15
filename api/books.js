@@ -14,8 +14,8 @@ module.exports = async (req, res) => {
 
   if (age) url += `&age_tier=eq.${encodeURIComponent(age)}`;
   if (demo === 'true') url += '&is_demo=eq.true';
-  if (status) url += `&status=eq.${encodeURIComponent(status)}`;
-  else url += '&status=eq.published';
+  if (status && status !== 'all') url += `&status=eq.${encodeURIComponent(status)}`;
+  else if (!status) url += '&status=eq.published';
 
   try {
     const r = await fetch(url, {

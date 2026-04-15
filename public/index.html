@@ -14,40 +14,72 @@
     a{color:#0d6efd;text-decoration:none}
     a:hover{color:#0a58ca;text-decoration:underline}
 
-    .container{max-width:960px;margin:0 auto;padding:0 1.5rem}
+    .container{max-width:960px;margin:0 auto;padding:0 1rem}
 
     /* Header */
-    .header{padding:3rem 0 2rem;text-align:center;border-bottom:1px solid #e9ecef}
-    .logo{font-size:2rem;font-weight:800;letter-spacing:-.03em;color:#212529}
+    .header{padding:2rem 0 1.5rem;text-align:center;border-bottom:1px solid #e9ecef}
+    .logo{font-size:1.6rem;font-weight:800;letter-spacing:-.03em;color:#212529}
     .logo span{color:#0d6efd}
-    .company{font-size:.9rem;color:#6c757d;margin-top:.3rem}
-    .header-links{margin-top:1rem;display:flex;justify-content:center;gap:1rem}
-    .header-link{display:inline-flex;align-items:center;gap:.3rem;font-size:.85rem;color:#6c757d;padding:.35rem .8rem;border:1px solid #dee2e6;border-radius:6px;transition:all .15s}
+    .company{font-size:.78rem;color:#6c757d;margin-top:.2rem}
+    .header-links{margin-top:.8rem;display:flex;justify-content:center;gap:.6rem;flex-wrap:wrap}
+    .header-link{display:inline-flex;align-items:center;gap:.25rem;font-size:.78rem;color:#6c757d;padding:.3rem .6rem;border:1px solid #dee2e6;border-radius:6px;transition:all .15s}
     .header-link:hover{color:#0d6efd;border-color:#0d6efd;text-decoration:none;background:#f8f9fa}
 
+    /* Featured app — storybook */
+    .featured{padding:1.5rem 0;border-bottom:1px solid #e9ecef}
+    .featured-card{display:flex;align-items:center;gap:1.2rem;background:linear-gradient(135deg,#fff0f3 0%,#fce4ec 50%,#f3e5f5 100%);border-radius:16px;padding:1.2rem;text-decoration:none;color:inherit;transition:all .2s;border:1px solid rgba(233,30,99,0.1)}
+    .featured-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(233,30,99,0.12);text-decoration:none}
+    .featured-books{display:flex;gap:.4rem;flex-shrink:0}
+    .featured-book{width:48px;height:64px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+    .featured-book:nth-child(1){background:linear-gradient(135deg,#ff6f61,#ff8a65)}
+    .featured-book:nth-child(2){background:linear-gradient(135deg,#e91e63,#f06292);transform:translateY(-4px)}
+    .featured-book:nth-child(3){background:linear-gradient(135deg,#1a237e,#311b92)}
+    .featured-info{flex:1;min-width:0}
+    .featured-label{font-size:.65rem;font-weight:700;color:#e91e63;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.15rem}
+    .featured-info h3{font-size:1.05rem;font-weight:800;color:#212529;margin-bottom:.15rem;line-height:1.3}
+    .featured-info p{font-size:.8rem;color:#6c757d;line-height:1.5}
+    .featured-arrow{font-size:1.2rem;color:#e91e63;flex-shrink:0}
+
     /* Hero */
-    .hero{padding:2.5rem 0 1.5rem;text-align:center}
-    .hero h2{font-size:1.4rem;font-weight:600;color:#212529}
-    .hero p{font-size:1rem;color:#6c757d;margin-top:.4rem;max-width:540px;margin-left:auto;margin-right:auto}
+    .hero{padding:1.5rem 0 1rem;text-align:center}
+    .hero h2{font-size:1.15rem;font-weight:600;color:#212529}
+    .hero p{font-size:.88rem;color:#6c757d;margin-top:.3rem;max-width:540px;margin-left:auto;margin-right:auto}
 
     /* Grid */
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;padding:1rem 0 3rem}
-    .card{border:1px solid #e9ecef;border-radius:10px;padding:1.5rem;transition:all .2s;display:block;color:inherit}
-    .card:hover{border-color:#0d6efd;box-shadow:0 4px 12px rgba(13,110,253,.08);text-decoration:none;transform:translateY(-2px)}
-    .card-icon{width:2.5rem;height:2.5rem;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:#fff;margin-bottom:1rem}
-    .card h3{font-size:1.05rem;font-weight:600;color:#212529;margin-bottom:.3rem}
-    .card p{font-size:.88rem;color:#6c757d;line-height:1.6}
-    .card .tag{display:inline-block;font-size:.7rem;padding:.15rem .4rem;border-radius:3px;background:#e7f1ff;color:#0d6efd;margin-top:.6rem;font-weight:500}
+    .grid{display:grid;grid-template-columns:1fr;gap:1rem;padding:.5rem 0 2rem}
+    .card{border:1px solid #e9ecef;border-radius:12px;padding:1.2rem;transition:all .2s;display:flex;gap:1rem;align-items:flex-start;color:inherit;background:#fff}
+    .card:hover{border-color:#0d6efd;box-shadow:0 4px 12px rgba(13,110,253,.08);text-decoration:none;transform:translateY(-1px)}
+    .card-icon{width:2.2rem;height:2.2rem;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0}
+    .card-body{flex:1;min-width:0}
+    .card h3{font-size:.95rem;font-weight:600;color:#212529;margin-bottom:.2rem}
+    .card p{font-size:.82rem;color:#6c757d;line-height:1.5}
+    .card .tag{display:inline-block;font-size:.65rem;padding:.1rem .35rem;border-radius:3px;background:#e7f1ff;color:#0d6efd;margin-top:.4rem;font-weight:500}
     .card .tag.ext{background:#fff3cd;color:#856404}
 
     /* Footer */
-    .footer{border-top:1px solid #e9ecef;padding:1.5rem 0;text-align:center}
-    .footer-links{display:flex;justify-content:center;gap:1.2rem;margin-bottom:.5rem}
-    .footer-links a{font-size:.85rem;color:#6c757d}
+    .footer{border-top:1px solid #e9ecef;padding:1.2rem 0;text-align:center}
+    .footer-links{display:flex;justify-content:center;gap:1rem;margin-bottom:.4rem;flex-wrap:wrap}
+    .footer-links a{font-size:.78rem;color:#6c757d}
     .footer-links a:hover{color:#0d6efd}
-    .footer-copy{font-size:.78rem;color:#adb5bd}
+    .footer-copy{font-size:.72rem;color:#adb5bd}
 
-    @media(max-width:600px){.grid{grid-template-columns:1fr}.header{padding:2rem 0 1.5rem}.hero h2{font-size:1.2rem}}
+    /* Tablet+ */
+    @media(min-width:600px){
+      .container{padding:0 1.5rem}
+      .header{padding:3rem 0 2rem}
+      .logo{font-size:2rem}
+      .company{font-size:.9rem}
+      .grid{grid-template-columns:repeat(2,1fr);gap:1.2rem}
+      .card{padding:1.5rem}
+      .hero h2{font-size:1.4rem}
+      .featured-card{padding:1.5rem 1.8rem}
+      .featured-book{width:56px;height:74px;font-size:1.8rem}
+      .featured-info h3{font-size:1.2rem}
+    }
+
+    @media(min-width:900px){
+      .grid{grid-template-columns:repeat(3,1fr)}
+    }
   </style>
 </head>
 <body>
@@ -63,6 +95,23 @@
     </div>
   </div>
 
+  <!-- Featured: Storybook App -->
+  <div class="featured">
+    <a class="featured-card" href="https://app.markluce.ai/">
+      <div class="featured-books">
+        <div class="featured-book">🦕</div>
+        <div class="featured-book">🎤</div>
+        <div class="featured-book">🚀</div>
+      </div>
+      <div class="featured-info">
+        <div class="featured-label">Our App</div>
+        <h3>AI 個人化語言繪本</h3>
+        <p>0–12 歲兒童專屬雙語繪本。AI 草擬、人類審閱、LINE 登入、離線可讀。</p>
+      </div>
+      <div class="featured-arrow">→</div>
+    </a>
+  </div>
+
   <div class="hero">
     <h2>AI-Powered Projects</h2>
     <p>用 AI 打造的產品與工具，從構想到上線，每個專案都是 AI 協作的成果。</p>
@@ -71,65 +120,74 @@
   <div class="grid">
     <a class="card" href="/scottsu/">
       <div class="card-icon" style="background:#0f2847">TM</div>
-      <h3>Scott Su 競選網站</h3>
-      <p>Toastmasters D67 分會成長執行長候選人蘇彥儒的競選網站，含 AI 助理即時問答。</p>
-      <span class="tag">AI Chatbot</span>
+      <div class="card-body">
+        <h3>Scott Su 競選網站</h3>
+        <p>Toastmasters D67 候選人競選網站，含 AI 助理即時問答。</p>
+        <span class="tag">AI Chatbot</span>
+      </div>
     </a>
 
     <a class="card" href="/mvp/builder">
       <div class="card-icon" style="background:#0d6efd">MVP</div>
-      <h3>MVP Builder</h3>
-      <p>描述你的專案構想，AI 即時生成完整 MVP 規劃書。含功能清單、用戶故事、技術選型、時程規劃。</p>
-      <span class="tag">AI 生成</span>
-    </a>
-
-    <a class="card" href="https://app.markluce.ai/">
-      <div class="card-icon" style="background:#e85d75">繪本</div>
-      <h3>AI 個人化語言繪本</h3>
-      <p>0–12 歲兒童專屬雙語繪本 PWA。AI 草擬、人類審閱、LINE 登入、離線可讀。三本 Demo 上線中。</p>
-      <span class="tag">PWA Demo</span>
+      <div class="card-body">
+        <h3>MVP Builder</h3>
+        <p>描述構想，AI 即時生成完整 MVP 規劃書。</p>
+        <span class="tag">AI 生成</span>
+      </div>
     </a>
 
     <a class="card" href="/storybook/">
       <div class="card-icon" style="background:#c2185b">計畫</div>
-      <h3>繪本商業計畫</h3>
-      <p>AI 個人化語言繪本完整商業計畫書。概念、產品、技術、合作夥伴、定價、路線圖。</p>
-      <span class="tag">商業計畫</span>
+      <div class="card-body">
+        <h3>繪本商業計畫</h3>
+        <p>AI 個人化語言繪本完整商業計畫書。概念、產品、技術、路線圖。</p>
+        <span class="tag">商業計畫</span>
+      </div>
     </a>
 
     <a class="card" href="/daily-brief/">
       <div class="card-icon" style="background:#0d6efd">>_</div>
-      <h3>AI Dev Brief</h3>
-      <p>每日三則 AI 開發工具與程式設計生態快訊。聚焦 Anthropic、OpenAI、Google 等平台的最新動態。</p>
-      <span class="tag">每日更新</span>
+      <div class="card-body">
+        <h3>AI Dev Brief</h3>
+        <p>每日三則 AI 開發工具與程式設計生態快訊。</p>
+        <span class="tag">每日更新</span>
+      </div>
     </a>
 
     <a class="card" href="/features/">
       <div class="card-icon" style="background:#6f42c1">&lt;/&gt;</div>
-      <h3>Features 深度文章</h3>
-      <p>AI 開發工具的深度比較與分析。Claude Code、OpenClaw、Codex 等工具的實戰評測。</p>
-      <span class="tag">深度分析</span>
+      <div class="card-body">
+        <h3>Features 深度文章</h3>
+        <p>AI 開發工具的深度比較與分析。Claude Code、Codex 等工具實戰評測。</p>
+        <span class="tag">深度分析</span>
+      </div>
     </a>
 
     <a class="card" href="/esl/">
       <div class="card-icon" style="background:#198754">ESL</div>
-      <h3>LevelUp ESL</h3>
-      <p>CEFR 分級英語閱讀與聽力自評平台。中英雙語對照，72 支 TTS 語音，適合親子共學。</p>
-      <span class="tag">教育</span>
+      <div class="card-body">
+        <h3>LevelUp ESL</h3>
+        <p>CEFR 分級英語閱讀與聽力自評平台。中英雙語對照，適合親子共學。</p>
+        <span class="tag">教育</span>
+      </div>
     </a>
 
     <a class="card" href="/agents/">
       <div class="card-icon" style="background:#fd7e14">AI</div>
-      <h3>AI Agents 目錄</h3>
-      <p>212 個即插即用的 AI 專家角色，涵蓋工程、設計、行銷等 18 個部門。繁體中文版。</p>
-      <span class="tag">智慧體目錄</span>
+      <div class="card-body">
+        <h3>AI Agents 目錄</h3>
+        <p>212 個即插即用的 AI 專家角色，涵蓋 18 個部門。繁體中文版。</p>
+        <span class="tag">智慧體目錄</span>
+      </div>
     </a>
 
-<a class="card" href="https://dailyai.tw/" target="_blank">
+    <a class="card" href="https://dailyai.tw/" target="_blank">
       <div class="card-icon" style="background:#dc3545">AI</div>
-      <h3>Daily AI Taiwan</h3>
-      <p>台灣觀點的雙語 AI 新聞平台。每日日報、月報、年報、專題深度分析。</p>
-      <span class="tag ext">外部連結</span>
+      <div class="card-body">
+        <h3>Daily AI Taiwan</h3>
+        <p>台灣觀點的雙語 AI 新聞平台。每日日報、月報、年報、深度分析。</p>
+        <span class="tag ext">外部連結</span>
+      </div>
     </a>
   </div>
 
