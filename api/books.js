@@ -9,11 +9,12 @@ module.exports = async (req, res) => {
 
   if (req.method !== 'GET') return res.status(405).json({ error: 'GET only' });
 
-  const { age, demo, status } = req.query;
-  let url = `${SUPABASE_URL}/rest/v1/books?order=created_at.desc&select=id,slug,title_zh,title_en,age_tier,languages,page_count,cover_url,price_ntd,is_demo,partner_slug,status`;
+  const { age, demo, status, month } = req.query;
+  let url = `${SUPABASE_URL}/rest/v1/books?order=created_at.desc&select=id,slug,title_zh,title_en,age_tier,languages,page_count,cover_url,price_ntd,is_demo,partner_slug,status,published_month`;
 
   if (age) url += `&age_tier=eq.${encodeURIComponent(age)}`;
   if (demo === 'true') url += '&is_demo=eq.true';
+  if (month) url += `&published_month=eq.${encodeURIComponent(month)}`;
   if (status && status !== 'all') url += `&status=eq.${encodeURIComponent(status)}`;
   else if (!status) url += '&status=eq.published';
 
