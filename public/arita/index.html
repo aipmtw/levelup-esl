@@ -17,6 +17,7 @@
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
   <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
   <style>
     body { background: linear-gradient(135deg, #1e1b4b 0%, #581c87 50%, #1e1b4b 100%); }
     .gradient-text { background: linear-gradient(135deg, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -108,10 +109,9 @@
       </a>
       <div class="flex items-center gap-3 md:gap-4">
         <a href="/" class="text-slate-300 hover:text-white transition text-xs md:text-sm">markluce.ai</a>
-        <button id="login-btn" onclick="handleLogin()" class="hidden line-btn text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-semibold transition flex items-center gap-1.5">
-          <svg class="w-4 h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
-          LINE 登入
-        </button>
+        <a id="login-qr-link" class="hidden cursor-pointer" title="用 LINE 登入">
+          <svg class="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24" fill="#06C755"><path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/></svg>
+        </a>
         <div id="user-info" class="hidden flex items-center gap-2">
           <img id="user-avatar" class="w-7 h-7 md:w-8 md:h-8 rounded-full glow-ring" src="" alt="" />
           <span id="user-name" class="text-xs md:text-sm text-pink-300 font-medium max-w-[100px] md:max-w-none truncate"></span>
@@ -134,7 +134,20 @@
       用 AI 幫你練 TOEIC、學商業英語、做中英翻譯。<br class="hidden md:inline"/>
       專業、耐心、隨時可用的英語教練。
     </p>
-    <p class="text-slate-400 text-xs mt-6">🔒 用 LINE 登入後點擊右下角的 💬 開始對話</p>
+    <p id="hero-login-hint" class="text-slate-400 text-xs mt-6">🔒 用 LINE 登入後點擊右下角的 💬 開始對話</p>
+
+    <!-- QR Code login modal -->
+    <div id="qr-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+      <div class="bg-[#1e1b4b] border border-purple-400/30 rounded-2xl p-8 text-center max-w-xs mx-4 shadow-2xl">
+        <p class="text-purple-200 font-semibold mb-4">使用 LINE 登入</p>
+        <a id="qr-link" class="inline-block cursor-pointer">
+          <canvas id="qr-canvas" class="mx-auto rounded-xl" style="width:200px;height:200px;"></canvas>
+        </a>
+        <p id="qr-hint-mobile" class="hidden text-sm text-purple-300 mt-4">👆 點擊 QR Code，用 LINE 開啟登入</p>
+        <p id="qr-hint-desktop" class="hidden text-sm text-purple-300 mt-4">📱 用手機 LINE 掃描 QR Code 登入</p>
+        <button id="qr-close" class="mt-4 text-slate-400 hover:text-white text-sm">關閉</button>
+      </div>
+    </div>
   </header>
 
   <!-- Features -->
@@ -219,9 +232,51 @@
     var sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
     var currentUser = null;
 
+    var isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
+    var qrGenerated = false;
+
+    function generateQR() {
+      if (qrGenerated) return;
+      qrGenerated = true;
+      var returnTo = window.location.pathname + window.location.search;
+      var liffUrl = 'https://liff.line.me/' + LIFF_ID + '?returnTo=' + encodeURIComponent(returnTo);
+      var canvas = document.getElementById('qr-canvas');
+      var link = document.getElementById('qr-link');
+      link.href = liffUrl;
+
+      QRCode.toCanvas(canvas, liffUrl, {
+        width: 400,
+        margin: 2,
+        color: { dark: '#a855f7', light: '#ffffff' }
+      });
+
+      if (isMobile) {
+        document.getElementById('qr-hint-mobile').classList.remove('hidden');
+      } else {
+        document.getElementById('qr-hint-desktop').classList.remove('hidden');
+      }
+
+      // nav LINE icon also opens QR modal
+      var navLink = document.getElementById('login-qr-link');
+      navLink.href = liffUrl;
+    }
+
+    function showQRModal() {
+      generateQR();
+      document.getElementById('qr-modal').classList.remove('hidden');
+    }
+
+    document.getElementById('qr-close').addEventListener('click', function() {
+      document.getElementById('qr-modal').classList.add('hidden');
+    });
+    document.getElementById('qr-modal').addEventListener('click', function(e) {
+      if (e.target === this) this.classList.add('hidden');
+    });
+
     async function initLiff() {
       if (!LIFF_ID || typeof liff === 'undefined') {
-        document.getElementById('login-btn').classList.remove('hidden');
+        document.getElementById('login-qr-link').classList.remove('hidden');
+        generateQR();
         return;
       }
       try {
@@ -235,18 +290,18 @@
           };
           showLoggedIn();
         } else {
-          document.getElementById('login-btn').classList.remove('hidden');
+          document.getElementById('login-qr-link').classList.remove('hidden');
+          generateQR();
         }
       } catch (e) {
         console.error('LIFF init error:', e);
-        document.getElementById('login-btn').classList.remove('hidden');
+        document.getElementById('login-qr-link').classList.remove('hidden');
+        generateQR();
       }
     }
 
     function handleLogin() {
-      if (!LIFF_ID) return;
-      var base = window.location.origin + window.location.pathname;
-      liff.login({ redirectUri: base + '?v=' + Date.now() });
+      showQRModal();
     }
 
     function handleLogout() {
@@ -255,10 +310,11 @@
     }
 
     function showLoggedIn() {
-      document.getElementById('login-btn').classList.add('hidden');
+      document.getElementById('login-qr-link').classList.add('hidden');
       document.getElementById('user-info').classList.remove('hidden');
       document.getElementById('user-avatar').src = currentUser.pictureUrl;
       document.getElementById('user-name').textContent = currentUser.displayName;
+      document.getElementById('hero-login-hint').classList.add('hidden');
     }
 
     function renderMd(str) {
@@ -354,7 +410,8 @@
       if (!msg) return;
 
       if (!currentUser) {
-        appendChat('bot', '🔒 請先用 LINE 登入才能使用 Arita 喔！點擊右上角的「LINE 登入」按鈕。');
+        showQRModal();
+        appendChat('bot', '🔒 請先用 LINE 登入才能使用 Arita 喔！');
         return;
       }
 
